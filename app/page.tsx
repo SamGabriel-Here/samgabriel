@@ -1,4 +1,4 @@
-import { Backdrop, ClockIST, ContactForm, Develop, Header, Loop } from "./ui";
+import { Backdrop, ClockIST, ContactForm, Develop, Header, IndexPreview, Loop } from "./ui";
 
 /* ------------------------------------------------------------------ *
  *  Content                                                            *
@@ -180,14 +180,16 @@ function ReleasePlate({ r, i }: { r: Release; i: number }) {
   return (
     <article className={`release${i % 2 ? " flip" : ""}`} id={`release-${pad(i + 1)}`} aria-labelledby={`r-${i}`}>
       <div className="frame">
-        {r.video ? (
-          <Loop src={r.media} label={r.alt} />
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={`${r.media}.webp`} alt={r.alt} loading="lazy" decoding="async" width={960} height={600} />
-        )}
+        <div className="frame-media">
+          {r.video ? (
+            <Loop src={r.media} label={r.alt} />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={`${r.media}.webp`} alt={r.alt} loading="lazy" decoding="async" width={960} height={600} />
+          )}
+        </div>
       </div>
-      <div>
+      <div className="release-cap">
         <h3 id={`r-${i}`}>{r.name}</h3>
         <p className="meta">
           {r.type} · {r.date}
@@ -260,10 +262,12 @@ export default function Home() {
               <p>Eight projects, each with public source; {live} run live right now.</p>
             </div>
 
+            <div className="index-wrap">
+            <IndexPreview />
             <ol className="index" aria-label="Project index">
               {releases.map((r, i) => (
                 <li key={r.name}>
-                  <a href={`#release-${pad(i + 1)}`}>
+                  <a href={`#release-${pad(i + 1)}`} data-preview={`${r.media}.webp`}>
                     <span className="no">{pad(i + 1)}</span>
                     <span className="nm">{r.name}</span>
                     <span className="ty">{r.type}</span>
@@ -271,6 +275,7 @@ export default function Home() {
                 </li>
               ))}
             </ol>
+            </div>
 
             {releases.map((r, i) => (
               <ReleasePlate key={r.name} r={r} i={i} />

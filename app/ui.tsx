@@ -349,6 +349,57 @@ export function Develop() {
 }
 
 /* ------------------------------------------------------------------ *
+ *  Index preview: hovering a name shows its plate beside the list    *
+ * ------------------------------------------------------------------ */
+
+/* One small plate that glides to whichever row is under the pointer and shows
+   that project's still. Fine pointers only; phones go straight to the plates.
+   Decorative: the rows themselves are the links and carry the names. */
+export function IndexPreview() {
+  const fine = useMediaQuery("(hover: hover) and (pointer: fine)");
+  const ref = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const box = ref.current;
+    const img = imgRef.current;
+    const wrap = box?.parentElement;
+    if (!fine || !box || !img || !wrap) return;
+    const show = (e: Event) => {
+      const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(".index a");
+      if (!a || !a.dataset.preview) return;
+      if (img.getAttribute("src") !== a.dataset.preview) img.src = a.dataset.preview;
+      // centre the plate on the row, kept inside the list
+      const y = a.offsetTop + a.offsetHeight / 2 - box.offsetHeight / 2;
+      const max = wrap.offsetHeight - box.offsetHeight;
+      box.style.setProperty("--y", `${Math.max(0, Math.min(max, y))}px`);
+      box.dataset.on = "true";
+    };
+    const hide = () => {
+      box.dataset.on = "false";
+    };
+    wrap.addEventListener("pointerover", show);
+    wrap.addEventListener("focusin", show);
+    wrap.addEventListener("pointerleave", hide);
+    wrap.addEventListener("focusout", hide);
+    return () => {
+      wrap.removeEventListener("pointerover", show);
+      wrap.removeEventListener("focusin", show);
+      wrap.removeEventListener("pointerleave", hide);
+      wrap.removeEventListener("focusout", hide);
+    };
+  }, [fine]);
+
+  if (!fine) return null;
+  return (
+    <div ref={ref} className="index-preview" data-on="false" aria-hidden="true">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img ref={imgRef} alt="" decoding="async" />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
  *  Contact                                                            *
  * ------------------------------------------------------------------ */
 
