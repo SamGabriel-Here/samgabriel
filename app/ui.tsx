@@ -198,7 +198,7 @@ export function Backdrop() {
       // hero's type lifts away; after that only the slow drift remains
       const hp = Math.min(1, y / window.innerHeight);
       if (motionOk) {
-        img.style.transform = `translate3d(0, ${(-p * 6).toFixed(2)}%, 0) scale(${(1.1 + hp * 0.28).toFixed(3)})`;
+        img.style.transform = `translate3d(0, ${(-p * 6).toFixed(2)}%, 0) scale(${(1.1 + hp * 0.28 + p * 0.22).toFixed(3)})`;
         document.documentElement.style.setProperty("--hp", hp.toFixed(3));
       } else {
         document.documentElement.style.removeProperty("--hp");
@@ -357,7 +357,7 @@ export function Develop() {
     // plate that was chosen, so the eye knows where it landed
     let timer: ReturnType<typeof setTimeout> | undefined;
     const onIndex = (e: MouseEvent) => {
-      const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(".index a");
+      const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(".index a, .depth-nav a");
       const frame = a ? document.querySelector<HTMLElement>(`${a.hash} .frame`) : null;
       if (!frame) return;
       clearTimeout(timer);
@@ -432,173 +432,177 @@ export function IndexPreview() {
 }
 
 /* ------------------------------------------------------------------ *
- *  Rail: the releases pin and travel sideways with the scroll         *
+ *  Depth: the releases approach out of the nebula, one at a time      *
  * ------------------------------------------------------------------ */
 
-/* Wide, tall screens with motion welcome only; everyone else keeps the list.
-   The CSS pins only while .is-pinned is on, so nothing can pin a track that
-   nothing moves. One rect read and one transform write per frame. */
-const RAIL_QUERY = "(min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)";
+/* The hero starts a flight into the Cosmic Cliffs; this continues it. On wide,
+   tall screens with motion welcome, the releases share one pinned stage. Each
+   waits deep in the image (small, faint), comes forward into focus as the page
+   scrolls, then streams past the camera while the next one arrives. Every
+   release stays in the DOM and in tab order; focus and index clicks scroll the
+   page to it. Everyone else keeps the plain list. Transform and opacity only. */
+const DEPTH_QUERY = "(min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)";
 
-export function Rail({ count, children }: { count: number; children: React.ReactNode }) {
-  const pinned = useMediaQuery(RAIL_QUERY);
-  const railRef = useRef<HTMLDivElement>(null);
-  const pinRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+export function Depth({
+  items,
+  children,
+}: {
+  items: { name: string; type: string }[];
+  children: React.ReactNode;
+}) {
+  const count = items.length;
+  const live = useMediaQuery(DEPTH_QUERY);
+  const stageRef = useRef<HTMLDivElement>(null);
   const countRef = useRef<HTMLParagraphElement>(null);
+  const navRef = useRef<HTMLOListElement>(null);
+  const spikeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const rail = railRef.current;
-    const pin = pinRef.current;
-    const track = trackRef.current;
-    if (!pinned || !rail || !pin || !track) return;
-    rail.classList.add("is-pinned");
+    const stage = stageRef.current;
+    if (!live || !stage) return;
+    const cards = Array.from(stage.querySelectorAll<HTMLElement>(".release"));
+    stage.classList.add("is-live");
+    // the scan reveal belongs to the list; here the approach is the reveal
+    cards.forEach((c) => {
+      c.classList.remove("develop");
+      c.classList.add("seen");
+    });
     let raf = 0;
-    let travel = 0;
+    let fired = -1;
+    const per = 0.9; // viewports of scroll per release
+    // the neuromorphic idea: nothing moves until there is something to say;
+    // then one spike travels the path from the chosen entry to its release
+    const fire = (n: number) => {
+      const spike = spikeRef.current;
+      const li = navRef.current?.querySelectorAll("li")[n];
+      const field = stage.querySelector<HTMLElement>(".depth-field");
+      const box = spike?.parentElement;
+      if (!spike || !li || !field || !box) return;
+      const b = box.getBoundingClientRect();
+      const a = li.getBoundingClientRect();
+      const x1 = a.right - b.left + 12;
+      const x2 = field.getBoundingClientRect().left - b.left - 8;
+      spike.style.setProperty("--x", `${x1}px`);
+      spike.style.setProperty("--y", `${a.top + a.height / 2 - b.top}px`);
+      spike.style.setProperty("--w", `${Math.max(0, x2 - x1)}px`);
+      spike.classList.remove("go");
+      void spike.offsetWidth; // restart
+      spike.classList.add("go");
+    };
 
-    const measure = () => {
-      track.style.setProperty("--travel", "0");
-      const left = track.getBoundingClientRect().left - pin.getBoundingClientRect().left;
-      // end with the same margin the track starts with
-      travel = Math.max(0, track.scrollWidth + left * 2 - pin.clientWidth);
-      rail.style.height = `${window.innerHeight + travel}px`;
+    const size = () => {
+      stage.style.height = `${window.innerHeight * (1 + (count - 1) * per)}px`;
     };
     const update = () => {
       raf = 0;
-      const span = rail.offsetHeight - window.innerHeight;
-      const p = span > 0 ? Math.min(1, Math.max(0, -rail.getBoundingClientRect().top / span)) : 0;
-      track.style.setProperty("--travel", (p * travel).toFixed(1));
-      if (countRef.current) {
-        const n = Math.min(count, Math.round(p * (count - 1)) + 1);
-        countRef.current.textContent = `${String(n).padStart(2, "0")} / ${String(count).padStart(2, "0")}`;
+      const span = stage.offsetHeight - window.innerHeight;
+      const p = span > 0 ? Math.min(1, Math.max(0, -stage.getBoundingClientRect().top / span)) : 0;
+      const f = p * (count - 1); // which release is in focus, continuously
+      // one release at a time: the outgoing one pushes past the camera and is
+      // gone before the next arrives out of the depths, so they never muddy
+      const ease = (x: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
+      cards.forEach((c, i) => {
+        const t = i - f; // > 0 still ahead in the nebula, < 0 already passed
+        let s = 1;
+        let o = 1;
+        if (t > 0.15) {
+          // arriving: already visible at the midpoint, so the stage is never empty
+          const k = Math.min(1, (t - 0.15) / 0.47);
+          s = 1 - ease(k) * 0.22;
+          o = 1 - k;
+        } else if (t < -0.15) {
+          // leaving: gone by the midpoint, so two releases never overlap
+          const k = Math.min(1, (-t - 0.15) / 0.2);
+          s = 1 + ease(k) * 0.16;
+          o = 1 - k;
+        }
+        c.style.transform = `translate3d(0, -50%, 0) scale(${s.toFixed(4)})`;
+        c.style.opacity = o.toFixed(3);
+        c.style.visibility = o < 0.01 ? "hidden" : "visible";
+        c.style.pointerEvents = Math.abs(t) < 0.5 ? "auto" : "none";
+      });
+      const n = Math.min(count - 1, Math.round(f));
+      if (n !== fired) {
+        fired = n;
+        fire(n);
       }
+      if (countRef.current) {
+        countRef.current.textContent = `${String(n + 1).padStart(2, "0")} / ${String(count).padStart(2, "0")}`;
+      }
+      navRef.current?.querySelectorAll("li").forEach((li, i) => {
+        li.dataset.active = String(i === n);
+      });
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
     const onResize = () => {
-      measure();
+      size();
       update();
     };
-    // scroll the page (not the clipped box) so a release is in the frame
-    const goTo = (card: HTMLElement, smooth: boolean) => {
-      const span = rail.offsetHeight - window.innerHeight;
-      if (travel <= 0 || span <= 0) return;
-      const t = Math.min(travel, Math.max(0, card.offsetLeft));
-      const railTop = rail.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: railTop + (t / travel) * span, behavior: smooth ? "smooth" : "auto" });
+    const goTo = (i: number, smooth: boolean) => {
+      const span = stage.offsetHeight - window.innerHeight;
+      const top = stage.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + (i / Math.max(1, count - 1)) * span, behavior: smooth ? "smooth" : "auto" });
     };
     const onFocus = (e: FocusEvent) => {
       const card = (e.target as HTMLElement | null)?.closest<HTMLElement>(".release");
-      if (card) goTo(card, false);
+      if (card) goTo(cards.indexOf(card), false);
     };
     const onIndex = (e: MouseEvent) => {
-      const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(".index a");
-      const card = a ? track.querySelector<HTMLElement>(a.hash) : null;
+      const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(".index a, .depth-nav a");
+      const card = a ? stage.querySelector<HTMLElement>(a.hash) : null;
       if (!card) return;
       e.preventDefault();
-      goTo(card, true);
+      goTo(cards.indexOf(card), true);
     };
 
-    measure();
+    size();
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    track.addEventListener("focusin", onFocus);
+    stage.addEventListener("focusin", onFocus);
     document.addEventListener("click", onIndex);
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      track.removeEventListener("focusin", onFocus);
+      stage.removeEventListener("focusin", onFocus);
       document.removeEventListener("click", onIndex);
       cancelAnimationFrame(raf);
-      rail.classList.remove("is-pinned");
-      rail.style.height = "";
-      track.style.removeProperty("--travel");
+      stage.classList.remove("is-live");
+      stage.style.height = "";
+      cards.forEach((c) => {
+        c.style.transform = c.style.opacity = c.style.visibility = c.style.pointerEvents = "";
+      });
     };
-  }, [pinned, count]);
+  }, [live, count]);
 
   return (
-    <div ref={railRef} className="rail">
-      <div ref={pinRef} className="rail-pin">
-        <div className="wrap">
-          <div ref={trackRef} className="rail-track">
-            {children}
+    <div ref={stageRef} className="depth">
+      <div className="depth-pin">
+        <div className="wrap depth-console">
+          {/* the target list: where you are, and a jump to any release */}
+          <nav className="depth-nav" aria-label="Releases">
+            <ol ref={navRef}>
+              {items.map((it, i) => (
+                <li key={it.name} data-active={i === 0 ? "true" : "false"}>
+                  <a href={`#release-${String(i + 1).padStart(2, "0")}`}>
+                    <span className="no">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="nm">{it.name}</span>
+                    <span className="ty">{it.type}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+            <p ref={countRef} className="depth-count" aria-hidden="true" />
+          </nav>
+          <div className="depth-field">{children}</div>
+          <div ref={spikeRef} className="spike" aria-hidden="true">
+            <i />
           </div>
         </div>
-        <p ref={countRef} className="rail-count" aria-hidden="true" />
       </div>
     </div>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- *  Reticle: a finder scope for the pointer                           *
- * ------------------------------------------------------------------ */
-
-/* The sight tracks the pointer exactly; the ring trails a little and locks
-   gold over anything you can act on. Fine pointers with motion welcome only:
-   touch, coarse pointers and reduced motion keep their own cursor. */
-export function Reticle() {
-  const on = useMediaQuery("(pointer: fine) and (prefers-reduced-motion: no-preference)");
-  const ringRef = useRef<HTMLDivElement>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ring = ringRef.current;
-    const dot = dotRef.current;
-    if (!on || !ring || !dot) return;
-    const root = document.documentElement;
-    root.classList.add("reticle-on");
-    let tx = innerWidth / 2;
-    let ty = innerHeight / 2;
-    let x = tx;
-    let y = ty;
-    let raf = 0;
-    const step = () => {
-      x += (tx - x) * 0.2;
-      y += (ty - y) * 0.2;
-      ring.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
-      raf = Math.abs(tx - x) < 0.2 && Math.abs(ty - y) < 0.2 ? 0 : requestAnimationFrame(step);
-    };
-    const move = (e: PointerEvent) => {
-      tx = e.clientX;
-      ty = e.clientY;
-      dot.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
-      ring.dataset.awake = dot.dataset.awake = "true";
-      if (!raf) raf = requestAnimationFrame(step);
-    };
-    const over = (e: PointerEvent) => {
-      const hit = (e.target as HTMLElement | null)?.closest("a, button, input, textarea, label");
-      ring.dataset.lock = hit ? "true" : "false";
-    };
-    const leave = () => {
-      ring.dataset.awake = dot.dataset.awake = "false";
-    };
-    window.addEventListener("pointermove", move, { passive: true });
-    window.addEventListener("pointerover", over, { passive: true });
-    document.addEventListener("mouseleave", leave);
-    return () => {
-      root.classList.remove("reticle-on");
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerover", over);
-      document.removeEventListener("mouseleave", leave);
-      cancelAnimationFrame(raf);
-      leave();
-    };
-  }, [on]);
-
-  if (!on) return null;
-  return (
-    <>
-      <div ref={ringRef} className="reticle" data-awake="false" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-        <i />
-      </div>
-      <div ref={dotRef} className="reticle-dot" data-awake="false" aria-hidden="true" />
-    </>
   );
 }
 
