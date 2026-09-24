@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-24T13:01:53.150759+00:00",
+  "generatedAt": "2026-09-24T17:35:09.549519+00:00",
   "title": "Design System: Release Plates",
   "extensions": {
     "colorMeta": {
@@ -47,7 +47,8 @@
           "oklch(74% 0.085 65)",
           "oklch(85% 0.085 65)",
           "oklch(95% 0.085 65)"
-        ]
+        ],
+        "note": "The one light: only what is active, chosen or firing. The italic dust name measures 3.15:1 at worst on the hero, which passes only as display-size text."
       },
       "paper": {
         "role": "neutral",
@@ -62,7 +63,8 @@
           "oklch(74% 0.013 75)",
           "oklch(85% 0.013 75)",
           "oklch(95% 0.013 75)"
-        ]
+        ],
+        "note": "Measured 7.48:1 at worst over the backdrop."
       },
       "soft": {
         "role": "neutral",
@@ -77,7 +79,8 @@
           "oklch(74% 0.015 75)",
           "oklch(85% 0.015 75)",
           "oklch(95% 0.015 75)"
-        ]
+        ],
+        "note": "Measured 4.90:1 at worst over the backdrop; used for the console chrome counter because it arrives before the veil closes."
       },
       "dim": {
         "role": "neutral",
@@ -93,7 +96,7 @@
           "oklch(85% 0.013 65)",
           "oklch(95% 0.013 65)"
         ],
-        "note": "Holds 4.93-5.11:1 over the moving backdrop at every scroll depth (two runs, different video frames); re-check after veil/floor/drift changes."
+        "note": "Measured 5.09:1 at worst over the moving backdrop, every depth, two video frames (2026-09-24, camera zoom 1.2)."
       },
       "rule": {
         "role": "neutral",
@@ -227,23 +230,39 @@
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "The name on the opening plate only; never breaks inside a word."
+        "purpose": "Serif. The name on the opening plate only, \"Sam Gabriel\" with one italic dust word."
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Section titles."
+        "purpose": "Serif. Section titles; at most one italic dust word."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Release names."
+        "purpose": "Serif. A project name on a stacked plate."
+      },
+      "panel-title": {
+        "displayName": "Panel title",
+        "purpose": "Serif. A project name in the console panel."
       },
       "figure": {
         "displayName": "Figure",
-        "purpose": "The single proof number in a release."
+        "purpose": "Serif, dust. The one proof number in a release; the × is mono."
+      },
+      "narration": {
+        "displayName": "Narration",
+        "purpose": "Serif. The console line per project, from its first sentence."
+      },
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "Serif. The header name beside the mark."
+      },
+      "year": {
+        "displayName": "Year",
+        "purpose": "Serif, dust. Timeline dates."
       },
       "subhead": {
         "displayName": "Subhead",
-        "purpose": "About column heads."
+        "purpose": "About heads (Toolkit, Record)."
       },
       "index-name": {
         "displayName": "Index name",
@@ -251,47 +270,47 @@
       },
       "lede": {
         "displayName": "Lede",
-        "purpose": "Hero role line and contact intro, max 46ch."
+        "purpose": "The hero role line and the contact intro."
       },
       "section-copy": {
         "displayName": "Section copy",
-        "purpose": "Copy beside a section title."
+        "purpose": "The copy beside a section title."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Release captions, max 50ch."
-      },
-      "secondary": {
-        "displayName": "Secondary",
-        "purpose": "Index types and toolkit terms, dim."
+        "purpose": "Release captions."
       },
       "action": {
         "displayName": "Action",
         "purpose": "Buttons and status."
       },
       "action-sm": {
-        "displayName": "Action sm",
-        "purpose": "Text links and the nav CTA."
+        "displayName": "Action small",
+        "purpose": "Text links and the Contact pill."
       },
       "nav": {
         "displayName": "Nav",
-        "purpose": "Header section links."
+        "purpose": "Header links."
       },
       "meta": {
         "displayName": "Meta",
-        "purpose": "Release meta line, record dates, field labels, form note, footer text."
+        "purpose": "\"type · date\" under titles, field labels, the form note."
       },
       "stack": {
         "displayName": "Stack",
-        "purpose": "One mono stack line per release."
+        "purpose": "Mono. One line per release, \"A · B · C\"."
       },
       "mono-sm": {
-        "displayName": "Mono sm",
-        "purpose": "Index numbers and Pause/Play."
+        "displayName": "Mono small",
+        "purpose": "Index numbers, Pause/Play, the ratio key, the narration overline."
       },
-      "credit-heading": {
-        "displayName": "Credit heading",
-        "purpose": "The footer's Image credits heading; the only uppercase text."
+      "mono-xs": {
+        "displayName": "Mono extra small",
+        "purpose": "Nav numerals and chart target numbers."
+      },
+      "chrome": {
+        "displayName": "Chrome",
+        "purpose": "Uppercase mono console strip: \"THE WORK\" and \"03 / 08\"."
       }
     },
     "shadows": [],
@@ -299,7 +318,7 @@
       {
         "name": "ease-out",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "All motion."
+        "purpose": "Standard easing; nothing overshoots."
       },
       {
         "name": "expose",
@@ -307,64 +326,84 @@
         "purpose": "Backdrop video opening exposure."
       },
       {
-        "name": "surface",
-        "value": "1.3s, delay 0.5s: clip-path inset(100% 0 0 0) + translateY(0.18em) to inset(0), none",
-        "purpose": "Focal moment: the name surfaces, bottom edge first. Name only."
+        "name": "focusPull",
+        "value": "1.8s at 0.35s: blur(18px) scale(1.05) to sharp",
+        "purpose": "The focal moment, reserved for the name."
       },
       {
         "name": "rise",
-        "value": "1s: opacity 0 + translateY(14px) to none; delays 0.45s / 0.6s",
-        "purpose": "Role line and action row."
+        "value": "1s, 14px, at 0.45s and 0.6s",
+        "purpose": "Role line and actions."
       },
       {
-        "name": "scan-reveal",
-        "value": "clip-path inset(0 100% 0 0) + brightness(0.5) to inset(-16px); clip 1.2s cubic-bezier(0.65, 0, 0.35, 1), filter 1.6s ease-out",
-        "purpose": "Release frames read out left to right; ends outside the box so ticks stay visible."
+        "name": "hero fly-in",
+        "value": "backdrop scale 1.1 to 1.38 over the first viewport; foot lifts 80px and fades",
+        "purpose": "Leaving the hero."
       },
       {
-        "name": "caption-stagger",
-        "value": "opacity .6s + translateY(12px) .8s; delays 0.35s + 70ms per child (6)",
-        "purpose": "Release caption settles after the plate."
+        "name": "camera",
+        "value": "scroll-driven: hold on a target, travel with a 0.14 pull-back, base zoom 1.2",
+        "purpose": "The console pans the nebula target to target."
       },
       {
-        "name": "plate-depth",
-        "value": "scale(1.08) translateY(-3%) to translateY(3%), animation-timeline view(), range cover",
-        "purpose": "Media drifts inside its frame; only where view() is supported and motion is welcome."
+        "name": "ringOut",
+        "value": "1.8s, three rings 0.25s apart, scale 0.2 to 4",
+        "purpose": "A target answers when it comes into view."
       },
       {
-        "name": "index-preview",
-        "value": "transform .45s ease-out (to --y, scale .96 to 1), opacity .25s, clip-path inset(0 0 100% 0) to inset(0) .45s; reduced motion: opacity .2s only",
-        "purpose": "Decorative project still following the hovered/focused index row."
+        "name": "pulse",
+        "value": "0.7s along the beam",
+        "purpose": "One dot from the target to its panel."
       },
       {
-        "name": "registration-lock",
-        "value": "ticks from translate(+/-22px) + opacity 0; transform .9s, opacity .5s, both delay .25s",
-        "purpose": "Ticks settle when a release is seen."
+        "name": "aperture",
+        "value": "scroll-driven hexagon clip-path growing to cover the frame",
+        "purpose": "A panel picture opens like a mirror segment."
       },
       {
-        "name": "lock-replay",
-        "value": "lockTL / lockBR 0.8s, fired 650ms after an index click",
-        "purpose": "Marks the plate you landed on."
+        "name": "narration swap",
+        "value": "0.6s fade, 10px rise, 0.2s delay",
+        "purpose": "One line at a time."
       },
       {
-        "name": "note-in",
-        "value": "0.3s: opacity 0 + translateY(6px) to none; reduced motion: fadeOnly",
-        "purpose": "Post-send note."
+        "name": "punchLoop",
+        "value": "6.5s loop: holes punch in 45ms apart, hold, clear",
+        "purpose": "The SG mark."
       },
       {
-        "name": "backdrop-drift",
-        "value": "translateY 0 to -6% at scale 1.1 across full scroll, rAF-throttled",
-        "purpose": "Travel along the cliffs; off under reduced motion."
+        "name": "ping",
+        "value": "3.6s loop: one ring, scale 1 to 3.2, then quiet",
+        "purpose": "The Contact pill's signal dot."
       },
       {
-        "name": "state",
-        "value": "0.2s",
-        "purpose": "Hover colour/border changes."
+        "name": "nav glide",
+        "value": "0.45s clip-path",
+        "purpose": "The nav marker travels to the hovered or current item."
       },
       {
-        "name": "header",
-        "value": "0.4s ease-out",
-        "purpose": "Header clear to solid past 60% of the viewport."
+        "name": "ratio",
+        "value": "dots light 7ms apart after 250ms",
+        "purpose": "nbodyssey's 176× drawn out."
+      },
+      {
+        "name": "timeline",
+        "value": "axis 1.8s; points 0.45s at their column; cards +0.12s",
+        "purpose": "Record in About."
+      },
+      {
+        "name": "scan",
+        "value": "1.2s inset(0 100% 0 0) to inset(-16px), cubic-bezier(0.65, 0, 0.35, 1)",
+        "purpose": "Fallback plates read out like a scan."
+      },
+      {
+        "name": "lock",
+        "value": "0.9s after 0.25s, ticks from 22px out",
+        "purpose": "Fallback plate ticks settle into registration."
+      },
+      {
+        "name": "header tuck",
+        "value": "0.45s translateY(-100%)",
+        "purpose": "The header retreats while reading down."
       }
     ],
     "breakpoints": [
@@ -383,6 +422,18 @@
       {
         "name": "lg",
         "value": "899px"
+      },
+      {
+        "name": "about-wide",
+        "value": "1024px"
+      },
+      {
+        "name": "stepper-numerals",
+        "value": "1440px"
+      },
+      {
+        "name": "console",
+        "value": "(min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)"
       }
     ],
     "backdrop": {
@@ -391,11 +442,36 @@
       "filter": "none (opening expose only)",
       "veil": "linear-gradient(180deg, void 0%, void/0.9 45%, void 100%)",
       "veilOpacity": "0 over the hero; closes linearly to 0.84 by 0.85 x viewport height of scroll; holds at 0.84 to the end",
-      "drift": "translate3d(0, -p*6%, 0) scale(1.1), p = scroll progress; none under reduced motion",
-      "contrastCheck": "Hide text and pictures, keep floors; brightest 16px block behind text at several depths, two runs on different video frames; --dim must stay >= 4.5:1 (measured 4.93-5.11:1)."
+      "drift": "After the hero fly-in (scale 1.1 to 1.38), drifts up to -6% and scales a further 0.22 across the page; in the console a camera adds pan and zoom through --cam-x, --cam-y, --cam-z.",
+      "contrastCheck": "Hide text, pictures and chart, keep floors; brightest 16px block behind every text run at hero, section head, every console beat, About, Contact and footer, two video frames. 2026-09-24: paper 7.48, soft 4.90, dim 5.09, italic dust display 3.15 (3:1 applies).",
+      "camera": "Parks each target at 36% across and 42% down, holds, then travels with a 0.14 pull-back from zoom 1.2; clamped so the image always covers; eases in and out with the stage."
     }
   },
   "components": [
+    {
+      "name": "Plate Mark",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "SG punched into a plate: S = 01010011, G = 01000111 in ASCII, sixteen bits in reading order, a lit dust hole is a one. Header 22px, footer 18px, favicon. Never rebalance the bits.",
+      "html": "<svg viewBox=\"0 0 40 40\" width=\"40\" height=\"40\" aria-hidden=\"true\"><rect x=\"2.5\" y=\"2.5\" width=\"35\" height=\"35\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".3\" stroke-width=\".9\"/><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"16.2\" cy=\"8.5\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"23.9\" cy=\"8.5\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"31.6\" cy=\"8.5\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"8.5\" cy=\"16.2\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"16.2\" cy=\"16.2\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"23.9\" cy=\"16.2\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"31.6\" cy=\"16.2\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"8.5\" cy=\"23.9\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"16.2\" cy=\"23.9\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"23.9\" cy=\"23.9\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"31.6\" cy=\"23.9\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"8.5\" cy=\"31.6\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"16.2\" cy=\"31.6\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"23.9\" cy=\"31.6\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"31.6\" cy=\"31.6\" r=\"2.6\" fill=\"#dcaa78\"/></svg>",
+      "css": ""
+    },
+    {
+      "name": "Header",
+      "kind": "navigation",
+      "refersTo": "nav-link",
+      "description": "The mark and the serif wordmark, then the nav capsule.",
+      "html": "<div class=\"ds-head\"><svg viewBox=\"0 0 40 40\" width=\"22\" height=\"22\" aria-hidden=\"true\"><rect x=\"2.5\" y=\"2.5\" width=\"35\" height=\"35\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".3\" stroke-width=\".9\"/><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"16.2\" cy=\"8.5\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"23.9\" cy=\"8.5\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"31.6\" cy=\"8.5\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"8.5\" cy=\"16.2\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"16.2\" cy=\"16.2\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"23.9\" cy=\"16.2\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"31.6\" cy=\"16.2\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"8.5\" cy=\"23.9\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"16.2\" cy=\"23.9\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"23.9\" cy=\"23.9\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"31.6\" cy=\"23.9\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"8.5\" cy=\"31.6\" r=\"1.5\" fill=\"none\" stroke=\"#f4ede3\" stroke-opacity=\".26\" stroke-width=\".8\"/><circle cx=\"16.2\" cy=\"31.6\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"23.9\" cy=\"31.6\" r=\"2.6\" fill=\"#dcaa78\"/><circle cx=\"31.6\" cy=\"31.6\" r=\"2.6\" fill=\"#dcaa78\"/></svg><span class=\"ds-wm\">Sam <em>Gabriel</em></span></div>",
+      "css": ".ds-head{display:flex;align-items:center;gap:12px}.ds-wm{font-family:var(--font-serif),'Instrument Serif',Georgia,serif;font-size:23px;color:#f4ede3}.ds-wm em{color:#dcaa78}"
+    },
+    {
+      "name": "Nav Capsule",
+      "kind": "navigation",
+      "refersTo": "nav-cta",
+      "description": "One glass capsule: numbered links, a pill that glides by clip-path to the hovered or current item, and the lit Contact pill with a signal dot.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-glide\"></span><a class=\"ds-nl\" aria-current=\"true\" href=\"#\"><span class=\"ds-no\">01</span>Work</a><a class=\"ds-nl\" href=\"#\"><span class=\"ds-no\">02</span>About</a><a class=\"ds-cta\" href=\"#\"><i class=\"ds-ping\"></i>Contact <span>→</span></a></nav>",
+      "css": ".ds-nav{position:relative;display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid rgba(220,170,120,.2);border-radius:999px;background:rgba(7,11,24,.42)}.ds-glide{position:absolute;inset:3px;background:rgba(244,237,227,.11);clip-path:inset(0 60% 0 0 round 999px)}.ds-nl{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding-inline:16px;border-radius:999px;font-size:14px;color:#d9d1c6;text-decoration:none}.ds-nl[aria-current=true]{color:#f4ede3}.ds-no{font-family:var(--font-martian),'Martian Mono',ui-monospace,monospace;font-size:11px;color:#b3aba3}.ds-nl[aria-current=true] .ds-no{color:#dcaa78}.ds-cta{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 16px 0 15px;margin-left:4px;border-radius:999px;background:#dcaa78;color:#070b18;font-size:14px;font-weight:600;text-decoration:none}.ds-ping{width:7px;height:7px;border-radius:50%;background:#070b18}"
+    },
     {
       "name": "Solid Button",
       "kind": "button",
@@ -411,14 +487,6 @@
       "description": "44px-tall underlined link for See the work, Live demo, Source.",
       "html": "<a class=\"ds-tlink\" href=\"#\">Live demo<span aria-hidden=\"true\">&nbsp;↗</span></a>",
       "css": ".ds-tlink{display:inline-flex;align-items:center;min-height:44px;padding-inline:12px;font-weight:600;font-size:14px;color:var(--paper,#f4ede3);text-decoration:underline;text-decoration-color:var(--rule-strong,rgba(244,237,227,.42));text-underline-offset:5px;transition:text-decoration-color .2s}.ds-tlink:hover{text-decoration-color:var(--dust,#dcaa78);color:var(--dust,#dcaa78)}.ds-tlink:focus-visible{outline:2px solid var(--dust,#dcaa78);outline-offset:3px}"
-    },
-    {
-      "name": "Header",
-      "kind": "nav",
-      "refersTo": "nav-link",
-      "description": "Fixed 64px bar; clear over the plate, void 92% with a hairline once past 60% of the viewport.",
-      "html": "<header class=\"ds-bar\"><a class=\"ds-bar-name\" href=\"#\">Sam Gabriel</a><nav><a class=\"ds-bar-link\" href=\"#\" aria-current=\"true\">Work</a><a class=\"ds-bar-link\" href=\"#\">About</a><a class=\"ds-bar-cta\" href=\"#\">Contact</a></nav></header>",
-      "css": ".ds-bar{display:flex;align-items:center;justify-content:space-between;height:64px;padding-inline:24px;background:rgba(7,11,24,.92);border-bottom:1px solid var(--rule,rgba(220,170,120,.2));color:var(--paper,#f4ede3)}.ds-bar nav{display:flex;align-items:center;gap:4px}.ds-bar-name{font-weight:500;font-stretch:112%;font-size:16px;letter-spacing:-.01em;color:inherit;text-decoration:none}.ds-bar-link{display:inline-flex;align-items:center;min-height:44px;padding-inline:12px;font-size:14px;color:var(--soft,#d9d1c6);text-decoration:none;transition:color .2s}.ds-bar-link:hover,.ds-bar-link[aria-current=true]{color:var(--paper,#f4ede3)}.ds-bar-cta{display:inline-flex;align-items:center;min-height:44px;padding-inline:18px;margin-left:8px;border:1px solid var(--rule-strong,rgba(244,237,227,.42));font-size:14px;font-weight:600;color:var(--paper,#f4ede3);text-decoration:none;transition:background-color .2s,color .2s}.ds-bar-cta:hover{background:var(--paper,#f4ede3);color:var(--void,#070b18)}"
     },
     {
       "name": "Field",
@@ -446,9 +514,9 @@
     {
       "name": "Release Caption",
       "kind": "custom",
-      "description": "Title, sentence-case meta below it, body, one mono stack line.",
+      "description": "Serif title, sentence-case meta below it, body, one mono stack line; an optional serif dust figure with its ratio.",
       "html": "<div class=\"ds-rel\"><h3>nbodyssey</h3><p class=\"meta\">N-body simulation · Jul 2026</p><p>A GPU galaxy-collision simulator built on a Barnes-Hut tree code.</p><p class=\"stack\">CUDA C++ · C++17 · CMake</p></div>",
-      "css": ".ds-rel{color:var(--paper,#f4ede3)}.ds-rel h3{font-weight:400;font-stretch:108%;font-size:clamp(2.5rem,4.4vw,4rem);line-height:.95;letter-spacing:-.035em;margin:0 0 12px}.ds-rel p{color:var(--soft,#d9d1c6);font-size:16px;line-height:1.65;max-width:50ch;margin:0}.ds-rel .meta{font-size:14px;color:var(--dim,#b3aba3);margin-bottom:16px}.ds-rel .stack{margin-top:20px;font-family:var(--font-martian),ui-monospace,monospace;font-size:13px;color:var(--dim,#b3aba3)}"
+      "css": ".ds-rel{color:var(--paper,#f4ede3)}.ds-rel h3{font-family:var(--font-serif),'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(2.75rem,4.8vw,4.5rem);line-height:.95;letter-spacing:-.01em;margin:0 0 12px}.ds-rel p{color:var(--soft,#d9d1c6);font-size:16px;line-height:1.65;max-width:50ch;margin:0}.ds-rel .meta{font-size:14px;color:var(--dim,#b3aba3);margin-bottom:16px}.ds-rel .stack{margin-top:20px;font-family:var(--font-martian),ui-monospace,monospace;font-size:13px;color:var(--dim,#b3aba3)}"
     },
     {
       "name": "Frame",
@@ -487,33 +555,65 @@
       "description": "Open to work: paper label, dust dot.",
       "html": "<span class=\"ds-status\">Open to work</span>",
       "css": ".ds-status{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-weight:600;font-size:15px;color:var(--paper,#f4ede3)}.ds-status::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--dust,#dcaa78)}"
+    },
+    {
+      "name": "Specimen Panel",
+      "kind": "card",
+      "refersTo": "specimen-panel",
+      "description": "The console panel: one release at a time on a void 84% floor, 22px radius, frame first at 12px radius. Arrives through a hexagon aperture.",
+      "html": "<div class=\"ds-panel\"><div class=\"ds-pframe\"></div><p class=\"ds-ptitle\">NovaSky</p><p class=\"ds-pmeta\">Desktop planetarium · Aug 2026</p><p class=\"ds-pstack\">TypeScript · Desktop · Astronomy</p></div>",
+      "css": ".ds-panel{width:22rem;padding:14px 14px 22px;border:1px solid rgba(220,170,120,.2);border-radius:22px;background:rgba(7,11,24,.84)}.ds-pframe{aspect-ratio:16/10;border-radius:12px;background:#0d1528;margin-bottom:20px}.ds-ptitle{font-family:var(--font-serif),'Instrument Serif',Georgia,serif;font-size:2.75rem;line-height:.95;color:#f4ede3;margin:0 8px 8px}.ds-pmeta{font-size:14px;color:#b3aba3;margin:0 8px 12px}.ds-pstack{font-family:var(--font-martian),'Martian Mono',ui-monospace,monospace;font-size:13px;color:#b3aba3;margin:0 8px}"
+    },
+    {
+      "name": "Narration",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The console's one line per project: type overline in dust mono, the first sentence in the serif. Hidden from assistive tech; the panel carries the caption.",
+      "html": "<div class=\"ds-cap\"><p class=\"ds-over\">Desktop planetarium</p><p class=\"ds-line\">The real sky above you, on any date, fully offline.</p></div>",
+      "css": ".ds-cap{text-align:center}.ds-over{font-family:var(--font-martian),'Martian Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.04em;color:#dcaa78;margin:0 0 10px}.ds-line{font-family:var(--font-serif),'Instrument Serif',Georgia,serif;font-size:2.2rem;line-height:1.12;max-width:36ch;margin:0 auto;color:#f4ede3;text-wrap:balance}"
+    },
+    {
+      "name": "Ratio",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "nbodyssey's 176× drawn out: one dot per tree-code step in the time brute force takes for one.",
+      "html": "<p class=\"ds-ratio\"><b>176<span>×</span></b><span class=\"ds-dots\"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></p>",
+      "css": ".ds-ratio{display:grid;grid-template-columns:auto 1fr;align-items:end;gap:20px;max-width:30rem}.ds-ratio b{font-family:var(--font-serif),'Instrument Serif',Georgia,serif;font-weight:400;font-size:3.5rem;line-height:1;color:#dcaa78}.ds-ratio b span{font-family:var(--font-martian),'Martian Mono',ui-monospace,monospace;font-size:.72em}.ds-dots{display:grid;grid-template-columns:repeat(auto-fill,5px);gap:3px;justify-content:end;padding-bottom:8px}.ds-dots i{width:5px;height:5px;border-radius:50%;background:#dcaa78}"
+    },
+    {
+      "name": "Timeline",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Record from 1024px: an axis drawn left to right, points alternating cards above and below, the last point \"Now\" filled with the only glow.",
+      "html": "<ol class=\"ds-tl\"><li><div><p class=\"ds-y\">2020 — 2022</p><p>Senior Secondary, CBSE</p></div></li><li><div><p class=\"ds-y\">2022 — 2026</p><p>B.Tech, CSE</p></div></li><li><div><p class=\"ds-y\">Jul — Aug 2025</p><p>Web Development Intern</p></div></li><li><div><p class=\"ds-y\">Now</p><p>Open to work</p></div></li></ol>",
+      "css": ".ds-tl{position:relative;display:grid;grid-template-columns:repeat(4,1fr);height:220px;list-style:none;margin:0;padding:0}.ds-tl::before{content:\"\";position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,rgba(244,237,227,.42),#dcaa78)}.ds-tl li{position:relative}.ds-tl li::before{content:\"\";position:absolute;left:50%;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;border:1px solid #dcaa78;background:#070b18}.ds-tl li:last-child::before{background:#dcaa78;box-shadow:0 0 14px rgba(220,170,120,.7)}.ds-tl div{position:absolute;left:6%;right:6%;text-align:center;color:#f4ede3;font-size:14px}.ds-tl li:nth-child(odd) div{bottom:calc(50% + 20px)}.ds-tl li:nth-child(even) div{top:calc(50% + 20px)}.ds-tl p{margin:0}.ds-y{font-family:var(--font-serif),'Instrument Serif',Georgia,serif;font-size:24px;color:#dcaa78}"
     }
   ],
   "narrative": {
-    "northStar": "The Image Release",
-    "overview": "Each project is published the way a telescope image is released: a plate, a title, a caption, the tools used, and credit at the end. One real image carries the whole page: the Webb Cosmic Cliffs. It plays as one loop, fixed behind the whole page. It is clear on the opening plate, then a void veil closes over it as the hero leaves and holds for the rest of the page while the image drifts slowly. The palette is taken from that image: a space-blue ground, cliff-dust gold as the single accent, and warm paper type. The interface stays quiet so the image and the work lead. Product truth lives in PRODUCT.md; this file covers only the visual system.\n\nThe system is quiet by the owner's decision. The opening plate holds only the image, the name, one role line, a status and two ways in. Captions are plain sentence case, set small and dim. Credits, filter data, coordinates and the clock all live in the footer. The page has two moving images: the backdrop loop, and the nbodyssey simulation playing in its own release frame. Sections are transparent over the backdrop, and the eight release plates run as one uninterrupted list. Structure comes from registration ticks and thin rules, never from cards, glow or rounding.\n\nMotion works like developing and aligning a plate. The opening image comes up from under-exposure while the name surfaces from its bottom edge; that is the one focal moment. Release frames open as they scroll into view, and their corner ticks travel in and lock. The backdrop drifts slowly along the cliffs. Reduced motion removes every spatial movement, and the page stays complete without it.",
+    "northStar": "The Observation Run",
+    "overview": "Each project is published the way a telescope image is released, and on a large screen the page runs like an observation: one continuous scene, a camera that moves to a target, a single narrated line, and an instrument panel that reads out what is there. One real image carries the whole page: the Webb Cosmic Cliffs, as a looping 3D flight fixed behind everything. It is clear on the opening plate, then a void veil closes over it and holds. The palette is taken from that image: a space-blue ground, cliff-dust gold as the one light, and warm paper type. Product truth lives in PRODUCT.md; this file covers only the visual system.\n\nTwo references shaped the current system, and neither is copied. The narrated scene comes from an interactive explainer: one persistent world, the camera moving between beats, one caption at a time. The voice comes from the owner's own lecture deck: a serif that speaks, a mono that measures, one italic word leaned on in the accent, framed specimen panels, and light reserved for what fires.\n\nThe opening plate stays quiet by the owner's decision: the image, the name, one role line, a status and two ways in. Credits, filter data, coordinates and the clock all live in the footer.",
     "keyCharacteristics": [
       "One real, credited moving image behind the whole page, veiled but never tinted.",
-      "Palette drawn from that image: space-blue void, paper type, dust gold as the one accent.",
-      "Archivo on the width axis: wide and light for titles, normal width for reading.",
-      "Sentence-case captions in dim text; mono only for stack lines, index numbers, figures and transport.",
-      "Square corners everywhere; frames marked by corner registration ticks.",
+      "Serif speaks (name, headings, project names, narration, figures); mono measures (numbers, stacks, chrome); Archivo reads (body and controls).",
+      "Dust gold is the one light: it marks what is active, chosen or firing, and nothing decorative.",
+      "On desktop the eight projects are one pinned scene: the camera pans the nebula from target to target.",
+      "The mark is SG punched into a plate, in binary. Notation, not illustration.",
       "Credits and extras gathered in the footer."
     ],
     "rules": [
       {
         "name": "The Filters Are Data Rule",
-        "body": "The six filter colours appear only as chips in a credit legend whose filters and credit are the real ones for the imagery shown. Today that is the footer's NIRCam legend. They never mark a project, a stack, a state or a decoration. This is load-bearing.",
+        "body": "The six filter colours appear only as chips in a credit legend whose filters and credit are the real ones for the imagery shown. They never mark a project, a stack, a state or a decoration. This is load-bearing.",
         "section": "colors"
       },
       {
-        "name": "The One Accent Rule",
-        "body": "Dust is the only accent. Selection, focus ring, status dot, the figure, link and index hover, and field focus are all dust. Paper stays the colour of type, ticks and the solid button. No other hue marks interaction.",
+        "name": "The Only What Fires Rule",
+        "body": "Dust marks what is active, chosen or firing: the section you are in, the target in view, the button that acts, the proof number, a signal going out. If nothing is happening, it stays paper and void. No other hue marks interaction.",
         "section": "colors"
       },
       {
         "name": "The Floor Not Tint Rule",
-        "body": "Imagery keeps its own hue. It may be veiled with void but never filtered darker, recoloured or duotoned outside the opening exposure. Type on imagery sits on a void floor. The hero floor (`.plate::before`) runs void 94% to 60% to clear over the bottom 62%, with a 55% top floor. Below the hero, the backdrop veil holds at 0.84. Contact adds a left-heavy horizontal floor (void 90% to 72% to 60%), and the footer has a flat void 80% floor.",
+        "body": "Imagery keeps its own hue. It may be veiled with void but never filtered darker, recoloured or duotoned outside the opening exposure. Type on imagery sits on a void floor. The hero floor runs void 94% to 60% to clear over the bottom 62%, with a 55% top floor and a soft radial floor (void 50%, ellipse 48% by 30% at 26% 64%) under the name. Below the hero, the backdrop veil holds at 0.84. The console's panel carries its own void 84% floor, contact a left-heavy horizontal floor, and the footer a flat void 80% floor.",
         "section": "colors"
       },
       {
@@ -523,17 +623,27 @@
       },
       {
         "name": "The Legibility Check Rule",
-        "body": "The veil is tuned so that dim text holds 4.5:1 over the moving video. Re-run the check after touching the veil opacity, its gradient or closing distance, the drift or scale, the section floors, or the dim token. Hide the text and pictures but keep the floors. Sample the brightest 16px block behind text at several scroll depths, on at least two runs with the video in different frames, and confirm dim stays at 4.5:1 or better (measured 4.93–5.11:1).",
+        "body": "Re-run the check after touching the veil, any floor, the backdrop's drift, scale or camera, or the text tokens. Hide the text, pictures and chart but keep the floors; for every visible text run, sample the brightest 16px block behind it; do it at the hero, the section head, every console beat, About, Contact and the footer, on two runs with the video in different frames. Last run (2026-09-24, camera zoom 1.2): paper 7.48:1, soft 4.90:1, dim 5.09:1 at worst; the italic dust \"Gabriel\" 3.15:1 at worst, which holds only because it is display-size (3:1 applies). Dim small text must stay at 4.5:1 or better.",
         "section": "colors"
       },
       {
+        "name": "The Serif Speaks, Mono Measures Rule",
+        "body": "The serif carries names, headings, narration, years and the proof number, because those are claims. The mono carries counts, stacks, numerals and chrome, because those are measurements. Archivo carries reading and controls. Don't set an argument in mono or a data series in the serif.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Leaned Word Rule",
+        "body": "A display line may set one word in italic dust (\"Sam *Gabriel*\"). Never two in one line, and never on a body line.",
+        "section": "typography"
+      },
+      {
         "name": "The Caption Below Rule",
-        "body": "No kicker or eyebrow sits above a heading. A release's meta line sits below its title, and captions follow the thing they caption. This is load-bearing.",
+        "body": "No kicker sits above a heading: a release's meta line sits below its title. The one sanctioned overline is the narration's type label, which sits above a caption line, not a heading.",
         "section": "typography"
       },
       {
         "name": "The Sentence Case Rule",
-        "body": "Captions, labels, dates and field labels are sentence case in Archivo or mono at 13–14px. They are never uppercase tracked mono. The single exception is the footer's credit heading.",
+        "body": "Captions, labels and dates are sentence case. The only uppercase tracked mono is the footer's \"Image credits\" heading and the console's chrome strip.",
         "section": "typography"
       },
       {
@@ -543,43 +653,40 @@
       },
       {
         "name": "The Credit Integrity Rule",
-        "body": "Credited personal names use non-breaking spaces (\"F.&nbsp;Summers\", \"G.&nbsp;Bacon\", \"E.&nbsp;Wright\") so an initial never wraps away from its surname.",
+        "body": "Credited personal names use non-breaking spaces (\"F.&nbsp;Summers\", \"G.&nbsp;Bacon\") so an initial never wraps away from its surname.",
         "section": "typography"
       },
       {
-        "name": "The No Glow Rule",
-        "body": "No box-shadow, text-shadow, blur halo or glow. Separation comes from rules, ticks and void floors.",
+        "name": "The Only Light Glows Rule",
+        "body": "No drop shadows on surfaces or type. One thing emits light, because it is the present moment: the timeline's \"now\" point (a 14px dust glow). The narration carries a void text-shadow (0 2px 24px, 80%), which is a floor, not a glow.",
         "section": "elevation"
       },
       {
         "name": "The Registration Tick Rule",
-        "body": "Framed media carries corner ticks outside its box, and nothing may clip them. Media sits in an inner `frame-media` layer that clips the picture but not the ticks, and the scan reveal ends at `clip-path: inset(-16px)` so the ticks stay visible. The ticks may travel in and lock (see Motion), but at rest they sit exactly 9px outside the corners. This is load-bearing.",
+        "body": "Framed media outside the console carries corner ticks outside its box, and nothing may clip them: media sits in an inner `frame-media` layer, and the scan reveal ends at `inset(-16px)`. Inside the console panel the ticks are hidden and the frame is rounded instead.",
         "section": "shapes"
       }
     ],
     "dos": [
-      "**Do** let the one opening loop carry the page: a fixed backdrop that is clear over the hero and held under a 0.84 veil beneath transparent sections, credited in the footer with names bound by non-breaking spaces.",
-      "**Do** re-run the dim-text contrast check (4.5:1 or better over the brightest 16px block, at every scroll depth) after any change to the veil, floors, drift or dim. Measure on more than one video frame.",
-      "**Do** keep the six filter colours inside the footer credit legend, beside the real filters of the credited image.",
-      "**Do** use dust as the one accent: selection, focus ring, status dot, the figure, link and index hover, field focus.",
-      "**Do** set captions in sentence case below the thing they caption: meta lines in 14px dim, stacks as one 13px mono line.",
-      "**Do** keep the opening plate to image, name, one role line, status, Contact, See the work and a quiet pause.",
-      "**Do** give every framed image corner registration ticks, and keep reveals from clipping them (end at `inset(-16px)`).",
-      "**Do** give every loop beside text a Pause/Play control. Load video only on screen, with motion welcome and on a capable connection, and let the WebP poster carry the frame otherwise.",
-      "**Do** keep controls at least 44px tall, action labels literal, and the name whole."
+      "let the one opening loop carry the page, credited in the footer.",
+      "re-run the legibility check after any change to the veil, floors, drift, camera or text tokens, on two video frames, and keep dim small text at 4.5:1 or better.",
+      "keep dust for what is active, chosen or firing.",
+      "let the serif speak and the mono measure.",
+      "keep the mark's bits exactly SG in ASCII.",
+      "keep controls at least 44px tall, action labels literal, and the name whole.",
+      "give every loop beside text a Pause/Play control, and pause any loop the page is hiding."
     ],
     "donts": [
-      "**Don't** put a kicker or eyebrow above any heading.",
-      "**Don't** use a filter colour as a UI accent, project marker, category colour, hover state or decoration.",
-      "**Don't** set captions or labels in uppercase tracked mono. The footer's credit heading is the only exception.",
-      "**Don't** put credits, coordinates, legends or instrument chrome on the opening plate.",
-      "**Don't** use cards, rounded corners, shadows or glow, and don't give sections opaque backgrounds that hide the backdrop. Floors are translucent void.",
-      "**Don't** add a second backdrop image or give a section its own picture. One image carries the page.",
-      "**Don't** lift or pulse the veil below the hero. Text over moving video keeps a constant floor.",
-      "**Don't** give anything other than the name a focal entrance, or move anything spatially under reduced motion.",
-      "**Don't** tint, duotone or recolour the imagery. Put a void floor under the type instead.",
-      "**Don't** use a centred-planet space hero or a dark card grid.",
-      "**Don't** give an action a metaphorical label (\"Transmit\", \"Launch\", \"Observe\")."
+      "put a kicker above a heading, or a second italic word in a display line.",
+      "use a filter colour anywhere but the credit legend.",
+      "put credits, coordinates, legends or instrument chrome on the opening plate.",
+      "add drop shadows or glow to surfaces or type. Only the timeline's \"now\" point glows.",
+      "round anything outside the three shape families, or give sections opaque backgrounds that hide the backdrop.",
+      "add a second backdrop image. One image carries the page.",
+      "lift or pulse the veil below the hero.",
+      "animate layout properties (width, height, margin, padding); move things with transform, opacity or clip-path.",
+      "tint, duotone or recolour the imagery. Put a void floor under the type instead.",
+      "give an action a metaphorical label (\"Transmit\", \"Launch\", \"Observe\")."
     ]
   }
 }

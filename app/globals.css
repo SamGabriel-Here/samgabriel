@@ -1,10 +1,11 @@
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------ *
- *  Release plates.                                                    *
- *  Real telescope imagery on a near-black ground, paper-white type,   *
- *  and the six Webb filter colours used only where a legend needs     *
- *  them. No cards, no glow: frames are registration ticks.            *
+ *  Release plates, run as an observation.                             *
+ *  One real telescope image behind a space-blue ground, paper type,   *
+ *  a serif that speaks and a mono that measures. Cliff dust is the    *
+ *  one light, only on what is active or firing; the six Webb filter   *
+ *  colours appear only in the credit legend. DESIGN.md has the rules. *
  * ------------------------------------------------------------------ */
 
 :root {
