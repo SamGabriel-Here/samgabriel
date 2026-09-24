@@ -793,6 +793,70 @@ body {
   animation-delay: var(--d, 0s);
 }
 
+/* the focal moment: the name surfaces out of the dust, bottom edge first,
+   while the plate behind it comes up from under-exposure */
+@keyframes surface {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(0.18em);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+.plate-name.enter {
+  animation: surface 1.3s var(--ease-out) both;
+  animation-delay: 0.5s;
+}
+
+/* registration lock: a plate's corner ticks travel in from outside the frame
+   and settle, like a plate being aligned on a light table */
+.frame::before,
+.frame::after {
+  transition:
+    transform 0.9s var(--ease-out) 0.25s,
+    opacity 0.5s ease-out 0.25s;
+}
+.develop:not(.seen) .frame::before {
+  transform: translate(-22px, -22px);
+  opacity: 0;
+}
+.develop:not(.seen) .frame::after {
+  transform: translate(22px, 22px);
+  opacity: 0;
+}
+/* arriving from the index replays the lock on the plate you landed on */
+@keyframes lockTL {
+  from {
+    transform: translate(-22px, -22px);
+    opacity: 0;
+  }
+}
+@keyframes lockBR {
+  from {
+    transform: translate(22px, 22px);
+    opacity: 0;
+  }
+}
+.frame.lock::before {
+  animation: lockTL 0.8s var(--ease-out);
+}
+.frame.lock::after {
+  animation: lockBR 0.8s var(--ease-out);
+}
+
+/* feedback: the post-send note arrives rather than pops */
+@keyframes noteIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.sent {
+  animation: noteIn 0.3s var(--ease-out);
+}
+
 /* releases develop as they reach the eye: content is visible by default, the
    class only adds the develop step once script confirms motion is welcome */
 .develop .frame {
@@ -807,13 +871,30 @@ body {
   clip-path: inset(-16px -16px -16px -16px);
 }
 
+@keyframes fadeOnly {
+  from {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
   .exposing video,
-  .enter {
+  .enter,
+  .plate-name.enter,
+  .frame.lock::before,
+  .frame.lock::after {
     animation: none !important;
+  }
+  .develop:not(.seen) .frame::before,
+  .develop:not(.seen) .frame::after {
+    transform: none;
+    opacity: 1;
+  }
+  .sent {
+    animation-name: fadeOnly;
   }
   .develop .frame,
   .develop:not(.seen) .frame {

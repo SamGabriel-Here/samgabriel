@@ -323,8 +323,25 @@ export function Develop() {
       el.classList.add("develop");
       io.observe(el);
     }
+    // arriving from the index: once the scroll settles, replay the lock on the
+    // plate that was chosen, so the eye knows where it landed
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const onIndex = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(".index a");
+      const frame = a ? document.querySelector<HTMLElement>(`${a.hash} .frame`) : null;
+      if (!frame) return;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        frame.classList.remove("lock");
+        void frame.offsetWidth; // restart the animation if it just ran
+        frame.classList.add("lock");
+      }, 650);
+    };
+    document.addEventListener("click", onIndex);
     return () => {
       io.disconnect();
+      document.removeEventListener("click", onIndex);
+      clearTimeout(timer);
       els.forEach((el) => el.classList.remove("develop", "seen"));
     };
   }, [motionOk]);
