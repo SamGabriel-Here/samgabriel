@@ -226,6 +226,10 @@ export default function Home() {
         Skip to content
       </a>
       <Backdrop />
+      <noscript>
+        {/* the veil is script-driven; without script it holds closed so text stays readable */}
+        <style>{`.backdrop-veil{opacity:.84}`}</style>
+      </noscript>
       <Header />
       <Develop />
 

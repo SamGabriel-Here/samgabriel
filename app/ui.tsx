@@ -62,9 +62,11 @@ export function Loop({
   control = true,
   controlSlot,
   small,
+  decorative = false,
 }: {
   src: string; // path without extension; .mp4 and .webp sit side by side
   small?: string; // a narrower .mp4 for phones, same poster
+  decorative?: boolean; // atmosphere only: no description is read out
   label: string;
   eager?: boolean;
   control?: boolean;
@@ -139,7 +141,7 @@ export function Loop({
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
       />
-      <span className="sr-only">{label}</span>
+      {!decorative && <span className="sr-only">{label}</span>}
       {control && load && <Transport slot={controlSlot} playing={playing} label={label} onToggle={toggle} />}
     </>
   );
@@ -219,6 +221,7 @@ export function Backdrop() {
         <Loop
           src="/cosmos/cosmic-cliffs"
           small="/cosmos/cosmic-cliffs-sm"
+          decorative
           label="The Cosmic Cliffs of the Carina Nebula, a 3D flight through the James Webb Space Telescope image"
           eager
           controlSlot="hero-transport"
@@ -416,12 +419,17 @@ export function ContactForm({ email }: { email: string }) {
   const [sent, setSent] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
+  const [missing, setMissing] = useState<string | null>(null);
   const statusRef = useRef<HTMLDivElement>(null);
 
   /* No backend: the form hands a drafted email to the visitor's mail app. It
      cannot know whether one opened, so it says so and offers the address. */
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    // `required` lets a field of spaces through; that would open an empty email
+    const gap = !name.trim() ? "your name" : !message.trim() ? "a message" : null;
+    setMissing(gap);
+    if (gap) return;
     const subject = encodeURIComponent(`Portfolio enquiry from ${name.trim()}`);
     window.location.href = `mailto:${email}?subject=${subject}&body=${encodeURIComponent(message)}`;
     setSent(true);
@@ -455,6 +463,11 @@ export function ContactForm({ email }: { email: string }) {
         />
       </label>
       <p className="form-note">This opens your email app with the message drafted, ready to send.</p>
+      {missing && (
+        <p className="form-error" role="alert">
+          Add {missing} first, then open the draft.
+        </p>
+      )}
       <button type="submit" className="btn btn-solid" style={{ width: "100%", justifyContent: "center" }}>
         Open email draft
       </button>
