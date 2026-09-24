@@ -358,17 +358,17 @@ export function Develop() {
 export function IndexPreview() {
   const fine = useMediaQuery("(hover: hover) and (pointer: fine)");
   const ref = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
+  // no <img> until a row has named a real still
+  const [src, setSrc] = useState<string | null>(null);
 
   useEffect(() => {
     const box = ref.current;
-    const img = imgRef.current;
     const wrap = box?.parentElement;
-    if (!fine || !box || !img || !wrap) return;
+    if (!fine || !box || !wrap) return;
     const show = (e: Event) => {
       const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(".index a");
       if (!a || !a.dataset.preview) return;
-      if (img.getAttribute("src") !== a.dataset.preview) img.src = a.dataset.preview;
+      setSrc(a.dataset.preview);
       // centre the plate on the row, kept inside the list
       const y = a.offsetTop + a.offsetHeight / 2 - box.offsetHeight / 2;
       const max = wrap.offsetHeight - box.offsetHeight;
@@ -393,8 +393,10 @@ export function IndexPreview() {
   if (!fine) return null;
   return (
     <div ref={ref} className="index-preview" data-on="false" aria-hidden="true">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img ref={imgRef} alt="" decoding="async" />
+      {src && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt="" decoding="async" />
+      )}
     </div>
   );
 }
