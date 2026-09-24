@@ -268,7 +268,7 @@ The whole page scrolls over one fixed backdrop, and every section is transparent
 
 - **Opening plate:** 100svh with no media of its own. It is a window onto the backdrop loop with only its text floor. Name, role line and action row (status, Contact, See the work) sit bottom-left, with clamp(40px, 8vh, 72px) of bottom padding. The pause control sits bottom-right on the same baseline. At 767px and below it moves to the top-right, 72px down, just under the header. Nothing else is on the plate.
 - **Section head:** the title on the left, a 32rem copy column on the right, bottom-aligned, closed by a hairline. It stacks at 767px and below.
-- **Index (table of contents):** each row is one link (number, name, type) at 3.5rem / 1fr / 1fr, baseline-aligned, with a hairline under each row. It collapses to number plus a stacked column at 767px and below. Live demo and Source links appear only on the plates.
+- **Index (table of contents):** each row is one link (number, name, type) at 3.5rem / 1fr / 1fr, baseline-aligned, with a hairline under each row. It collapses to number plus a stacked column at 767px and below. Live demo and Source links appear only on the plates. On a fine pointer, a preview plate (min(22rem, 26%) wide) floats at the right edge of the list.
 - **Release plate:** all eight run as one uninterrupted list after the index. Frame and caption sit at 7fr/5fr. Alternate releases flip the frame to the right. It stacks at 899px and below, and the frame always comes first.
 - **About:** two columns (Toolkit as a definition list with 8.5rem terms, Record as an ordered list), each row ruled at the top. It stacks at 899px; toolkit rows stack at 479px.
 - **Contact:** no image of its own. A left-heavy void floor sits over the held veil, with copy and channels left and a 30rem form right.
@@ -287,7 +287,7 @@ Flat surfaces, no shadows. Depth comes from the image behind the page. The **bac
 
 Every corner is square (0 radius), including inputs, which reset the platform rounding. The only round forms are the 8px dust status dot and the favicon's point of light. A frame is marked by two 22px L-shaped corner registration ticks in 1px paper, set 9px outside its top-left and bottom-right corners. The favicon repeats the tick pair around a paper dot. Filter chips are 9px squares.
 
-**The Registration Tick Rule.** Framed media carries corner ticks outside its box, and nothing may clip them. The develop reveal ends at `clip-path: inset(-16px)` so the ticks stay visible. The ticks may travel in and lock (see Motion), but at rest they sit exactly 9px outside the corners. This is load-bearing.
+**The Registration Tick Rule.** Framed media carries corner ticks outside its box, and nothing may clip them. Media sits in an inner `frame-media` layer that clips the picture but not the ticks, and the scan reveal ends at `clip-path: inset(-16px)` so the ticks stay visible. The ticks may travel in and lock (see Motion), but at rest they sit exactly 9px outside the corners. This is load-bearing.
 
 ## Components
 
@@ -303,8 +303,11 @@ Links are inline-flex, at least 44px tall with 12px inline padding, 600 weight a
 ### Index rows
 Each whole row is one link. The number is 12px mono dim, the name uses the index-name style, and the type is 15px dim. On hover the bottom rule strengthens to rule-strong and the name turns dust with a 1px underline at a 6px offset.
 
+### Index preview
+The preview is a single plate at the right of the index list: min(22rem, 26%) wide, 16:10, square, on a void-2 ground, with the project still set to object-fit cover. It carries no ticks, caption or border, and it is always a still. It renders only for a fine pointer that can hover. It follows the hovered or focused row, stays within the list, and is hidden from assistive tech.
+
 ### Cards / Containers
-There are no cards. The recurring container is the **frame**: 16:10, a void-2 resting fill, object-fit cover, with corner registration ticks. Lists and rows are separated by hairline rules only.
+There are no cards. The recurring container is the **frame**: 16:10 with a void-2 resting fill. Its media sits in an inner layer with overflow hidden, so the picture can move inside while the corner registration ticks stay outside, unclipped. Lists and rows are separated by hairline rules only.
 
 ### Release caption
 The title, then the meta line (14px dim, "type · date") directly below it, then the soft body. An optional figure block follows: one proof number in dust between two hairlines, with a mono line in paper saying what it measures. After that come the stack line (13px mono dim, "A · B · C"), then Live demo and Source. There are no labels and no chips.
@@ -329,11 +332,14 @@ All motion uses `cubic-bezier(0.16, 1, 0.3, 1)`.
 - **Opening exposure:** the backdrop video runs `expose` (brightness 0.25 and saturation 0.2 up to 1) over 2.4s.
 - **Focal moment:** while the exposure runs, the name surfaces from its bottom edge. Its clip-path goes from `inset(100% 0 0 0)` to `inset(0)` and it moves up from translateY(0.18em), over 1.3s after a 0.5s delay. This is the page's one headline motion, and it is reserved for the name.
 - **Supporting entrance:** the role line and action row rise 14px and fade in over 1s, at 0.45s and 0.6s delays.
-- **Develop:** releases below the fold open from `inset(3%)` and brightness 0.55 to `inset(-16px)` over 1.1–1.4s. They are visible by default, and the develop class is added only when script runs and motion is welcome.
+- **Scan reveal:** releases below the fold read out left to right, like a scan coming off the detector. The frame opens from `inset(0 100% 0 0)` at brightness 0.5 to `inset(-16px)` over 1.2s on `cubic-bezier(0.65, 0, 0.35, 1)`, with brightness returning over 1.6s. The tick lock follows. Releases are visible by default, and the develop class is added only when script runs and motion is welcome.
+- **Caption stagger:** the caption's children (title, meta, body, figure, stack, links) rise 12px and fade in after the scan, with delays starting at 0.35s in 70ms steps.
+- **Plate depth:** where `animation-timeline: view()` is supported and motion is welcome, framed images and video run `plateDepth` across the `cover` range: scale 1.08 while moving from translateY -3% to 3%. Elsewhere they stay static.
+- **Index preview:** on a fine pointer that can hover, hovering or focusing an index row shows that project's still in the preview plate. The plate glides to the row's centre (transform 0.45s ease-out), fades in (opacity 0.25s), is revealed from the top by clip-path, and grows from scale 0.96. It is decorative and hidden from assistive tech, and the rows remain the links.
 - **Registration lock:** until a release is seen, its ticks sit 22px outside their corners (top-left up and left, bottom-right down and right) and are transparent. On arrival they settle, with transform over 0.9s and opacity over 0.5s, both after 0.25s. Clicking an index row replays the lock (`lockTL`/`lockBR`, 0.8s) on the target plate 650ms later, once the scroll has settled, so the eye knows where it landed.
 - **Feedback:** the post-send note fades in and rises 6px over 0.3s.
 - **Drift:** the backdrop moves with scroll, as described in Elevation & Depth.
-- **Reduced motion:** exposure, surfacing, rising, develop, lock and drift are all off, and ticks rest in place. The post-send note keeps an opacity-only fade.
+- **Reduced motion:** exposure, surfacing, rising, scan, caption stagger, lock, plate depth and drift are all off, and captions and ticks rest in place. The index preview and the post-send note keep opacity-only fades.
 
 ## Do's and Don'ts
 
