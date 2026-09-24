@@ -122,7 +122,13 @@ const kit = [
   { k: "Tooling", v: "Git, GitHub, VS Code, CMake" },
 ];
 
+// oldest first: on wide screens it is drawn as a timeline that ends at now
 const record = [
+  {
+    when: "2020 — 2022",
+    what: "Senior Secondary, CBSE",
+    where: "Holy Family Convent School, Indore",
+  },
   {
     when: "2022 — 2026",
     what: "B.Tech, Computer Science & Engineering",
@@ -134,9 +140,9 @@ const record = [
     where: "InternPe, remote. Built responsive interfaces in HTML, CSS and JavaScript.",
   },
   {
-    when: "2020 — 2022",
-    what: "Senior Secondary, CBSE",
-    where: "Holy Family Convent School, Indore",
+    when: "Now",
+    what: "Open to work",
+    where: "Machine-learning and software engineering roles.",
   },
 ];
 
@@ -212,7 +218,14 @@ function ReleasePlate({ r, i }: { r: Release; i: number }) {
               {r.figure.value.replace("×", "")}
               {r.figure.value.includes("×") && <span className="x">×</span>}
             </b>
-            {r.figure.line}
+            {/* the ratio drawn out: one dot per tree-code step in the time brute force takes for one */}
+            <span className="ratio" aria-hidden="true">
+              {Array.from({ length: parseInt(r.figure.value, 10) || 0 }, (_, k) => (
+                <i key={k} style={{ "--i": k } as React.CSSProperties} />
+              ))}
+            </span>
+            <span className="figure-line">{r.figure.line}</span>
+            <span className="ratio-key">Each dot: one tree-code step per brute-force step.</span>
           </p>
         )}
         <p className="stack">{r.stack.join(" · ")}</p>
@@ -335,9 +348,11 @@ export default function Home() {
                 <ol className="record">
                   {record.map((r) => (
                     <li key={r.what}>
-                      <p className="when">{r.when}</p>
-                      <p className="what">{r.what}</p>
-                      <p className="where">{r.where}</p>
+                      <div className="rec-card">
+                        <p className="when">{r.when}</p>
+                        <p className="what">{r.what}</p>
+                        <p className="where">{r.where}</p>
+                      </div>
                     </li>
                   ))}
                 </ol>

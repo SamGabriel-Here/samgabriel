@@ -344,7 +344,7 @@ export function Develop() {
   const motionOk = useMotionOk();
   useEffect(() => {
     if (!motionOk) return;
-    const els = Array.from(document.querySelectorAll<HTMLElement>(".release"));
+    const els = Array.from(document.querySelectorAll<HTMLElement>(".release, .record"));
     const io = new IntersectionObserver(
       (es) => {
         for (const e of es) {
@@ -556,6 +556,8 @@ export function Depth({
       navRef.current?.querySelectorAll("li").forEach((li, i) => {
         li.dataset.active = String(i === n);
       });
+      // the arriving release plays its figure again
+      cards.forEach((c, i) => c.classList.toggle("is-on", i === n));
       capRef.current?.querySelectorAll<HTMLElement>(".cap").forEach((c, i) => {
         c.dataset.active = String(i === n);
       });
@@ -706,6 +708,7 @@ export function Depth({
       ["--cam-x", "--cam-y", "--cam-z"].forEach((v) => cam.style.removeProperty(v));
       cards.forEach((c) => {
         c.style.transform = c.style.opacity = c.style.visibility = c.style.pointerEvents = "";
+        c.classList.remove("is-on");
         const media = c.querySelector<HTMLElement>(".frame-media");
         if (media) media.style.clipPath = "";
       });
