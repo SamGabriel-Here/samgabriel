@@ -257,10 +257,54 @@ const NAV = [
   { id: "about", label: "About", small: false },
 ];
 
+/* The mark, carried over from the previous build. SG punched into a plate:
+   S is 01010011 and G is 01000111 in ASCII, the sixteen bits laid out in
+   reading order, and a lit hole is a one. It is notation, not illustration,
+   so never rebalance the bits for looks. The holes punch in as one wave,
+   hold, clear, and are read again. */
+const SG_BITS = "0101001101000111";
+
+export function PlateMark({ size = 22 }: { size?: number }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 40 40" className="plate-mark" width={size} height={size}>
+      <rect x="2.5" y="2.5" width="35" height="35" fill="none" stroke="currentColor" strokeOpacity="0.3" strokeWidth="0.9" />
+      {Array.from(SG_BITS).map((bit, i) => {
+        const cx = 8.5 + (i % 4) * 7.7;
+        const cy = 8.5 + Math.floor(i / 4) * 7.7;
+        return bit === "1" ? (
+          <circle key={i} className="bit-on" cx={cx} cy={cy} r={2.6} style={{ "--i": i } as React.CSSProperties} />
+        ) : (
+          <circle key={i} cx={cx} cy={cy} r={1.5} fill="none" stroke="currentColor" strokeOpacity="0.26" strokeWidth="0.8" />
+        );
+      })}
+    </svg>
+  );
+}
+
 export function Header() {
   const [solid, setSolid] = useState(false);
   const [active, setActive] = useState("");
   const barRef = useRef<HTMLElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const glideRef = useRef<HTMLSpanElement>(null);
+
+  // the glide: one soft pill that travels to the item under the pointer and
+  // otherwise rests on the section being read
+  const glideTo = useCallback((el: HTMLElement | null | undefined) => {
+    const g = glideRef.current;
+    if (!g) return;
+    if (!el) {
+      g.dataset.on = "false";
+      return;
+    }
+    g.style.width = `${el.offsetWidth}px`;
+    g.style.transform = `translateX(${el.offsetLeft}px)`;
+    g.dataset.on = "true";
+  }, []);
+  const rest = useCallback(() => {
+    glideTo(navRef.current?.querySelector<HTMLElement>('.bar-link[aria-current="true"]'));
+  }, [glideTo]);
+  useEffect(rest, [active, rest]);
 
   useEffect(() => {
     let raf = 0;
@@ -311,21 +355,35 @@ export function Header() {
     >
       <div className="wrap bar-in">
         <a href="#top" className="bar-name">
-          Sam Gabriel
+          <PlateMark />
+          <span>
+            Sam <em>Gabriel</em>
+          </span>
         </a>
-        <nav aria-label="Sections">
-          {NAV.map((n) => (
+        <nav ref={navRef} className="bar-nav" aria-label="Sections" onPointerLeave={rest} onBlur={rest}>
+          <span ref={glideRef} className="bar-glide" data-on="false" aria-hidden="true" />
+          {NAV.map((n, i) => (
             <a
               key={n.id}
               href={`#${n.id}`}
               className={`bar-link${n.small ? "" : " hide-sm"}`}
               aria-current={active === n.id ? "true" : undefined}
+              onPointerEnter={(e) => glideTo(e.currentTarget)}
+              onFocus={(e) => glideTo(e.currentTarget)}
             >
+              <span className="bar-no" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
               {n.label}
             </a>
           ))}
           <a href="#contact" className="bar-cta" aria-current={active === "contact" ? "true" : undefined}>
+            {/* the one lit thing in the bar: a signal that goes out now and then */}
+            <i className="bar-ping" aria-hidden="true" />
             Contact
+            <span className="bar-arrow" aria-hidden="true">
+              →
+            </span>
           </a>
         </nav>
       </div>

@@ -1,4 +1,4 @@
-import { Backdrop, ClockIST, ContactForm, Depth, Develop, Header, IndexPreview, Loop } from "./ui";
+import { Backdrop, ClockIST, ContactForm, Depth, Develop, Header, IndexPreview, Loop, PlateMark } from "./ui";
 
 /* ------------------------------------------------------------------ *
  *  Content                                                            *
@@ -393,7 +393,10 @@ export default function Home() {
       <footer className="foot">
         <div className="wrap foot-grid">
           <div>
-            <p style={{ fontWeight: 500 }}>Sam Gabriel</p>
+            <p className="foot-name">
+              <PlateMark size={18} />
+              Sam Gabriel
+            </p>
             <p className="foot-note">
               Indore, India · 22.72°N 75.86°E · <ClockIST /> · © 2026
             </p>

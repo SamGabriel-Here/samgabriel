@@ -1,6 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
-  <!-- A plate's registration ticks around one point of light. -->
-  <rect width="40" height="40" fill="#05070d"/>
-  <path d="M7 15V7h8M33 25v8h-8" fill="none" stroke="#f4f1ea" stroke-width="2.4"/>
-  <circle cx="20" cy="20" r="3.4" fill="#f4f1ea"/>
+  <!-- SG punched into a plate, carried over from the previous build. S = 01010011,
+       G = 01000111, sixteen bits in reading order; a lit hole is a one. -->
+  <rect width="40" height="40" fill="#070b18"/>
+  <rect x="2.5" y="2.5" width="35" height="35" fill="none" stroke="#f4ede3" stroke-opacity=".3" stroke-width=".9"/>
+  <g fill="none" stroke="#f4ede3" stroke-opacity=".26" stroke-width=".8">
+    <circle cx="8.5" cy="8.5" r="1.5"/>
+    <circle cx="23.9" cy="8.5" r="1.5"/>
+    <circle cx="8.5" cy="16.2" r="1.5"/>
+    <circle cx="16.2" cy="16.2" r="1.5"/>
+    <circle cx="8.5" cy="23.9" r="1.5"/>
+    <circle cx="23.9" cy="23.9" r="1.5"/>
+    <circle cx="31.6" cy="23.9" r="1.5"/>
+    <circle cx="8.5" cy="31.6" r="1.5"/>
+  </g>
+  <g fill="#dcaa78">
+    <circle cx="16.2" cy="8.5" r="2.6"/>
+    <circle cx="31.6" cy="8.5" r="2.6"/>
+    <circle cx="23.9" cy="16.2" r="2.6"/>
+    <circle cx="31.6" cy="16.2" r="2.6"/>
+    <circle cx="16.2" cy="23.9" r="2.6"/>
+    <circle cx="16.2" cy="31.6" r="2.6"/>
+    <circle cx="23.9" cy="31.6" r="2.6"/>
+    <circle cx="31.6" cy="31.6" r="2.6"/>
+  </g>
 </svg>
