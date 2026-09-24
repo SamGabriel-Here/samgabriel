@@ -194,7 +194,15 @@ export function Backdrop() {
       const y = window.scrollY;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const p = max > 0 ? Math.min(1, y / max) : 0;
-      if (motionOk) img.style.transform = `translate3d(0, ${(-p * 6).toFixed(2)}%, 0) scale(1.1)`;
+      // leaving the hero flies into the nebula: the image pushes in while the
+      // hero's type lifts away; after that only the slow drift remains
+      const hp = Math.min(1, y / window.innerHeight);
+      if (motionOk) {
+        img.style.transform = `translate3d(0, ${(-p * 6).toFixed(2)}%, 0) scale(${(1.1 + hp * 0.28).toFixed(3)})`;
+        document.documentElement.style.setProperty("--hp", hp.toFixed(3));
+      } else {
+        document.documentElement.style.removeProperty("--hp");
+      }
       // clear over the hero, closing as its type leaves, then held: text over a
       // moving image needs a constant floor (measured: dim text >= 4.5:1)
       const enter = Math.min(1, y / (window.innerHeight * 0.85));
@@ -242,13 +250,21 @@ const NAV = [
 export function Header() {
   const [solid, setSolid] = useState(false);
   const [active, setActive] = useState("");
+  const barRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     let raf = 0;
+    let last = window.scrollY;
     const update = () => {
       raf = 0;
+      const y = window.scrollY;
       // clear over the plate, solid once the plate's type is behind it
-      setSolid(window.scrollY > window.innerHeight * 0.6);
+      setSolid(y > window.innerHeight * 0.6);
+      // tuck away while reading down, come back on any move up
+      if (Math.abs(y - last) > 6 && barRef.current) {
+        barRef.current.dataset.hidden = y > last && y > window.innerHeight ? "true" : "false";
+        last = y;
+      }
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -274,7 +290,15 @@ export function Header() {
   }, []);
 
   return (
-    <header className="bar" data-solid={solid}>
+    <header
+      ref={barRef}
+      className="bar"
+      data-solid={solid}
+      data-hidden="false"
+      onFocusCapture={() => {
+        if (barRef.current) barRef.current.dataset.hidden = "false";
+      }}
+    >
       <div className="wrap bar-in">
         <a href="#top" className="bar-name">
           Sam Gabriel
@@ -404,6 +428,177 @@ export function IndexPreview() {
         <img src={src} alt="" decoding="async" />
       )}
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ *  Rail: the releases pin and travel sideways with the scroll         *
+ * ------------------------------------------------------------------ */
+
+/* Wide, tall screens with motion welcome only; everyone else keeps the list.
+   The CSS pins only while .is-pinned is on, so nothing can pin a track that
+   nothing moves. One rect read and one transform write per frame. */
+const RAIL_QUERY = "(min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)";
+
+export function Rail({ count, children }: { count: number; children: React.ReactNode }) {
+  const pinned = useMediaQuery(RAIL_QUERY);
+  const railRef = useRef<HTMLDivElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const countRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const rail = railRef.current;
+    const pin = pinRef.current;
+    const track = trackRef.current;
+    if (!pinned || !rail || !pin || !track) return;
+    rail.classList.add("is-pinned");
+    let raf = 0;
+    let travel = 0;
+
+    const measure = () => {
+      track.style.setProperty("--travel", "0");
+      const left = track.getBoundingClientRect().left - pin.getBoundingClientRect().left;
+      // end with the same margin the track starts with
+      travel = Math.max(0, track.scrollWidth + left * 2 - pin.clientWidth);
+      rail.style.height = `${window.innerHeight + travel}px`;
+    };
+    const update = () => {
+      raf = 0;
+      const span = rail.offsetHeight - window.innerHeight;
+      const p = span > 0 ? Math.min(1, Math.max(0, -rail.getBoundingClientRect().top / span)) : 0;
+      track.style.setProperty("--travel", (p * travel).toFixed(1));
+      if (countRef.current) {
+        const n = Math.min(count, Math.round(p * (count - 1)) + 1);
+        countRef.current.textContent = `${String(n).padStart(2, "0")} / ${String(count).padStart(2, "0")}`;
+      }
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    const onResize = () => {
+      measure();
+      update();
+    };
+    // scroll the page (not the clipped box) so a release is in the frame
+    const goTo = (card: HTMLElement, smooth: boolean) => {
+      const span = rail.offsetHeight - window.innerHeight;
+      if (travel <= 0 || span <= 0) return;
+      const t = Math.min(travel, Math.max(0, card.offsetLeft));
+      const railTop = rail.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: railTop + (t / travel) * span, behavior: smooth ? "smooth" : "auto" });
+    };
+    const onFocus = (e: FocusEvent) => {
+      const card = (e.target as HTMLElement | null)?.closest<HTMLElement>(".release");
+      if (card) goTo(card, false);
+    };
+    const onIndex = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(".index a");
+      const card = a ? track.querySelector<HTMLElement>(a.hash) : null;
+      if (!card) return;
+      e.preventDefault();
+      goTo(card, true);
+    };
+
+    measure();
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    track.addEventListener("focusin", onFocus);
+    document.addEventListener("click", onIndex);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      track.removeEventListener("focusin", onFocus);
+      document.removeEventListener("click", onIndex);
+      cancelAnimationFrame(raf);
+      rail.classList.remove("is-pinned");
+      rail.style.height = "";
+      track.style.removeProperty("--travel");
+    };
+  }, [pinned, count]);
+
+  return (
+    <div ref={railRef} className="rail">
+      <div ref={pinRef} className="rail-pin">
+        <div className="wrap">
+          <div ref={trackRef} className="rail-track">
+            {children}
+          </div>
+        </div>
+        <p ref={countRef} className="rail-count" aria-hidden="true" />
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ *  Reticle: a finder scope for the pointer                           *
+ * ------------------------------------------------------------------ */
+
+/* The sight tracks the pointer exactly; the ring trails a little and locks
+   gold over anything you can act on. Fine pointers with motion welcome only:
+   touch, coarse pointers and reduced motion keep their own cursor. */
+export function Reticle() {
+  const on = useMediaQuery("(pointer: fine) and (prefers-reduced-motion: no-preference)");
+  const ringRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ring = ringRef.current;
+    const dot = dotRef.current;
+    if (!on || !ring || !dot) return;
+    const root = document.documentElement;
+    root.classList.add("reticle-on");
+    let tx = innerWidth / 2;
+    let ty = innerHeight / 2;
+    let x = tx;
+    let y = ty;
+    let raf = 0;
+    const step = () => {
+      x += (tx - x) * 0.2;
+      y += (ty - y) * 0.2;
+      ring.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      raf = Math.abs(tx - x) < 0.2 && Math.abs(ty - y) < 0.2 ? 0 : requestAnimationFrame(step);
+    };
+    const move = (e: PointerEvent) => {
+      tx = e.clientX;
+      ty = e.clientY;
+      dot.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+      ring.dataset.awake = dot.dataset.awake = "true";
+      if (!raf) raf = requestAnimationFrame(step);
+    };
+    const over = (e: PointerEvent) => {
+      const hit = (e.target as HTMLElement | null)?.closest("a, button, input, textarea, label");
+      ring.dataset.lock = hit ? "true" : "false";
+    };
+    const leave = () => {
+      ring.dataset.awake = dot.dataset.awake = "false";
+    };
+    window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointerover", over, { passive: true });
+    document.addEventListener("mouseleave", leave);
+    return () => {
+      root.classList.remove("reticle-on");
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerover", over);
+      document.removeEventListener("mouseleave", leave);
+      cancelAnimationFrame(raf);
+      leave();
+    };
+  }, [on]);
+
+  if (!on) return null;
+  return (
+    <>
+      <div ref={ringRef} className="reticle" data-awake="false" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <i />
+      </div>
+      <div ref={dotRef} className="reticle-dot" data-awake="false" aria-hidden="true" />
+    </>
   );
 }
 

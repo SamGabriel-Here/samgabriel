@@ -1,4 +1,4 @@
-import { Backdrop, ClockIST, ContactForm, Develop, Header, IndexPreview, Loop } from "./ui";
+import { Backdrop, ClockIST, ContactForm, Develop, Header, IndexPreview, Loop, Rail, Reticle } from "./ui";
 
 /* ------------------------------------------------------------------ *
  *  Content                                                            *
@@ -232,13 +232,24 @@ export default function Home() {
       </noscript>
       <Header />
       <Develop />
+      <Reticle />
 
       <main id="main" tabIndex={-1}>
         {/* ---------- opening plate: the image, the name, one way in ---------- */}
         <section className="plate" id="top" aria-label="Introduction">
           <div className="wrap plate-foot">
-            <h1 className="plate-name enter" style={{ "--d": "0.25s" } as React.CSSProperties}>
-              Sam Gabriel
+            {/* letters cascade in, grouped by word so the name never breaks inside one */}
+            <h1 className="plate-name" aria-label="Sam Gabriel">
+              {["Sam", "Gabriel"].map((w, wi) => (
+                <span key={w} className="word" aria-hidden="true">
+                  {Array.from(w).map((c, ci) => (
+                    <span key={ci} className="char" style={{ "--c": wi * 4 + ci } as React.CSSProperties}>
+                      {c}
+                    </span>
+                  ))}
+                  {wi === 0 ? " " : null}
+                </span>
+              ))}
             </h1>
             <p className="plate-role enter" style={{ "--d": "0.45s" } as React.CSSProperties}>
               Machine-learning and software engineer in Indore, building the instruments behind hard problems.
@@ -281,10 +292,14 @@ export default function Home() {
             </ol>
             </div>
 
+          </div>
+
+          {/* on wide screens the releases pin and travel sideways with the scroll */}
+          <Rail count={releases.length}>
             {releases.map((r, i) => (
               <ReleasePlate key={r.name} r={r} i={i} />
             ))}
-          </div>
+          </Rail>
         </section>
 
         {/* ---------- about ---------- */}

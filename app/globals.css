@@ -143,6 +143,15 @@ body {
   transition: background-color 0.4s var(--ease-out), border-color 0.4s var(--ease-out);
   border-bottom: 1px solid transparent;
 }
+.bar {
+  transition:
+    background-color 0.4s var(--ease-out),
+    border-color 0.4s var(--ease-out),
+    transform 0.45s var(--ease-out);
+}
+.bar[data-hidden="true"] {
+  transform: translate3d(0, -100%, 0);
+}
 .bar[data-solid="true"] {
   background: rgba(var(--void-rgb), 0.92);
   border-bottom-color: var(--rule);
@@ -254,6 +263,28 @@ body {
 }
 .plate-foot {
   padding-bottom: clamp(40px, 8vh, 72px);
+  transform: translate3d(0, calc(var(--hp, 0) * -80px), 0);
+  opacity: calc(1 - var(--hp, 0) * 1.6);
+}
+.hero-transport {
+  opacity: calc(1 - var(--hp, 0) * 2);
+}
+/* the name arrives letter by letter; words stay whole */
+.plate-name .word {
+  display: inline-block;
+  white-space: pre;
+}
+.plate-name .char {
+  display: inline-block;
+  animation: charIn 0.9s var(--ease-out) both;
+  animation-delay: calc(0.45s + var(--c) * 45ms);
+}
+@keyframes charIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.35em, 0);
+    filter: blur(8px);
+  }
 }
 .plate-name {
   font-weight: 300;
@@ -587,6 +618,135 @@ body {
   margin-left: -12px;
 }
 
+/* ---------- the rail: releases pinned and travelling sideways ---------- */
+.rail-count {
+  display: none;
+}
+.rail.is-pinned .rail-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  overflow: clip;
+}
+.rail.is-pinned .rail-track {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(40px, 5vw, 88px);
+  width: max-content;
+  transform: translate3d(calc(var(--travel, 0) * -1px), 0, 0);
+  will-change: transform;
+}
+.rail.is-pinned .release {
+  display: block;
+  flex: 0 0 clamp(24rem, 34vw, 36rem);
+  padding: 0;
+  border: 0;
+}
+.rail.is-pinned .release .frame {
+  margin-bottom: 28px;
+}
+.rail.is-pinned .release h3 {
+  font-size: clamp(2rem, 3vw, 2.75rem);
+}
+.rail.is-pinned .release p {
+  font-size: 15px;
+}
+.rail.is-pinned .rail-count {
+  display: block;
+  position: absolute;
+  left: var(--gutter);
+  bottom: clamp(20px, 4vh, 40px);
+  font-family: var(--font-martian), ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--dim);
+}
+
+/* ---------- the reticle: a finder scope for the pointer ---------- */
+.reticle-on,
+.reticle-on * {
+  cursor: none;
+}
+.reticle {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 80;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 1px solid rgba(244, 237, 227, 0.55);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.3s,
+    width 0.25s var(--ease-out),
+    height 0.25s var(--ease-out),
+    margin 0.25s var(--ease-out),
+    border-color 0.2s;
+}
+.reticle i {
+  position: absolute;
+  background: rgba(244, 237, 227, 0.6);
+}
+.reticle i:nth-child(1),
+.reticle i:nth-child(2) {
+  left: 50%;
+  width: 1px;
+  height: 6px;
+}
+.reticle i:nth-child(1) {
+  top: -8px;
+}
+.reticle i:nth-child(2) {
+  bottom: -8px;
+}
+.reticle i:nth-child(3),
+.reticle i:nth-child(4) {
+  top: 50%;
+  height: 1px;
+  width: 6px;
+}
+.reticle i:nth-child(3) {
+  left: -8px;
+}
+.reticle i:nth-child(4) {
+  right: -8px;
+}
+.reticle[data-awake="true"],
+.reticle-dot[data-awake="true"] {
+  opacity: 1;
+}
+.reticle[data-lock="true"] {
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-color: var(--dust);
+}
+.reticle[data-lock="true"] i {
+  background: var(--dust);
+}
+.reticle-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 81;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: var(--dust);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
 /* pause control on every loop that runs beside text (WCAG 2.2.2) */
 .playback {
   position: absolute;
@@ -822,22 +982,6 @@ body {
   animation-delay: var(--d, 0s);
 }
 
-/* the focal moment: the name surfaces out of the dust, bottom edge first,
-   while the plate behind it comes up from under-exposure */
-@keyframes surface {
-  from {
-    clip-path: inset(100% 0 0 0);
-    transform: translateY(0.18em);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-    transform: none;
-  }
-}
-.plate-name.enter {
-  animation: surface 1.3s var(--ease-out) both;
-  animation-delay: 0.5s;
-}
 
 /* registration lock: a plate's corner ticks travel in from outside the frame
    and settle, like a plate being aligned on a light table */
@@ -943,12 +1087,16 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .bar,
+  .bar[data-hidden="true"] {
+    transform: none;
+  }
   html {
     scroll-behavior: auto;
   }
   .exposing video,
   .enter,
-  .plate-name.enter,
+  .plate-name .char,
   .frame.lock::before,
   .frame.lock::after {
     animation: none !important;
