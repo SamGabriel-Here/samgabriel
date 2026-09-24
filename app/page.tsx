@@ -1,4 +1,4 @@
-import { ClockIST, ContactForm, Develop, Header, Loop } from "./ui";
+import { Backdrop, ClockIST, ContactForm, Develop, Header, Loop } from "./ui";
 
 /* ------------------------------------------------------------------ *
  *  Content                                                            *
@@ -223,6 +223,7 @@ export default function Home() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
+      <Backdrop />
       <Header />
       <Develop />
 
@@ -280,23 +281,8 @@ export default function Home() {
               ))}
             </ol>
 
-            {releases.slice(0, 4).map((r, i) => (
+            {releases.map((r, i) => (
               <ReleasePlate key={r.name} r={r} i={i} />
-            ))}
-          </div>
-
-          <figure className="interstitial" style={{ margin: 0 }}>
-            <div className="plate-media">
-              <Loop src="/cosmos/blackhole-approach" label="A NASA visualization of approaching a black hole" />
-            </div>
-            <figcaption className="wrap interstitial-cap">
-              <p className="t">Approaching a black hole</p>
-            </figcaption>
-          </figure>
-
-          <div className="wrap">
-            {releases.slice(4).map((r, i) => (
-              <ReleasePlate key={r.name} r={r} i={i + 4} />
             ))}
           </div>
         </section>
@@ -344,10 +330,6 @@ export default function Home() {
 
         {/* ---------- contact ---------- */}
         <section className="contact" id="contact" aria-labelledby="contact-h">
-          <div className="plate-media">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/cosmos/apollo13-moon.webp" alt="" loading="lazy" decoding="async" />
-          </div>
           <div className="wrap contact-grid">
             <div>
               <h2 className="h2" id="contact-h">
@@ -397,10 +379,7 @@ export default function Home() {
                 </span>
               ))}
             </div>
-            <p>
-              Approaching a black hole: NASA/JPL-Caltech, visualization R.&nbsp;Hurt (IPAC). Contact: the Moon&apos;s
-              far side as seen by Apollo 13, NASA SVS (E.&nbsp;Wright) from Lunar Reconnaissance Orbiter data.
-            </p>
+            <p>The same image carries the page behind every section.</p>
             <p>NASA media is used under NASA&apos;s media guidelines and implies no endorsement.</p>
           </div>
         </div>

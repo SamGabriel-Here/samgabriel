@@ -23,7 +23,7 @@ Memorable moment: the first viewport reads as a real telescope image release wit
 
 THESIS: The portfolio as a telescope image release: every project published as a plate with caption, instruments and credit. Refuses the centred-planet space template and the dark card grid.
 
-OWN-WORLD: Real NASA/Webb imagery full-bleed on near-black #05070d; paper-white type; Archivo wide-light display, sentence-case captions; six Webb filter colours only in the footer credit legend; corner registration ticks; no cards, no glow. Quiet by owner decision (2026-09-24): two loops, credits and extras at the end.
+OWN-WORLD: The opening Cosmic Cliffs image carries the whole page: it sits fixed behind every section, dimmed and drifting, lifting again at the close. Space-blue ground #070b18; cliff-dust gold #dcaa78 as the one accent; paper type; Archivo wide-light display, sentence-case captions; Webb filter colours only in the footer credit legend; registration ticks; no cards, no glow. Two loops: the hero and the nbodyssey frame.
 
 STORY: The visitor sees the cosmos, reads Sam's name as the release title, gets role and open-to-work in one line, scans releases carrying proof, then contacts.
 

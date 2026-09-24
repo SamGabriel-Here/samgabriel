@@ -10,16 +10,19 @@
 :root {
   color-scheme: dark;
 
-  /* ground */
-  --void: #05070d;
-  --void-2: #0b0e17;
+  /* ground: the deep space of the Cosmic Cliffs, not a neutral black */
+  --void: #070b18;
+  --void-2: #0d1528;
 
-  /* type, verified on --void: paper 17.9:1, soft 12.4:1, dim 7.6:1 */
-  --paper: #f4f1ea;
-  --soft: #d8d6d0;
-  --dim: #a9aab3;
-  --rule: rgba(244, 241, 234, 0.18);
-  --rule-strong: rgba(244, 241, 234, 0.4); /* interactive edges, 3:1+ */
+  /* sampled from the opening image: cliff dust in starlight, the one accent */
+  --dust: #dcaa78; /* 9.4:1 on void */
+
+  /* type */
+  --paper: #f4ede3;
+  --soft: #d9d1c6;
+  --dim: #b3aba3; /* held above 4.5:1 over the brightest backdrop block */
+  --rule: rgba(220, 170, 120, 0.2); /* warm, decorative */
+  --rule-strong: rgba(244, 237, 227, 0.42); /* interactive edges, 3:1+ */
 
   /* Webb NIRCam filters, short to long wavelength. Legend chips only. */
   --f090: #4d86ff;
@@ -29,7 +32,7 @@
   --f444: #f08a3c;
   --f470: #e3563a;
 
-  --void-rgb: 5, 7, 13;
+  --void-rgb: 7, 11, 24;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   --gutter: clamp(20px, 4vw, 44px);
@@ -45,6 +48,30 @@ html {
   scroll-padding-top: 72px;
 }
 
+/* ---------- the backdrop: the opening image behind the whole page ---------- */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  background: var(--void);
+  pointer-events: none;
+}
+.backdrop-img {
+  position: absolute;
+  inset: -4%;
+  background: url("/cosmos/cosmic-cliffs.webp") center 60% / cover no-repeat;
+  filter: brightness(0.72) saturate(1);
+  transform: scale(1.18);
+  will-change: transform;
+}
+.backdrop-veil {
+  position: absolute;
+  inset: 0;
+  opacity: 0.78;
+  background: linear-gradient(180deg, var(--void) 0%, rgba(var(--void-rgb), 0.9) 45%, var(--void) 100%);
+}
+
 body {
   background: var(--void);
   color: var(--paper);
@@ -54,12 +81,12 @@ body {
 }
 
 ::selection {
-  background: var(--paper);
+  background: var(--dust);
   color: var(--void);
 }
 
 *:focus-visible {
-  outline: 2px solid var(--paper);
+  outline: 2px solid var(--dust);
   outline-offset: 3px;
 }
 
@@ -275,7 +302,7 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--paper);
+  background: var(--dust);
 }
 .btn {
   display: inline-flex;
@@ -370,6 +397,7 @@ body {
   border-bottom-color: var(--rule-strong);
 }
 .index a:hover .nm {
+  color: var(--dust);
   text-decoration: underline;
   text-underline-offset: 6px;
   text-decoration-thickness: 1px;
@@ -412,8 +440,8 @@ body {
   transition: text-decoration-color 0.2s, color 0.2s;
 }
 .tlink:hover {
-  text-decoration-color: var(--paper);
-  color: var(--paper);
+  text-decoration-color: var(--dust);
+  color: var(--dust);
 }
 
 /* ---------- a release: plate plus caption ---------- */
@@ -502,7 +530,7 @@ body {
   font-size: clamp(2.5rem, 4vw, 3.5rem);
   line-height: 1;
   letter-spacing: -0.03em;
-  color: var(--paper);
+  color: var(--dust);
   margin-bottom: 6px;
 }
 .release .figure .x {
@@ -548,37 +576,6 @@ body {
 }
 .playback:hover {
   border-color: var(--paper);
-}
-
-/* ---------- interstitial plates: the cosmos between chapters ---------- */
-.interstitial {
-  position: relative;
-  height: min(70vh, 48rem);
-  min-height: 360px;
-  overflow: hidden;
-  isolation: isolate;
-}
-.interstitial .plate-media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to top, rgba(var(--void-rgb), 0.9) 0, transparent 40%),
-    linear-gradient(to bottom, var(--void) 0, transparent 14%);
-}
-.interstitial-cap {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: clamp(24px, 5vh, 44px);
-}
-.interstitial-cap .t {
-  font-weight: 300;
-  font-stretch: 112%;
-  font-size: clamp(1.5rem, 2.4vw, 2rem);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: var(--soft);
 }
 
 /* ---------- about ---------- */
@@ -655,12 +652,13 @@ body {
   overflow: hidden;
   padding-block: clamp(96px, 16vh, 180px);
 }
-.contact .plate-media::after {
+.contact::before {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: -1;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(var(--void-rgb), 0.97) 0, rgba(var(--void-rgb), 0.88) 52%, rgba(var(--void-rgb), 0.55) 100%);
+  background: linear-gradient(90deg, rgba(var(--void-rgb), 0.9) 0, rgba(var(--void-rgb), 0.72) 55%, rgba(var(--void-rgb), 0.35) 100%);
 }
 .contact-grid {
   display: grid;
@@ -715,7 +713,7 @@ body {
 .field input:focus,
 .field textarea:focus {
   outline: none;
-  border-color: var(--paper);
+  border-color: var(--dust);
 }
 .field input::placeholder,
 .field textarea::placeholder {
@@ -733,6 +731,8 @@ body {
 .foot {
   border-top: 1px solid var(--rule);
   padding-block: 48px 64px;
+  /* the image lifts behind the close; the small print keeps its own floor */
+  background: rgba(var(--void-rgb), 0.8);
 }
 .foot-grid {
   display: grid;

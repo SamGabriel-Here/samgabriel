@@ -17,7 +17,7 @@ Eight projects with public source, five of them live. An index at the top of the
 works as a table of contents. Below it, each project gets a plate with a capture of the thing running,
 because a reader cannot clone and build a CUDA simulator to see whether it works.
 
-![The project index and the first plates: nbodyssey with its benchmark, and NovaSky](docs/screenshot-releases.jpg)
+![The project index, with the Cosmic Cliffs carried behind it](docs/screenshot-releases.jpg)
 
 The one performance figure on the site is nbodyssey's: the Barnes-Hut tree code ran
 176 times faster than brute force at one million particles on a single Tesla T4. It is
@@ -38,13 +38,16 @@ the only benchmark quoted and it is not rounded.
 All of it is real and credited on the page:
 
 - Cosmic Cliffs 3D flight: NASA, ESA, CSA, STScI (F. Summers, G. Bacon)
-- Approaching a black hole: NASA/JPL-Caltech (R. Hurt, IPAC)
-- Apollo 13 view of the Moon (a still behind Contact): NASA SVS (E. Wright), from Lunar
-  Reconnaissance Orbiter data
 
-The two loops are short segments from the NASA Scientific Visualization Studio, re-encoded
-for the web. Each loop only loads once it is on screen, never loads with reduced motion or on a
-data-saver or 2G/3G connection, and every loop that plays beside text has a pause control.
+That one image carries the whole page. The opening loop plays full-bleed; below it the same
+frame sits fixed behind every section, dimmed so text stays readable, drifting slowly as you
+scroll and lifting again at Contact. The palette (space blue ground, cliff-dust gold accent)
+is sampled from it.
+
+The opening loop is a short segment from the NASA Scientific Visualization Studio, re-encoded
+for the web. Loops only load once they are on screen, never load with reduced motion or on a
+data-saver or 2G/3G connection, and every loop has a pause control. With reduced motion the
+backdrop holds still.
 
 ## Running it
 

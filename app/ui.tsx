@@ -166,6 +166,55 @@ function Transport({
 }
 
 /* ------------------------------------------------------------------ *
+ *  Backdrop: the opening image, carried through the whole page       *
+ * ------------------------------------------------------------------ */
+
+/* The Cosmic Cliffs frame sits fixed behind everything, held dark enough for
+   text, and drifts slowly as the page scrolls, so leaving the hero feels like
+   travelling along the cliffs rather than dropping onto a blank ground. Near
+   the end it lifts again, so the page closes back inside the image. One
+   transform and one opacity write per frame; still under reduced motion. */
+export function Backdrop() {
+  const motionOk = useMotionOk();
+  const imgRef = useRef<HTMLDivElement>(null);
+  const veilRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const img = imgRef.current;
+    const veil = veilRef.current;
+    if (!img || !veil) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      if (motionOk) img.style.transform = `translate3d(0, ${(-p * 8).toFixed(2)}%, 0) scale(1.18)`;
+      // held dark through the reading; lifts over the last fifth, into Contact
+      const lift = Math.max(0, (p - 0.8) / 0.2);
+      veil.style.opacity = (0.78 - lift * 0.16).toFixed(3);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [motionOk]);
+
+  return (
+    <div className="backdrop" aria-hidden="true">
+      <div ref={imgRef} className="backdrop-img" />
+      <div ref={veilRef} className="backdrop-veil" />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
  *  Header                                                             *
  * ------------------------------------------------------------------ */
 
