@@ -6,7 +6,7 @@ caption, what it was built with, and where to see it.
 
 **Live at [samgabriel.vercel.app](https://samgabriel.vercel.app)**.
 
-![The opening plate: the Cosmic Cliffs of the Carina Nebula behind the name, with the Webb filter legend and credit](docs/screenshot-opening.jpg)
+![The opening plate: the Cosmic Cliffs of the Carina Nebula behind the name](docs/screenshot-opening.jpg)
 
 The opening image is a 3D flight through the James Webb Space Telescope's Cosmic Cliffs.
 Its credit and filter legend sit with the other image credits at the foot of the page.
@@ -17,7 +17,7 @@ Eight projects with public source, five of them live. An index at the top of the
 works as a table of contents. Below it, each project gets a plate with a capture of the thing running,
 because a reader cannot clone and build a CUDA simulator to see whether it works.
 
-![Two release plates: nbodyssey with its benchmark, and NovaSky](docs/screenshot-releases.jpg)
+![The project index and the first plates: nbodyssey with its benchmark, and NovaSky](docs/screenshot-releases.jpg)
 
 The one performance figure on the site is nbodyssey's: the Barnes-Hut tree code ran
 176 times faster than brute force at one million particles on a single Tesla T4. It is
