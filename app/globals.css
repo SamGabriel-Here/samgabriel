@@ -1210,7 +1210,7 @@ body {
     transition: transform 1.8s cubic-bezier(0.45, 0, 0.2, 1);
   }
   .record.develop.seen li::before {
-    transition: transform 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) var(--d);
+    transition: transform 0.45s var(--ease-out) var(--d);
   }
   .record.develop.seen .rec-card {
     transition: opacity 0.5s calc(var(--d) + 120ms), transform 0.5s var(--ease-out) calc(var(--d) + 120ms);
