@@ -61,8 +61,10 @@ export function Loop({
   eager = false,
   control = true,
   controlSlot,
+  small,
 }: {
   src: string; // path without extension; .mp4 and .webp sit side by side
+  small?: string; // a narrower .mp4 for phones, same poster
   label: string;
   eager?: boolean;
   control?: boolean;
@@ -70,6 +72,8 @@ export function Loop({
 }) {
   const motionOk = useMotionOk();
   const light = useLightConnection();
+  // decided before any request is made: a phone never fetches the wide file
+  const narrow = useMediaQuery("(max-width: 767px)");
   const ref = useRef<HTMLVideoElement>(null);
   const [near, setNear] = useState(eager);
   const [playing, setPlaying] = useState(false);
@@ -124,7 +128,7 @@ export function Loop({
       <video
         key={load ? "on" : "off"}
         ref={ref}
-        src={load ? `${src}.mp4` : undefined}
+        src={load ? `${narrow && small ? small : src}.mp4` : undefined}
         poster={`${src}.webp`}
         autoPlay={load}
         loop
@@ -214,6 +218,7 @@ export function Backdrop() {
       <div ref={imgRef} className="backdrop-img exposing">
         <Loop
           src="/cosmos/cosmic-cliffs"
+          small="/cosmos/cosmic-cliffs-sm"
           label="The Cosmic Cliffs of the Carina Nebula, a 3D flight through the James Webb Space Telescope image"
           eager
           controlSlot="hero-transport"
