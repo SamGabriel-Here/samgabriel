@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-24T07:26:21.520585+00:00",
+  "generatedAt": "2026-09-24T10:47:05.593408+00:00",
   "title": "Design System: Release Plates",
   "extensions": {
     "colorMeta": {
@@ -93,7 +93,7 @@
           "oklch(85% 0.013 65)",
           "oklch(95% 0.013 65)"
         ],
-        "note": "Holds 4.78-5.72:1 over the backdrop at every scroll depth; re-check after veil/brightness changes."
+        "note": "Holds 4.93-5.11:1 over the moving backdrop at every scroll depth (two runs, different video frames); re-check after veil/floor/drift changes."
       },
       "rule": {
         "role": "neutral",
@@ -299,22 +299,47 @@
       {
         "name": "ease-out",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "All entrances, develop reveals and header state."
+        "purpose": "All motion."
       },
       {
         "name": "expose",
-        "value": "2.4s ease-out: brightness(0.25) saturate(0.2) to 1",
-        "purpose": "Hero media opening exposure."
+        "value": "2.4s: brightness(0.25) saturate(0.2) to 1",
+        "purpose": "Backdrop video opening exposure."
+      },
+      {
+        "name": "surface",
+        "value": "1.3s, delay 0.5s: clip-path inset(100% 0 0 0) + translateY(0.18em) to inset(0), none",
+        "purpose": "Focal moment: the name surfaces, bottom edge first. Name only."
       },
       {
         "name": "rise",
-        "value": "1s ease-out, translateY(14px) to 0; delays 0.25s / 0.45s / 0.6s",
-        "purpose": "Hero name, role and actions."
+        "value": "1s: opacity 0 + translateY(14px) to none; delays 0.45s / 0.6s",
+        "purpose": "Role line and action row."
       },
       {
         "name": "develop",
         "value": "clip-path inset(3%) to inset(-16px) 1.1s; brightness 0.55 to 1 1.4s",
-        "purpose": "Release frames opening as they reach view; ends outside the box so ticks stay visible."
+        "purpose": "Release frames opening; ends outside the box so ticks stay visible."
+      },
+      {
+        "name": "registration-lock",
+        "value": "ticks from translate(+/-22px) + opacity 0; transform .9s, opacity .5s, both delay .25s",
+        "purpose": "Ticks settle when a release is seen."
+      },
+      {
+        "name": "lock-replay",
+        "value": "lockTL / lockBR 0.8s, fired 650ms after an index click",
+        "purpose": "Marks the plate you landed on."
+      },
+      {
+        "name": "note-in",
+        "value": "0.3s: opacity 0 + translateY(6px) to none; reduced motion: fadeOnly",
+        "purpose": "Post-send note."
+      },
+      {
+        "name": "backdrop-drift",
+        "value": "translateY 0 to -6% at scale 1.1 across full scroll, rAF-throttled",
+        "purpose": "Travel along the cliffs; off under reduced motion."
       },
       {
         "name": "state",
@@ -325,11 +350,6 @@
         "name": "header",
         "value": "0.4s ease-out",
         "purpose": "Header clear to solid past 60% of the viewport."
-      },
-      {
-        "name": "backdrop-drift",
-        "value": "translateY 0 to -8% at scale 1.18 across full scroll, rAF-throttled",
-        "purpose": "The backdrop travels along the cliffs; off under reduced motion."
       }
     ],
     "breakpoints": [
@@ -351,13 +371,13 @@
       }
     ],
     "backdrop": {
-      "image": "/cosmos/cosmic-cliffs.webp",
-      "position": "fixed, z-index -10, inset -4%, center 60% / cover",
-      "filter": "brightness(0.72)",
+      "media": "/cosmos/cosmic-cliffs (Loop: .mp4 with .webp poster, eager; pause control portaled into #hero-transport)",
+      "position": "fixed, z-index -10, inset -4%, object-fit cover",
+      "filter": "none (opening expose only)",
       "veil": "linear-gradient(180deg, void 0%, void/0.9 45%, void 100%)",
-      "veilOpacity": "0.78 while reading; lifts linearly to 0.62 over the last 20% of scroll",
-      "drift": "translate3d(0, -p*8%, 0) scale(1.18), p = scroll progress; static under reduced motion",
-      "contrastCheck": "Hide text and pictures, keep floors; brightest 16px block behind text; --dim must stay >= 4.5:1 (measured 4.78-5.72:1)."
+      "veilOpacity": "0 over the hero; closes linearly to 0.84 by 0.85 x viewport height of scroll; holds at 0.84 to the end",
+      "drift": "translate3d(0, -p*6%, 0) scale(1.1), p = scroll progress; none under reduced motion",
+      "contrastCheck": "Hide text and pictures, keep floors; brightest 16px block behind text at several depths, two runs on different video frames; --dim must stay >= 4.5:1 (measured 4.93-5.11:1)."
     }
   },
   "components": [
@@ -412,9 +432,9 @@
       "name": "Frame",
       "kind": "card",
       "refersTo": "frame",
-      "description": "16:10 media frame with corner registration ticks outside its box.",
-      "html": "<div class=\"ds-frame\"></div>",
-      "css": ".ds-frame{position:relative;aspect-ratio:16/10;width:320px;margin:16px;background:var(--void-2,#0d1528)}.ds-frame::before,.ds-frame::after{content:'';position:absolute;width:22px;height:22px;border:1px solid var(--paper,#f4ede3)}.ds-frame::before{top:-9px;left:-9px;border-right:0;border-bottom:0}.ds-frame::after{bottom:-9px;right:-9px;border-left:0;border-top:0}"
+      "description": "16:10 media frame with corner registration ticks outside its box; ticks travel in and lock on arrival.",
+      "html": "<div title=\"Hover to replay the registration lock\" class=\"ds-frame\"></div>",
+      "css": ".ds-frame{position:relative;aspect-ratio:16/10;width:320px;margin:16px;background:var(--void-2,#0d1528)}.ds-frame::before,.ds-frame::after{content:'';position:absolute;width:22px;height:22px;border:1px solid var(--paper,#f4ede3)}.ds-frame::before{top:-9px;left:-9px;border-right:0;border-bottom:0}.ds-frame::after{bottom:-9px;right:-9px;border-left:0;border-top:0}@keyframes ds-lockTL{from{transform:translate(-22px,-22px);opacity:0}}@keyframes ds-lockBR{from{transform:translate(22px,22px);opacity:0}}.ds-frame:hover::before{animation:ds-lockTL .8s cubic-bezier(.16,1,.3,1)}.ds-frame:hover::after{animation:ds-lockBR .8s cubic-bezier(.16,1,.3,1)}@media (prefers-reduced-motion:reduce){.ds-frame:hover::before,.ds-frame:hover::after{animation:none}}"
     },
     {
       "name": "Playback Control",
@@ -428,7 +448,7 @@
       "name": "Hero Pause",
       "kind": "button",
       "refersTo": "playback-hero",
-      "description": "The quiet pause on the opening plate: transparent until hover.",
+      "description": "The backdrop loop's quiet pause, in the hero corner: transparent until hover.",
       "html": "<button class=\"ds-hpause\" type=\"button\">Pause</button>",
       "css": ".ds-hpause{min-height:44px;padding-inline:12px;background:transparent;border:1px solid transparent;color:var(--soft,#d9d1c6);font-family:var(--font-martian),ui-monospace,monospace;font-size:12px;border-radius:0;cursor:pointer;transition:border-color .2s}.ds-hpause:hover{border-color:var(--rule-strong,rgba(244,237,227,.42))}.ds-hpause:focus-visible{outline:2px solid var(--dust,#dcaa78);outline-offset:3px}"
     },
@@ -449,9 +469,9 @@
   ],
   "narrative": {
     "northStar": "The Image Release",
-    "overview": "Each project is published the way a telescope image is released: a plate, a title, a caption, the tools used, and credit at the end. One real image carries the whole page: the Webb Cosmic Cliffs. It plays as a loop on the opening plate, then stays fixed behind every section as a dimmed still that drifts as the page scrolls and lifts again at the close. The palette is taken from that image: a space-blue ground, cliff-dust gold as the single accent, and warm paper type. The interface stays quiet so the image and the work lead. Product truth lives in PRODUCT.md; this file covers only the visual system.\n\nThe system is quiet by the owner's decision. The opening plate holds only the image, the name, one role line, a status and two ways in. Captions are plain sentence case, set small and dim. Credits, filter data, coordinates and the clock all live in the footer. The page has two moving images: the opening loop, and the nbodyssey simulation playing in its own release frame. Sections are transparent over the backdrop, and the eight release plates run as one uninterrupted list. Structure comes from registration ticks and thin rules, never from cards, glow or rounding.\n\nMotion is gentle and works like developing a plate. The opening image comes up from under-exposure, the hero type rises a short distance, release frames open slightly as they scroll into view, and the backdrop drifts slowly along the cliffs. Every movement stops for reduced motion, and the page stays complete without it.",
+    "overview": "Each project is published the way a telescope image is released: a plate, a title, a caption, the tools used, and credit at the end. One real image carries the whole page: the Webb Cosmic Cliffs. It plays as one loop, fixed behind the whole page. It is clear on the opening plate, then a void veil closes over it as the hero leaves and holds for the rest of the page while the image drifts slowly. The palette is taken from that image: a space-blue ground, cliff-dust gold as the single accent, and warm paper type. The interface stays quiet so the image and the work lead. Product truth lives in PRODUCT.md; this file covers only the visual system.\n\nThe system is quiet by the owner's decision. The opening plate holds only the image, the name, one role line, a status and two ways in. Captions are plain sentence case, set small and dim. Credits, filter data, coordinates and the clock all live in the footer. The page has two moving images: the backdrop loop, and the nbodyssey simulation playing in its own release frame. Sections are transparent over the backdrop, and the eight release plates run as one uninterrupted list. Structure comes from registration ticks and thin rules, never from cards, glow or rounding.\n\nMotion works like developing and aligning a plate. The opening image comes up from under-exposure while the name surfaces from its bottom edge; that is the one focal moment. Release frames open as they scroll into view, and their corner ticks travel in and lock. The backdrop drifts slowly along the cliffs. Reduced motion removes every spatial movement, and the page stays complete without it.",
     "keyCharacteristics": [
-      "One real, credited image behind the whole page, dimmed and veiled but never tinted.",
+      "One real, credited moving image behind the whole page, veiled but never tinted.",
       "Palette drawn from that image: space-blue void, paper type, dust gold as the one accent.",
       "Archivo on the width axis: wide and light for titles, normal width for reading.",
       "Sentence-case captions in dim text; mono only for stack lines, index numbers, figures and transport.",
@@ -471,12 +491,17 @@
       },
       {
         "name": "The Floor Not Tint Rule",
-        "body": "Imagery keeps its own hue. It may be dimmed (the backdrop runs at brightness 0.72) and veiled with void, but never recoloured or duotoned. Type on imagery sits on a void floor. The hero floor runs void 94% to 60% to clear over the bottom 62%, with a 55% top floor. Contact uses a left-heavy horizontal floor (void 90% to 72% to 35%) over the lifting backdrop, and the footer has a flat void 80% floor.",
+        "body": "Imagery keeps its own hue. It may be veiled with void but never filtered darker, recoloured or duotoned outside the opening exposure. Type on imagery sits on a void floor. The hero floor (`.plate::before`) runs void 94% to 60% to clear over the bottom 62%, with a 55% top floor. Below the hero, the backdrop veil holds at 0.84. Contact adds a left-heavy horizontal floor (void 90% to 72% to 60%), and the footer has a flat void 80% floor.",
+        "section": "colors"
+      },
+      {
+        "name": "The Constant Floor Rule",
+        "body": "Text over a moving image needs a floor that does not change. Once the hero has left, the veil holds at 0.84 to the end of the page. It never lifts again for effect.",
         "section": "colors"
       },
       {
         "name": "The Legibility Check Rule",
-        "body": "The backdrop's brightness and veil are tuned so that dim text holds 4.5:1. Re-run the check after touching the veil opacity, its gradient, the image brightness, the drift or scale, or the dim token. Hide the text and pictures but keep the floors, sample the brightest 16px block behind text at several scroll depths, and confirm dim stays at 4.5:1 or better (measured 4.78–5.72:1).",
+        "body": "The veil is tuned so that dim text holds 4.5:1 over the moving video. Re-run the check after touching the veil opacity, its gradient or closing distance, the drift or scale, the section floors, or the dim token. Hide the text and pictures but keep the floors. Sample the brightest 16px block behind text at several scroll depths, on at least two runs with the video in different frames, and confirm dim stays at 4.5:1 or better (measured 4.93–5.11:1).",
         "section": "colors"
       },
       {
@@ -506,13 +531,13 @@
       },
       {
         "name": "The Registration Tick Rule",
-        "body": "Framed media carries corner ticks outside its box, and nothing may clip them. The develop reveal ends at `clip-path: inset(-16px)` so the ticks stay visible. This is load-bearing.",
+        "body": "Framed media carries corner ticks outside its box, and nothing may clip them. The develop reveal ends at `clip-path: inset(-16px)` so the ticks stay visible. The ticks may travel in and lock (see Motion), but at rest they sit exactly 9px outside the corners. This is load-bearing.",
         "section": "shapes"
       }
     ],
     "dos": [
-      "**Do** let the one opening image carry the page: a fixed, dimmed, veiled backdrop under transparent sections, credited in the footer with names bound by non-breaking spaces.",
-      "**Do** re-run the dim-text contrast check (4.5:1 or better over the brightest 16px block, at every scroll depth) after any change to the veil, brightness, drift or dim.",
+      "**Do** let the one opening loop carry the page: a fixed backdrop that is clear over the hero and held under a 0.84 veil beneath transparent sections, credited in the footer with names bound by non-breaking spaces.",
+      "**Do** re-run the dim-text contrast check (4.5:1 or better over the brightest 16px block, at every scroll depth) after any change to the veil, floors, drift or dim. Measure on more than one video frame.",
       "**Do** keep the six filter colours inside the footer credit legend, beside the real filters of the credited image.",
       "**Do** use dust as the one accent: selection, focus ring, status dot, the figure, link and index hover, field focus.",
       "**Do** set captions in sentence case below the thing they caption: meta lines in 14px dim, stacks as one 13px mono line.",
@@ -528,6 +553,8 @@
       "**Don't** put credits, coordinates, legends or instrument chrome on the opening plate.",
       "**Don't** use cards, rounded corners, shadows or glow, and don't give sections opaque backgrounds that hide the backdrop. Floors are translucent void.",
       "**Don't** add a second backdrop image or give a section its own picture. One image carries the page.",
+      "**Don't** lift or pulse the veil below the hero. Text over moving video keeps a constant floor.",
+      "**Don't** give anything other than the name a focal entrance, or move anything spatially under reduced motion.",
       "**Don't** tint, duotone or recolour the imagery. Put a void floor under the type instead.",
       "**Don't** use a centred-planet space hero or a dark card grid.",
       "**Don't** give an action a metaphorical label (\"Transmit\", \"Launch\", \"Observe\")."

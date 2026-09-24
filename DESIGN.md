@@ -184,14 +184,14 @@ components:
 
 **Creative North Star: "The Image Release"**
 
-Each project is published the way a telescope image is released: a plate, a title, a caption, the tools used, and credit at the end. One real image carries the whole page: the Webb Cosmic Cliffs. It plays as a loop on the opening plate, then stays fixed behind every section as a dimmed still that drifts as the page scrolls and lifts again at the close. The palette is taken from that image: a space-blue ground, cliff-dust gold as the single accent, and warm paper type. The interface stays quiet so the image and the work lead. Product truth lives in PRODUCT.md; this file covers only the visual system.
+Each project is published the way a telescope image is released: a plate, a title, a caption, the tools used, and credit at the end. One real image carries the whole page: the Webb Cosmic Cliffs. It plays as one loop, fixed behind the whole page. It is clear on the opening plate, then a void veil closes over it as the hero leaves and holds for the rest of the page while the image drifts slowly. The palette is taken from that image: a space-blue ground, cliff-dust gold as the single accent, and warm paper type. The interface stays quiet so the image and the work lead. Product truth lives in PRODUCT.md; this file covers only the visual system.
 
-The system is quiet by the owner's decision. The opening plate holds only the image, the name, one role line, a status and two ways in. Captions are plain sentence case, set small and dim. Credits, filter data, coordinates and the clock all live in the footer. The page has two moving images: the opening loop, and the nbodyssey simulation playing in its own release frame. Sections are transparent over the backdrop, and the eight release plates run as one uninterrupted list. Structure comes from registration ticks and thin rules, never from cards, glow or rounding.
+The system is quiet by the owner's decision. The opening plate holds only the image, the name, one role line, a status and two ways in. Captions are plain sentence case, set small and dim. Credits, filter data, coordinates and the clock all live in the footer. The page has two moving images: the backdrop loop, and the nbodyssey simulation playing in its own release frame. Sections are transparent over the backdrop, and the eight release plates run as one uninterrupted list. Structure comes from registration ticks and thin rules, never from cards, glow or rounding.
 
-Motion is gentle and works like developing a plate. The opening image comes up from under-exposure, the hero type rises a short distance, release frames open slightly as they scroll into view, and the backdrop drifts slowly along the cliffs. Every movement stops for reduced motion, and the page stays complete without it.
+Motion works like developing and aligning a plate. The opening image comes up from under-exposure while the name surfaces from its bottom edge; that is the one focal moment. Release frames open as they scroll into view, and their corner ticks travel in and lock. The backdrop drifts slowly along the cliffs. Reduced motion removes every spatial movement, and the page stays complete without it.
 
 **Key Characteristics:**
-- One real, credited image behind the whole page, dimmed and veiled but never tinted.
+- One real, credited moving image behind the whole page, veiled but never tinted.
 - Palette drawn from that image: space-blue void, paper type, dust gold as the one accent.
 - Archivo on the width axis: wide and light for titles, normal width for reading.
 - Sentence-case captions in dim text; mono only for stack lines, index numbers, figures and transport.
@@ -210,7 +210,7 @@ The palette comes from the Cosmic Cliffs image: the deep space above the ridge i
 - **Deep Space** (void-2): the resting fill inside a frame before its media paints.
 - **Warm Paper** (paper): headlines and main type, the solid button fill and outline, registration ticks, the skip link. 16.9:1 on void.
 - **Soft Paper** (soft): running text, ledes, section copy, field labels, the form note, nav links at rest, the hero's pause label. 13.0:1 on void.
-- **Dim Paper** (dim): caption lines (release meta, stack line), index numbers and types, toolkit terms, record dates, placeholders, footer text. It measures 8.7:1 on flat void. Over the backdrop it holds 4.78–5.72:1 at every scroll depth.
+- **Dim Paper** (dim): caption lines (release meta, stack line), index numbers and types, toolkit terms, record dates, placeholders, footer text. It measures 8.7:1 on flat void. Over the moving backdrop it holds 4.93–5.11:1 at every scroll depth, measured on two runs with the video in different frames.
 - **Dust Hairline** (rule): warm, decorative section rules, index and list dividers, figure borders, the footer's top edge.
 - **Strong Hairline** (rule-strong): paper at 42%. Edges of interactive things (nav CTA, inputs, playback, sent notice), link underlines at rest, index rows on hover, the scrollbar thumb. Holds 3:1 or better.
 
@@ -222,9 +222,11 @@ The palette comes from the Cosmic Cliffs image: the deep space above the ridge i
 
 **The One Accent Rule.** Dust is the only accent. Selection, focus ring, status dot, the figure, link and index hover, and field focus are all dust. Paper stays the colour of type, ticks and the solid button. No other hue marks interaction.
 
-**The Floor Not Tint Rule.** Imagery keeps its own hue. It may be dimmed (the backdrop runs at brightness 0.72) and veiled with void, but never recoloured or duotoned. Type on imagery sits on a void floor. The hero floor runs void 94% to 60% to clear over the bottom 62%, with a 55% top floor. Contact uses a left-heavy horizontal floor (void 90% to 72% to 35%) over the lifting backdrop, and the footer has a flat void 80% floor.
+**The Floor Not Tint Rule.** Imagery keeps its own hue. It may be veiled with void but never filtered darker, recoloured or duotoned outside the opening exposure. Type on imagery sits on a void floor. The hero floor (`.plate::before`) runs void 94% to 60% to clear over the bottom 62%, with a 55% top floor. Below the hero, the backdrop veil holds at 0.84. Contact adds a left-heavy horizontal floor (void 90% to 72% to 60%), and the footer has a flat void 80% floor.
 
-**The Legibility Check Rule.** The backdrop's brightness and veil are tuned so that dim text holds 4.5:1. Re-run the check after touching the veil opacity, its gradient, the image brightness, the drift or scale, or the dim token. Hide the text and pictures but keep the floors, sample the brightest 16px block behind text at several scroll depths, and confirm dim stays at 4.5:1 or better (measured 4.78–5.72:1).
+**The Constant Floor Rule.** Text over a moving image needs a floor that does not change. Once the hero has left, the veil holds at 0.84 to the end of the page. It never lifts again for effect.
+
+**The Legibility Check Rule.** The veil is tuned so that dim text holds 4.5:1 over the moving video. Re-run the check after touching the veil opacity, its gradient or closing distance, the drift or scale, the section floors, or the dim token. Hide the text and pictures but keep the floors. Sample the brightest 16px block behind text at several scroll depths, on at least two runs with the video in different frames, and confirm dim stays at 4.5:1 or better (measured 4.93–5.11:1).
 
 ## Typography
 
@@ -264,19 +266,19 @@ The palette comes from the Cosmic Cliffs image: the deep space above the ridge i
 
 The whole page scrolls over one fixed backdrop, and every section is transparent over it. Content sits in a single 90rem column (`wrap`) with a fluid gutter (clamp(20px, 4vw, 44px)). Sections have clamp(96px, 14vh, 160px) of block padding, and each release has clamp(56px, 8vh, 88px), closed by a hairline rule.
 
-- **Opening plate:** 100svh with a full-bleed loop. Name, role line and action row (status, Contact, See the work) sit bottom-left, with clamp(40px, 8vh, 72px) of bottom padding. The pause control sits bottom-right on the same baseline. At 767px and below it moves to the top-right, 72px down, just under the header. Nothing else is on the plate.
+- **Opening plate:** 100svh with no media of its own. It is a window onto the backdrop loop with only its text floor. Name, role line and action row (status, Contact, See the work) sit bottom-left, with clamp(40px, 8vh, 72px) of bottom padding. The pause control sits bottom-right on the same baseline. At 767px and below it moves to the top-right, 72px down, just under the header. Nothing else is on the plate.
 - **Section head:** the title on the left, a 32rem copy column on the right, bottom-aligned, closed by a hairline. It stacks at 767px and below.
 - **Index (table of contents):** each row is one link (number, name, type) at 3.5rem / 1fr / 1fr, baseline-aligned, with a hairline under each row. It collapses to number plus a stacked column at 767px and below. Live demo and Source links appear only on the plates.
 - **Release plate:** all eight run as one uninterrupted list after the index. Frame and caption sit at 7fr/5fr. Alternate releases flip the frame to the right. It stacks at 899px and below, and the frame always comes first.
 - **About:** two columns (Toolkit as a definition list with 8.5rem terms, Record as an ordered list), each row ruled at the top. It stacks at 899px; toolkit rows stack at 479px.
-- **Contact:** no image of its own. A left-heavy void floor sits over the backdrop as the backdrop lifts, with copy and channels left and a 30rem form right.
+- **Contact:** no image of its own. A left-heavy void floor sits over the held veil, with copy and channels left and a 30rem form right.
 - **Footer:** the name plus place, coordinates, IST clock and year on the left; "Image credits" on the right (max 68ch). It credits the Cosmic Cliffs image with its NIRCam filter legend, then a line noting that the same image carries the page, then NASA's media-use line. The footer sits on its own void 80% floor.
 
 Scroll padding is 72px to clear the 64px fixed header.
 
 ## Elevation & Depth
 
-Flat surfaces, no shadows. Depth comes from the image behind the page. The **backdrop** is the Cosmic Cliffs still, fixed behind everything (z-index -10), at brightness 0.72 and scale 1.18. A vertical void veil sits over it (void, then void 90% at mid-height, then void) at opacity 0.78 while reading, lifting to 0.62 over the last fifth of the scroll so the page closes back inside the image. As the page scrolls, the image drifts up to -8% translateY. It stays still under reduced motion, and the veil still lifts. Type sits on void floors wherever the image is bright. The header is clear over the opening plate and turns solid (void at 92% with a hairline bottom border) once the page scrolls past 60% of the viewport.
+Flat surfaces, no shadows. Depth comes from the image behind the page. The **backdrop** is the Cosmic Cliffs loop, fixed behind everything (z-index -10, inset -4%, scale 1.1), with no brightness filter. A vertical void veil sits over it (void, then void 90% at mid-height, then void). The veil is at opacity 0 over the hero and closes linearly to 0.84 by 85% of one viewport of scroll, then holds at 0.84 to the end. As the page scrolls, the image drifts up to -6% translateY. It does not drift under reduced motion, and the veil behaves the same. Type sits on void floors wherever the image is bright. The header is clear over the opening plate and turns solid (void at 92% with a hairline bottom border) once the page scrolls past 60% of the viewport.
 
 ### Named Rules
 **The No Glow Rule.** No box-shadow, text-shadow, blur halo or glow. Separation comes from rules, ticks and void floors.
@@ -285,7 +287,7 @@ Flat surfaces, no shadows. Depth comes from the image behind the page. The **bac
 
 Every corner is square (0 radius), including inputs, which reset the platform rounding. The only round forms are the 8px dust status dot and the favicon's point of light. A frame is marked by two 22px L-shaped corner registration ticks in 1px paper, set 9px outside its top-left and bottom-right corners. The favicon repeats the tick pair around a paper dot. Filter chips are 9px squares.
 
-**The Registration Tick Rule.** Framed media carries corner ticks outside its box, and nothing may clip them. The develop reveal ends at `clip-path: inset(-16px)` so the ticks stay visible. This is load-bearing.
+**The Registration Tick Rule.** Framed media carries corner ticks outside its box, and nothing may clip them. The develop reveal ends at `clip-path: inset(-16px)` so the ticks stay visible. The ticks may travel in and lock (see Motion), but at rest they sit exactly 9px outside the corners. This is load-bearing.
 
 ## Components
 
@@ -317,19 +319,27 @@ The header is fixed and 64px tall. The name sits left at 500 weight, 16px, wdth 
 "Open to work" is set 600 at 15px in paper with an 8px dust dot.
 
 ### Loop and Playback (signature)
-Every moving image is a Loop. The WebP poster carries the frame, and the MP4 loads only when three conditions hold: the loop is on screen (20% visible, or at page load for the hero), motion is welcome, and the connection is not data-saver, 2G or 3G. Off screen, a loop pauses, and a user's pause is remembered. Every loop that runs beside text has a Pause/Play control: 12px mono, at least 44px tall. On a release frame it has a void 85% fill and a rule-strong border that turns paper on hover. On the opening plate it is quiet: transparent fill and border with soft text, and a rule-strong border on hover, portaled into the hero corner slot. Everywhere else uses stills. The fixed backdrop is a still, not a video. These gates and the control are load-bearing (WCAG 2.2.2).
+Every moving image is a Loop. The WebP poster carries the frame, and the MP4 loads only when three conditions hold: the loop is on screen (20% visible, or at page load for the backdrop), motion is welcome, and the connection is not data-saver, 2G or 3G. Off screen, a loop pauses, and a user's pause is remembered. Every loop that runs beside text has a Pause/Play control: 12px mono, at least 44px tall. On a release frame it has a void 85% fill and a rule-strong border that turns paper on hover. The backdrop loop's control is quiet: transparent fill and border with soft text, a rule-strong border on hover, portaled into the hero corner slot. Everywhere else uses stills. These gates and the control are load-bearing (WCAG 2.2.2).
 
 ### Credit legend (footer)
 Under the uppercase "Image credits" heading, each media credit is a 14px dim paragraph. The Cosmic Cliffs credit is followed by its six NIRCam filter chips, then a line saying the same image carries the page (12px mono, 9px filled squares, 6px/14px gaps). This is the only use of the filter colours.
 
 ### Motion
-The hero media runs `expose` (brightness 0.25 and saturation 0.2 up to 1) over 2.4s. Hero type rises 14px with 0.25s, 0.45s and 0.6s delays. Releases below the fold develop from `inset(3%)` and brightness 0.55 to `inset(-16px)` over 1.1–1.4s on `cubic-bezier(0.16, 1, 0.3, 1)`. They are visible by default, and the develop class is added only when script runs and motion is welcome. The backdrop drifts with scroll, as described in Elevation & Depth. Reduced motion removes all of this movement.
+All motion uses `cubic-bezier(0.16, 1, 0.3, 1)`.
+- **Opening exposure:** the backdrop video runs `expose` (brightness 0.25 and saturation 0.2 up to 1) over 2.4s.
+- **Focal moment:** while the exposure runs, the name surfaces from its bottom edge. Its clip-path goes from `inset(100% 0 0 0)` to `inset(0)` and it moves up from translateY(0.18em), over 1.3s after a 0.5s delay. This is the page's one headline motion, and it is reserved for the name.
+- **Supporting entrance:** the role line and action row rise 14px and fade in over 1s, at 0.45s and 0.6s delays.
+- **Develop:** releases below the fold open from `inset(3%)` and brightness 0.55 to `inset(-16px)` over 1.1–1.4s. They are visible by default, and the develop class is added only when script runs and motion is welcome.
+- **Registration lock:** until a release is seen, its ticks sit 22px outside their corners (top-left up and left, bottom-right down and right) and are transparent. On arrival they settle, with transform over 0.9s and opacity over 0.5s, both after 0.25s. Clicking an index row replays the lock (`lockTL`/`lockBR`, 0.8s) on the target plate 650ms later, once the scroll has settled, so the eye knows where it landed.
+- **Feedback:** the post-send note fades in and rises 6px over 0.3s.
+- **Drift:** the backdrop moves with scroll, as described in Elevation & Depth.
+- **Reduced motion:** exposure, surfacing, rising, develop, lock and drift are all off, and ticks rest in place. The post-send note keeps an opacity-only fade.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** let the one opening image carry the page: a fixed, dimmed, veiled backdrop under transparent sections, credited in the footer with names bound by non-breaking spaces.
-- **Do** re-run the dim-text contrast check (4.5:1 or better over the brightest 16px block, at every scroll depth) after any change to the veil, brightness, drift or dim.
+- **Do** let the one opening loop carry the page: a fixed backdrop that is clear over the hero and held under a 0.84 veil beneath transparent sections, credited in the footer with names bound by non-breaking spaces.
+- **Do** re-run the dim-text contrast check (4.5:1 or better over the brightest 16px block, at every scroll depth) after any change to the veil, floors, drift or dim. Measure on more than one video frame.
 - **Do** keep the six filter colours inside the footer credit legend, beside the real filters of the credited image.
 - **Do** use dust as the one accent: selection, focus ring, status dot, the figure, link and index hover, field focus.
 - **Do** set captions in sentence case below the thing they caption: meta lines in 14px dim, stacks as one 13px mono line.
@@ -345,6 +355,8 @@ The hero media runs `expose` (brightness 0.25 and saturation 0.2 up to 1) over 2
 - **Don't** put credits, coordinates, legends or instrument chrome on the opening plate.
 - **Don't** use cards, rounded corners, shadows or glow, and don't give sections opaque backgrounds that hide the backdrop. Floors are translucent void.
 - **Don't** add a second backdrop image or give a section its own picture. One image carries the page.
+- **Don't** lift or pulse the veil below the hero. Text over moving video keeps a constant floor.
+- **Don't** give anything other than the name a focal entrance, or move anything spatially under reduced motion.
 - **Don't** tint, duotone or recolour the imagery. Put a void floor under the type instead.
 - **Don't** use a centred-planet space hero or a dark card grid.
 - **Don't** give an action a metaphorical label ("Transmit", "Launch", "Observe").
