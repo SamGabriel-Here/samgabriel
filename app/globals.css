@@ -103,10 +103,6 @@ body {
   background: var(--rule-strong);
 }
 
-.mono {
-  font-family: var(--font-martian), ui-monospace, monospace;
-}
-
 /* caption voice: the small uppercase mono of a release credit line */
 .cap-label {
   font-family: var(--font-martian), ui-monospace, monospace;
@@ -159,6 +155,9 @@ body {
   height: 64px;
 }
 .bar-name {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-weight: 500;
   font-stretch: 112%;
   letter-spacing: -0.01em;

@@ -14,6 +14,8 @@ const archivo = Archivo({
 const martian = Martian_Mono({
   variable: "--font-martian",
   subsets: ["latin"],
+  // nothing in the first viewport is set in the mono; don't spend the preload on it
+  preload: false,
 });
 
 const SITE = "https://samgabriel.vercel.app";

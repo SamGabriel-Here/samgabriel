@@ -59,7 +59,6 @@ export function Loop({
   src,
   label,
   eager = false,
-  control = true,
   controlSlot,
   small,
   decorative = false,
@@ -69,7 +68,6 @@ export function Loop({
   decorative?: boolean; // atmosphere only: no description is read out
   label: string;
   eager?: boolean;
-  control?: boolean;
   controlSlot?: string; // id of an element elsewhere that should hold the pause control
 }) {
   const motionOk = useMotionOk();
@@ -142,7 +140,7 @@ export function Loop({
         onPause={() => setPlaying(false)}
       />
       {!decorative && <span className="sr-only">{label}</span>}
-      {control && load && <Transport slot={controlSlot} playing={playing} label={label} onToggle={toggle} />}
+      {load && <Transport slot={controlSlot} playing={playing} label={label} onToggle={toggle} />}
     </>
   );
 }
