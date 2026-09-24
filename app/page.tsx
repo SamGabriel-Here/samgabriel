@@ -230,15 +230,6 @@ export default function Home() {
       <main id="main" tabIndex={-1}>
         {/* ---------- opening plate: the image, the name, one way in ---------- */}
         <section className="plate" id="top" aria-label="Introduction">
-          <div className="plate-media exposing">
-            <Loop
-              src="/cosmos/cosmic-cliffs"
-              label="The Cosmic Cliffs of the Carina Nebula, a 3D flight through the James Webb Space Telescope image"
-              eager
-              controlSlot="hero-transport"
-            />
-          </div>
-
           <div className="wrap plate-foot">
             <h1 className="plate-name enter" style={{ "--d": "0.25s" } as React.CSSProperties}>
               Sam Gabriel

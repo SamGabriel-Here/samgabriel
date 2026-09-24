@@ -169,11 +169,12 @@ function Transport({
  *  Backdrop: the opening image, carried through the whole page       *
  * ------------------------------------------------------------------ */
 
-/* The Cosmic Cliffs frame sits fixed behind everything, held dark enough for
-   text, and drifts slowly as the page scrolls, so leaving the hero feels like
-   travelling along the cliffs rather than dropping onto a blank ground. Near
-   the end it lifts again, so the page closes back inside the image. One
-   transform and one opacity write per frame; still under reduced motion. */
+/* The opening loop is the page's backdrop. It plays full-strength behind the
+   hero, then keeps playing fixed behind every section under a veil dark
+   enough for text, drifting a little as the page scrolls. One video for the
+   whole page; the hero's
+   pause control governs it; reduced motion and light connections get the
+   poster, held still. One transform and one opacity write per frame. */
 export function Backdrop() {
   const motionOk = useMotionOk();
   const imgRef = useRef<HTMLDivElement>(null);
@@ -186,12 +187,14 @@ export function Backdrop() {
     let raf = 0;
     const update = () => {
       raf = 0;
+      const y = window.scrollY;
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
-      if (motionOk) img.style.transform = `translate3d(0, ${(-p * 8).toFixed(2)}%, 0) scale(1.18)`;
-      // held dark through the reading; lifts over the last fifth, into Contact
-      const lift = Math.max(0, (p - 0.8) / 0.2);
-      veil.style.opacity = (0.78 - lift * 0.16).toFixed(3);
+      const p = max > 0 ? Math.min(1, y / max) : 0;
+      if (motionOk) img.style.transform = `translate3d(0, ${(-p * 6).toFixed(2)}%, 0) scale(1.1)`;
+      // clear over the hero, closing as its type leaves, then held: text over a
+      // moving image needs a constant floor (measured: dim text >= 4.5:1)
+      const enter = Math.min(1, y / (window.innerHeight * 0.85));
+      veil.style.opacity = (0.84 * enter).toFixed(3);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -207,9 +210,16 @@ export function Backdrop() {
   }, [motionOk]);
 
   return (
-    <div className="backdrop" aria-hidden="true">
-      <div ref={imgRef} className="backdrop-img" />
-      <div ref={veilRef} className="backdrop-veil" />
+    <div className="backdrop">
+      <div ref={imgRef} className="backdrop-img exposing">
+        <Loop
+          src="/cosmos/cosmic-cliffs"
+          label="The Cosmic Cliffs of the Carina Nebula, a 3D flight through the James Webb Space Telescope image"
+          eager
+          controlSlot="hero-transport"
+        />
+      </div>
+      <div ref={veilRef} className="backdrop-veil" aria-hidden="true" />
     </div>
   );
 }
