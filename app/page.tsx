@@ -18,6 +18,8 @@ type Release = {
   figure?: { value: string; line: string };
 };
 
+const firstSentence = (t: string) => t.split(/(?<=\.)\s/)[0];
+
 const releases: Release[] = [
   {
     name: "nbodyssey",
@@ -188,13 +190,22 @@ function ReleasePlate({ r, i }: { r: Release; i: number }) {
             <img src={`${r.media}.webp`} alt={r.alt} loading="lazy" decoding="async" width={960} height={600} />
           )}
         </div>
+        <svg className="aperture" viewBox="-51 -51 102 102" width="100" height="100" aria-hidden="true">
+          <polygon points="0,-50 43.3,-25 43.3,25 0,50 -43.3,25 -43.3,-25" />
+        </svg>
       </div>
       <div className="release-cap">
         <h3 id={`r-${i}`}>{r.name}</h3>
         <p className="meta">
           {r.type} · {r.date}
         </p>
-        <p>{r.blurb}</p>
+        <p className="blurb">{r.blurb}</p>
+        {/* in the console the first sentence is narrated below; the panel keeps the rest */}
+        {r.blurb.length > firstSentence(r.blurb).length && (
+          <p className="blurb-rest" aria-hidden="true">
+            {r.blurb.slice(firstSentence(r.blurb).length).trim()}
+          </p>
+        )}
         {r.figure && (
           <p className="figure">
             <b>
@@ -217,6 +228,9 @@ function ReleasePlate({ r, i }: { r: Release; i: number }) {
  *  Page                                                               *
  * ------------------------------------------------------------------ */
 
+// what the release console narrates: one sentence each
+const depthItems = releases.map((r) => ({ name: r.name, type: r.type, line: firstSentence(r.blurb) }));
+
 export default function Home() {
   const live = releases.filter((r) => r.live).length;
 
@@ -237,7 +251,9 @@ export default function Home() {
         {/* ---------- opening plate: the image, the name, one way in ---------- */}
         <section className="plate" id="top" aria-label="Introduction">
           <div className="wrap plate-foot">
-            <h1 className="plate-name">Sam Gabriel</h1>
+            <h1 className="plate-name">
+              Sam <em>Gabriel</em>
+            </h1>
             <p className="plate-role enter" style={{ "--d": "0.45s" } as React.CSSProperties}>
               Machine-learning and software engineer in Indore, building the instruments behind hard problems.
             </p>
@@ -282,7 +298,7 @@ export default function Home() {
           </div>
 
           {/* on wide screens the releases come at you out of the nebula, one by one */}
-          <Depth items={releases.map((r) => ({ name: r.name, type: r.type }))}>
+          <Depth items={depthItems}>
             {releases.map((r, i) => (
               <ReleasePlate key={r.name} r={r} i={i} />
             ))}

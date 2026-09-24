@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Martian_Mono } from "next/font/google";
+import { Archivo, Instrument_Serif, Martian_Mono } from "next/font/google";
 import "./globals.css";
 
 // Display and body. The width axis carries the release voice: wide and light
@@ -8,6 +8,14 @@ const archivo = Archivo({
   variable: "--font-archivo",
   subsets: ["latin"],
   axes: ["wdth"],
+});
+
+// The voice: names, headings and the narrated lines. Serif speaks, mono measures.
+const serif = Instrument_Serif({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
 // Captions, credits, filter legends: the small print of an image release.
@@ -60,7 +68,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${archivo.variable} ${martian.variable}`}>
+    <html lang="en" className={`${archivo.variable} ${serif.variable} ${martian.variable}`}>
       <body>{children}</body>
     </html>
   );

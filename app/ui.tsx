@@ -179,6 +179,17 @@ function Transport({
    whole page; the hero's
    pause control governs it; reduced motion and light connections get the
    poster, held still. One transform and one opacity write per frame. */
+// the backdrop's own scroll motion, shared so the release camera can compose with it:
+// a slow rise (ty, px) and the push into the nebula (s)
+function backdropBase() {
+  const y = window.scrollY;
+  const H = window.innerHeight;
+  const max = document.documentElement.scrollHeight - H;
+  const p = max > 0 ? Math.min(1, y / max) : 0;
+  const hp = Math.min(1, y / H);
+  return { ty: -p * 0.06 * 1.08 * H, s: 1.1 + hp * 0.28 + p * 0.22, hp };
+}
+
 export function Backdrop() {
   const motionOk = useMotionOk();
   const imgRef = useRef<HTMLDivElement>(null);
@@ -192,13 +203,12 @@ export function Backdrop() {
     const update = () => {
       raf = 0;
       const y = window.scrollY;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const p = max > 0 ? Math.min(1, y / max) : 0;
       // leaving the hero flies into the nebula: the image pushes in while the
-      // hero's type lifts away; after that only the slow drift remains
-      const hp = Math.min(1, y / window.innerHeight);
+      // hero's type lifts away; after that only the slow drift remains. The
+      // release camera, when it runs, adds its pan and zoom through --cam-*
+      const { ty, s, hp } = backdropBase();
       if (motionOk) {
-        img.style.transform = `translate3d(0, ${(-p * 6).toFixed(2)}%, 0) scale(${(1.1 + hp * 0.28 + p * 0.22).toFixed(3)})`;
+        img.style.transform = `translate3d(var(--cam-x, 0px), calc(${ty.toFixed(1)}px + var(--cam-y, 0px)), 0) scale(calc(${s.toFixed(3)} * var(--cam-z, 1)))`;
         document.documentElement.style.setProperty("--hp", hp.toFixed(3));
       } else {
         document.documentElement.style.removeProperty("--hp");
@@ -441,97 +451,210 @@ export function IndexPreview() {
    scrolls, then streams past the camera while the next one arrives. Every
    release stays in the DOM and in tab order; focus and index clicks scroll the
    page to it. Everyone else keeps the plain list. Transform and opacity only. */
+// observation targets on the Cosmic Cliffs, as fractions of the backdrop frame
+const TARGETS: [number, number][] = [
+  [0.26, 0.38],
+  [0.42, 0.3],
+  [0.56, 0.42],
+  [0.74, 0.3],
+  [0.68, 0.56],
+  [0.48, 0.6],
+  [0.32, 0.56],
+  [0.6, 0.24],
+];
+
 const DEPTH_QUERY = "(min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)";
 
 export function Depth({
   items,
   children,
 }: {
-  items: { name: string; type: string }[];
+  items: { name: string; type: string; line: string }[];
   children: React.ReactNode;
 }) {
   const count = items.length;
   const live = useMediaQuery(DEPTH_QUERY);
   const stageRef = useRef<HTMLDivElement>(null);
-  const countRef = useRef<HTMLParagraphElement>(null);
   const navRef = useRef<HTMLOListElement>(null);
-  const spikeRef = useRef<HTMLDivElement>(null);
+  const capRef = useRef<HTMLDivElement>(null);
+  const noRef = useRef<HTMLSpanElement>(null);
+  const barRef = useRef<HTMLElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const stage = stageRef.current;
-    if (!live || !stage) return;
+    const svg = svgRef.current;
+    const cam = document.querySelector<HTMLElement>(".backdrop-img");
+    if (!live || !stage || !svg || !cam) return;
     const cards = Array.from(stage.querySelectorAll<HTMLElement>(".release"));
+    const route = svg.querySelector<SVGPolylineElement>(".route")!;
+    const trail = svg.querySelector<SVGPolylineElement>(".trail")!;
+    const marks = Array.from(svg.querySelectorAll<SVGGElement>(".mark"));
+    const beam = svg.querySelector<SVGLineElement>(".beam")!;
+    const pulse = stage.querySelector<HTMLElement>(".pulse")!;
+    const halo = stage.querySelector<HTMLElement>(".halo")!;
     stage.classList.add("is-live");
-    // the scan reveal belongs to the list; here the approach is the reveal
     cards.forEach((c) => {
       c.classList.remove("develop");
       c.classList.add("seen");
     });
     let raf = 0;
     let fired = -1;
+    let W = 0;
+    let H = 0;
+    let rMax = 0;
     const per = 0.9; // viewports of scroll per release
-    // the neuromorphic idea: nothing moves until there is something to say;
-    // then one spike travels the path from the chosen entry to its release
-    const fire = (n: number) => {
-      const spike = spikeRef.current;
-      const li = navRef.current?.querySelectorAll("li")[n];
-      const field = stage.querySelector<HTMLElement>(".depth-field");
-      const box = spike?.parentElement;
-      if (!spike || !li || !field || !box) return;
-      const b = box.getBoundingClientRect();
-      const a = li.getBoundingClientRect();
-      const x1 = a.right - b.left + 12;
-      const x2 = field.getBoundingClientRect().left - b.left - 8;
-      spike.style.setProperty("--x", `${x1}px`);
-      spike.style.setProperty("--y", `${a.top + a.height / 2 - b.top}px`);
-      spike.style.setProperty("--w", `${Math.max(0, x2 - x1)}px`);
-      spike.classList.remove("go");
-      void spike.offsetWidth; // restart
-      spike.classList.add("go");
+    const ease = (x: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
+    const smooth = (x: number) => {
+      const t = Math.min(1, Math.max(0, x));
+      return t * t * (3 - 2 * t);
     };
+    const clamp = (v: number, m: number) => Math.max(-m, Math.min(m, v));
+    const HEX = [
+      [0, -1],
+      [0.866, -0.5],
+      [0.866, 0.5],
+      [0, 1],
+      [-0.866, 0.5],
+      [-0.866, -0.5],
+    ];
 
     const size = () => {
-      stage.style.height = `${window.innerHeight * (1 + (count - 1) * per)}px`;
+      W = window.innerWidth;
+      H = window.innerHeight;
+      stage.style.height = `${H * (1 + (count - 1) * per)}px`;
+      svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+      const fr = stage.querySelector<HTMLElement>(".frame");
+      // the aperture's inradius must reach the plate's corners
+      rMax = fr ? Math.hypot(fr.offsetWidth, fr.offsetHeight) / 2 / 0.866 : 0;
     };
-    const update = () => {
-      raf = 0;
-      const span = stage.offsetHeight - window.innerHeight;
-      const p = span > 0 ? Math.min(1, Math.max(0, -stage.getBoundingClientRect().top / span)) : 0;
-      const f = p * (count - 1); // which release is in focus, continuously
-      // one release at a time: the outgoing one pushes past the camera and is
-      // gone before the next arrives out of the depths, so they never muddy
-      const ease = (x: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
-      cards.forEach((c, i) => {
-        const t = i - f; // > 0 still ahead in the nebula, < 0 already passed
-        let s = 1;
-        let o = 1;
-        if (t > 0.15) {
-          // arriving: already visible at the midpoint, so the stage is never empty
-          const k = Math.min(1, (t - 0.15) / 0.47);
-          s = 1 - ease(k) * 0.22;
-          o = 1 - k;
-        } else if (t < -0.15) {
-          // leaving: gone by the midpoint, so two releases never overlap
-          const k = Math.min(1, (-t - 0.15) / 0.2);
-          s = 1 + ease(k) * 0.16;
-          o = 1 - k;
-        }
-        c.style.transform = `translate3d(0, -50%, 0) scale(${s.toFixed(4)})`;
-        c.style.opacity = o.toFixed(3);
-        c.style.visibility = o < 0.01 ? "hidden" : "visible";
-        c.style.pointerEvents = Math.abs(t) < 0.5 ? "auto" : "none";
-      });
-      const n = Math.min(count - 1, Math.round(f));
-      if (n !== fired) {
-        fired = n;
-        fire(n);
-      }
-      if (countRef.current) {
-        countRef.current.textContent = `${String(n + 1).padStart(2, "0")} / ${String(count).padStart(2, "0")}`;
-      }
+
+    // where the camera parks each target on screen: left of the panel, above the caption
+    const AIM = [0.36, 0.42];
+    const Z = 1.2;
+    // the camera for target i at zoom z, clamped so the image still covers the screen
+    const aimAt = (i: number, z: number, b: { ty: number; s: number }) => {
+      const [qx, qy] = TARGETS[i % TARGETS.length];
+      const S = b.s * z;
+      const cx = AIM[0] * W - W / 2 - S * (qx - 0.5) * 1.08 * W;
+      const cy = AIM[1] * H - H / 2 - b.ty - S * (qy - 0.5) * 1.08 * H;
+      return [clamp(cx, ((S * 1.08 - 1) * W) / 2), clamp(cy + b.ty, ((S * 1.08 - 1) * H) / 2) - b.ty];
+    };
+
+    const fire = (n: number, from: number[], to: number[]) => {
+      pulse.animate(
+        [
+          { transform: `translate(${from[0]}px, ${from[1]}px)`, opacity: 1 },
+          { transform: `translate(${to[0]}px, ${to[1]}px)`, opacity: 1, offset: 0.85 },
+          { transform: `translate(${to[0]}px, ${to[1]}px)`, opacity: 0 },
+        ],
+        { duration: 700, easing: "cubic-bezier(0.55, 0, 0.3, 1)", fill: "forwards" },
+      );
+      halo.classList.remove("go");
+      void halo.offsetWidth; // restart the rings
+      halo.classList.add("go");
       navRef.current?.querySelectorAll("li").forEach((li, i) => {
         li.dataset.active = String(i === n);
       });
+      capRef.current?.querySelectorAll<HTMLElement>(".cap").forEach((c, i) => {
+        c.dataset.active = String(i === n);
+      });
+      if (noRef.current) noRef.current.textContent = `${String(n + 1).padStart(2, "0")} / ${String(count).padStart(2, "0")}`;
+    };
+
+    const update = () => {
+      raf = 0;
+      // every read happens here, before any write, so the frame never forces layout
+      const box = stage.getBoundingClientRect();
+      const span = stage.offsetHeight - H;
+      const p = span > 0 ? Math.min(1, Math.max(0, -box.top / span)) : 0;
+      const f = p * (count - 1);
+      const n = Math.min(count - 1, Math.round(f));
+      const pr = cards[n]?.querySelector<HTMLElement>(".frame")?.getBoundingClientRect();
+      const b = backdropBase();
+
+      // camera: hold on a target, then travel, pulling back a little mid-flight
+      const a0 = Math.min(count - 1, Math.floor(f));
+      const a1 = Math.min(count - 1, a0 + 1);
+      const w = smooth((f - a0 - 0.2) / 0.6);
+      const z = Z - 0.14 * Math.sin(Math.PI * w);
+      const c0 = aimAt(a0, z, b);
+      const c1 = aimAt(a1, z, b);
+      // ease the camera in as the stage arrives and out as it leaves
+      const e = smooth(Math.min(1 - box.top / H, 1 + (box.bottom - H) / H));
+      const cx = (c0[0] + (c1[0] - c0[0]) * w) * e;
+      const cy = (c0[1] + (c1[1] - c0[1]) * w) * e;
+      const cz = 1 + (z - 1) * e;
+      cam.style.setProperty("--cam-x", `${cx.toFixed(1)}px`);
+      cam.style.setProperty("--cam-y", `${cy.toFixed(1)}px`);
+      cam.style.setProperty("--cam-z", cz.toFixed(4));
+      barRef.current?.style.setProperty("transform", `scaleX(${p.toFixed(4)})`);
+
+      // the chart: every target where it sits on the nebula right now
+      const S = b.s * cz;
+      const pts = items.map((_, i) => {
+        const [qx, qy] = TARGETS[i % TARGETS.length];
+        return [W / 2 + cx + S * (qx - 0.5) * 1.08 * W, H / 2 + b.ty + cy + S * (qy - 0.5) * 1.08 * H];
+      });
+      route.setAttribute("points", pts.map((q) => q.join(",")).join(" "));
+      // the part of the route already observed, drawn up to the camera
+      const done = pts.slice(0, a0 + 1);
+      if (a1 > a0) done.push([pts[a0][0] + (pts[a1][0] - pts[a0][0]) * w, pts[a0][1] + (pts[a1][1] - pts[a0][1]) * w]);
+      trail.setAttribute("points", done.map((q) => q.join(",")).join(" "));
+      marks.forEach((m, i) => {
+        m.setAttribute("transform", `translate(${pts[i][0].toFixed(1)} ${pts[i][1].toFixed(1)})`);
+        m.dataset.state = i === n ? "on" : i < n ? "seen" : "";
+      });
+      halo.style.transform = `translate3d(${pts[n][0].toFixed(1)}px, ${pts[n][1].toFixed(1)}px, 0)`;
+
+      // the panel: one release at a time, its plate opening through the aperture
+      cards.forEach((c, i) => {
+        const t = i - f;
+        let o = 1;
+        let y = 0;
+        let ap = 1;
+        if (t > 0.15) {
+          const k = Math.min(1, (t - 0.15) / 0.4);
+          o = Math.min(1, (1 - k) * 2.5);
+          y = ease(k) * 24;
+          ap = 1 - k;
+        } else if (t < -0.15) {
+          const k = Math.min(1, (-t - 0.15) / 0.2);
+          o = 1 - k;
+          y = -ease(k) * 16;
+        }
+        c.style.transform = `translate3d(0, calc(-50% + ${y.toFixed(1)}px), 0)`;
+        c.style.opacity = o.toFixed(3);
+        const vis = o < 0.01 ? "hidden" : "visible";
+        const v = c.querySelector("video");
+        if (v && vis === "hidden") v.pause();
+        else if (v && c.style.visibility === "hidden" && v.dataset.userPaused !== "true") v.play().catch(() => {});
+        c.style.visibility = vis;
+        c.style.pointerEvents = Math.abs(t) < 0.5 ? "auto" : "none";
+        const media = c.querySelector<HTMLElement>(".frame-media");
+        if (media) {
+          const r = rMax * ease(ap);
+          media.style.clipPath =
+            ap >= 1 ? "" : `polygon(${HEX.map(([hx, hy]) => `calc(50% + ${(hx * r).toFixed(1)}px) calc(50% + ${(hy * r).toFixed(1)}px)`).join(",")})`;
+        }
+        const ring = c.querySelector<SVGElement>(".aperture");
+        if (ring) {
+          const g = ap <= 0 || ap >= 1 ? 0 : ap < 0.1 ? ap / 0.1 : Math.max(0, 1 - (ap - 0.1) / 0.5);
+          ring.style.opacity = g.toFixed(3);
+          ring.style.transform = `translate(-50%, -50%) scale(${((rMax * ease(ap)) / 50).toFixed(3)})`;
+        }
+      });
+
+      // the beam: from the target to the panel it describes
+      const to = pr ? [pr.left - 10, pr.top + pr.height / 2] : pts[n];
+      beam.setAttribute("x1", pts[n][0].toFixed(1));
+      beam.setAttribute("y1", pts[n][1].toFixed(1));
+      beam.setAttribute("x2", to[0].toFixed(1));
+      beam.setAttribute("y2", to[1].toFixed(1));
+      if (n !== fired) {
+        fired = n;
+        fire(n, pts[n], to);
+      }
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -540,10 +663,10 @@ export function Depth({
       size();
       update();
     };
-    const goTo = (i: number, smooth: boolean) => {
-      const span = stage.offsetHeight - window.innerHeight;
+    const goTo = (i: number, smoothly: boolean) => {
+      const span = stage.offsetHeight - H;
       const top = stage.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: top + (i / Math.max(1, count - 1)) * span, behavior: smooth ? "smooth" : "auto" });
+      window.scrollTo({ top: top + (i / Math.max(1, count - 1)) * span, behavior: smoothly ? "smooth" : "auto" });
     };
     const onFocus = (e: FocusEvent) => {
       const card = (e.target as HTMLElement | null)?.closest<HTMLElement>(".release");
@@ -557,31 +680,80 @@ export function Depth({
       goTo(cards.indexOf(card), true);
     };
 
+    // pinned panels always intersect, so a loop's own observer never stops
+    // them; one that starts (or lazily autoplays) behind a hidden panel stops here
+    const onPlay = (e: Event) => {
+      const v = e.target as HTMLVideoElement;
+      if (v.closest<HTMLElement>(".release")?.style.visibility === "hidden") v.pause();
+    };
+
     size();
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+    stage.addEventListener("play", onPlay, true);
     stage.addEventListener("focusin", onFocus);
     document.addEventListener("click", onIndex);
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      stage.removeEventListener("play", onPlay, true);
       stage.removeEventListener("focusin", onFocus);
       document.removeEventListener("click", onIndex);
       cancelAnimationFrame(raf);
       stage.classList.remove("is-live");
       stage.style.height = "";
+      ["--cam-x", "--cam-y", "--cam-z"].forEach((v) => cam.style.removeProperty(v));
       cards.forEach((c) => {
         c.style.transform = c.style.opacity = c.style.visibility = c.style.pointerEvents = "";
+        const media = c.querySelector<HTMLElement>(".frame-media");
+        if (media) media.style.clipPath = "";
       });
     };
-  }, [live, count]);
+  }, [live, count, items]);
 
   return (
     <div ref={stageRef} className="depth">
       <div className="depth-pin">
+        {/* the chart: targets on the nebula, the route between them, the beam to the panel */}
+        <svg ref={svgRef} className="chart" aria-hidden="true">
+          <polyline className="route" />
+          <polyline className="trail" />
+          <line className="beam" />
+          {items.map((it, i) => (
+            <g key={it.name} className="mark">
+              <circle r="3" />
+              <path d="M-11 0h5M6 0h5M0 -11v5M0 6v5" />
+              <text x="12" y="-10">
+                {String(i + 1).padStart(2, "0")}
+              </text>
+            </g>
+          ))}
+        </svg>
+        {/* the target answers, and one pulse runs down the beam: composited layers, not SVG repaints */}
+        <div className="halo" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </div>
+        <i className="pulse" aria-hidden="true" />
         <div className="wrap depth-console">
-          {/* the target list: where you are, and a jump to any release */}
+          {/* the chrome strip: what this is, and where you are in it */}
+          <p className="depth-chrome" aria-hidden="true">
+            <span>The work</span>
+            <span ref={noRef}>01 / {String(count).padStart(2, "0")}</span>
+          </p>
+          <div className="depth-field">{children}</div>
+          {/* one sentence per release, as a narrator would say it */}
+          <div ref={capRef} className="depth-caps" aria-hidden="true">
+            {items.map((it, i) => (
+              <div key={it.name} className="cap" data-active={i === 0 ? "true" : "false"}>
+                <p className="cap-over">{it.type}</p>
+                <p className="cap-line">{it.line}</p>
+              </div>
+            ))}
+          </div>
+          {/* the stepper: where you are, and a jump to any release */}
           <nav className="depth-nav" aria-label="Releases">
             <ol ref={navRef}>
               {items.map((it, i) => (
@@ -589,18 +761,13 @@ export function Depth({
                   <a href={`#release-${String(i + 1).padStart(2, "0")}`}>
                     <span className="no">{String(i + 1).padStart(2, "0")}</span>
                     <span className="nm">{it.name}</span>
-                    <span className="ty">{it.type}</span>
                   </a>
                 </li>
               ))}
             </ol>
-            <p ref={countRef} className="depth-count" aria-hidden="true" />
           </nav>
-          <div className="depth-field">{children}</div>
-          <div ref={spikeRef} className="spike" aria-hidden="true">
-            <i />
-          </div>
         </div>
+        <i ref={barRef} className="depth-bar" aria-hidden="true" />
       </div>
     </div>
   );
