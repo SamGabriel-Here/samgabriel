@@ -279,9 +279,11 @@ function ScrollProgress() {
 function Reticle() {
   const ringRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
+  // live, so switching reduced motion on mid-visit hands the cursor straight back
+  const on = useMediaQuery("(pointer: fine) and (prefers-reduced-motion: no-preference)");
 
   useEffect(() => {
-    if (!canHover()) return;
+    if (!on) return;
     const ring = ringRef.current;
     const dot = dotRef.current;
     if (!ring || !dot) return;
@@ -354,8 +356,10 @@ function Reticle() {
       document.removeEventListener("mouseleave", leave);
       document.removeEventListener("visibilitychange", onVis);
       cancelAnimationFrame(raf);
+      // torn down mid-visit: do not leave a frozen ring on screen
+      leave();
     };
-  }, []);
+  }, [on]);
 
   return (
     <>
@@ -468,6 +472,8 @@ function makeStars(n: number): Star[] {
 
 function StarChart() {
   const ref = useRef<HTMLCanvasElement>(null);
+  // live, so a visitor who asks for reduced motion mid-visit gets a still field
+  const motionOk = useMotionOk();
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
@@ -618,9 +624,16 @@ function StarChart() {
       ctx.fillRect(Math.round(gx), Math.round(gy), 2, 2);
     };
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      draw(0);
+    if (!motionOk) {
+      // resizing clears the canvas; with no loop running, paint the still again
+      const redraw = () => draw(0);
+      redraw();
+      window.addEventListener("resize", redraw);
+      return () => {
+        window.removeEventListener("resize", resize);
+        window.removeEventListener("resize", redraw);
+        window.removeEventListener("pointermove", onPointer);
+      };
     } else {
       const gap = 1000 / 30;
       let last = 0;
@@ -648,12 +661,7 @@ function StarChart() {
         document.removeEventListener("visibilitychange", onVis);
       };
     }
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("pointermove", onPointer);
-    };
-  }, []);
+  }, [motionOk]);
   return <canvas ref={ref} aria-hidden className="pointer-events-none fixed inset-0 -z-10" />;
 }
 
@@ -832,7 +840,9 @@ function SkyReadout() {
 function Clock() {
   const [t, setT] = useState("--:--:--");
   useEffect(() => {
-    const f = () => setT(new Date().toLocaleTimeString("en-GB", { hour12: false }));
+    // labelled IST, so it has to be IST wherever the visitor's clock is set
+    const f = () =>
+      setT(new Date().toLocaleTimeString("en-GB", { hour12: false, timeZone: "Asia/Kolkata" }));
     f();
     const id = setInterval(f, 1000);
     return () => clearInterval(id);
@@ -1000,6 +1010,8 @@ function Header() {
  * ------------------------------------------------------------------ */
 
 function Hero() {
+  const motionOk = useMotionOk();
+  const playback = usePlayback();
   const secRef = useRef<HTMLElement>(null);
   const on = useRef(false);
   useEffect(() => {
@@ -1082,42 +1094,50 @@ function Hero() {
             </dl>
           </div>
 
-          {/* the brightest object, framed like a plate from the archive */}
-          <a
-            href="#catalogue"
-            className="group relative block overflow-hidden border border-[color:var(--line-strong)] transition-colors hover:border-[color:var(--amber)]/45"
+          {/* the brightest object, framed like a plate from the archive. The
+              wrapper carries the parallax and the pause control, which cannot
+              live inside the link. */}
+          <div
+            className="relative"
             style={{
               transform: "translate3d(calc(var(--mx,0)*10px), calc(var(--my,0)*7px), 0)",
               transition: "transform 0.5s cubic-bezier(0.22,1,0.36,1)",
             }}
           >
-            <div className="relative aspect-[16/10] overflow-hidden">
-              <PlateMedia
-                o={plates[0]}
-                className="h-full w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
-              />
-              <div
-                className="absolute inset-0"
-                style={{ background: "linear-gradient(180deg, transparent 55%, rgba(var(--ground-rgb),0.85) 100%)" }}
-              />
-            </div>
-            <div className="mono absolute left-3 top-3 flex items-center gap-2 text-[10px]">
-              <span className="bg-[color:var(--amber)] px-1.5 py-0.5 text-[color:var(--ink)]">{plates[0].sg}</span>
-              <span className="text-[color:var(--dim)]">{plates[0].type}</span>
-            </div>
-            <div className="border-t border-[color:var(--line)] px-4 py-3">
-              <div className="flex items-baseline justify-between gap-3">
-                <span className="display text-xl font-medium text-[color:var(--starlight)]">
-                  {plates[0].name}
-                </span>
-                <span className="mono shrink-0 text-[10px] text-[color:var(--faint)]">Latest plate</span>
+            {motionOk && <PlaybackToggle name={plates[0].name} playback={playback} />}
+            <a
+              href="#catalogue"
+              className="group relative block overflow-hidden border border-[color:var(--line-strong)] transition-colors hover:border-[color:var(--amber)]/45"
+            >
+              <div className="relative aspect-[16/10] overflow-hidden">
+                <PlateMedia
+                  o={plates[0]}
+                  playback={playback}
+                  className="h-full w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(180deg, transparent 55%, rgba(var(--ground-rgb),0.85) 100%)" }}
+                />
               </div>
-              {/* the single strongest depth signal on the site, above the fold */}
-              <p className="mono mt-1.5 text-[11px] text-[color:var(--ion)]">
-                176× faster than brute force at one million particles
-              </p>
-            </div>
-          </a>
+              <div className="mono absolute left-3 top-3 flex items-center gap-2 text-[10px]">
+                <span className="bg-[color:var(--amber)] px-1.5 py-0.5 text-[color:var(--ink)]">{plates[0].sg}</span>
+                <span className="text-[color:var(--dim)]">{plates[0].type}</span>
+              </div>
+              <div className="border-t border-[color:var(--line)] px-4 py-3">
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="display text-xl font-medium text-[color:var(--starlight)]">
+                    {plates[0].name}
+                  </span>
+                  <span className="mono shrink-0 text-[10px] text-[color:var(--faint)]">Latest plate</span>
+                </div>
+                {/* the single strongest depth signal on the site, above the fold */}
+                <p className="mono mt-1.5 text-[11px] text-[color:var(--ion)]">
+                  176× faster than brute force at one million particles
+                </p>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -1128,15 +1148,57 @@ function Hero() {
   );
 }
 
+/* A loop that runs beside the text needs a way to stop it (WCAG 2.2.2): the
+   reduced-motion setting covers the visitors who have found it, this covers
+   everyone else. State follows the video's own play/pause events, so a blocked
+   autoplay reads "Play" rather than claiming to be running. */
+type Playback = {
+  ref: React.RefObject<HTMLVideoElement | null>;
+  playing: boolean;
+  setPlaying: (p: boolean) => void;
+};
+
+function usePlayback(): Playback {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+  return { ref, playing, setPlaying };
+}
+
+/* Only ever rendered for a video that is actually loaded, i.e. motion welcome.
+   Sits outside any link, so it is its own target and never opens the plate. */
+function PlaybackToggle({ name, playback }: { name: string; playback: Playback }) {
+  const toggle = () => {
+    const v = playback.ref.current;
+    if (!v) return;
+    if (v.paused) v.play().catch(() => {});
+    else v.pause();
+  };
+  const verb = playback.playing ? "Pause" : "Play";
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={`${verb} the ${name} video`}
+      className="mono absolute right-3 top-3 z-10 min-h-6 px-2 text-[10px] text-[color:var(--starlight)] transition-colors hover:text-[color:var(--amber)]"
+      style={{ background: "rgba(var(--ground-rgb), 0.85)" }}
+    >
+      {verb}
+    </button>
+  );
+}
+
 /* One media slot for both plate sizes. The poster carries the frame until we
    know motion is welcome, so a reduced-motion visitor never gets an
    un-pausable loop (WCAG 2.2.2) and never pays for the video bytes. */
-function PlateMedia({ o, className }: { o: Obj; className: string }) {
+function PlateMedia({ o, className, playback }: { o: Obj; className: string; playback?: Playback }) {
   const motionOk = useMotionOk();
   if (o.media) {
     return (
       <video
         key={motionOk ? "motion" : "still"}
+        ref={playback?.ref}
+        onPlay={() => playback?.setPlaying(true)}
+        onPause={() => playback?.setPlaying(false)}
         src={motionOk ? o.media : undefined}
         poster={o.media.replace(/\.mp4$/, ".jpg")}
         className={className}
@@ -1181,6 +1243,8 @@ function Plate({ o }: { o: Obj }) {
     el.style.transform = "";
   };
   const primary = o.live || o.source;
+  const motionOk = useMotionOk();
+  const playback = usePlayback();
   return (
     <article
       ref={ref}
@@ -1191,11 +1255,16 @@ function Plate({ o }: { o: Obj }) {
       style={{ transformStyle: "preserve-3d" }}
     >
       <div className="relative aspect-[16/10] overflow-hidden">
-        <PlateMedia o={o} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        <PlateMedia
+          o={o}
+          playback={playback}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
         <div
           className="absolute inset-0"
           style={{ background: "linear-gradient(180deg, transparent 45%, rgba(var(--ground-rgb),0.92) 100%)" }}
         />
+        {o.media && motionOk && <PlaybackToggle name={o.name} playback={playback} />}
         <div className="mono absolute left-3 top-3 flex items-center gap-2 text-[10px]">
           <span className="bg-[color:var(--amber)] px-1.5 py-0.5 text-[color:var(--ink)]">{o.sg}</span>
           <span className="text-[color:var(--dim)]">{o.type}</span>
@@ -1239,20 +1308,27 @@ function Plate({ o }: { o: Obj }) {
 /* The catalogue as a horizontal journey. The pin is position: sticky and the
    travel is a single transform driven by one CSS variable, so there is no
    animation library and no layout work per frame — one rect read, one write.
-   Below 1024px, and whenever motion is unwelcome, it is simply a list. */
+   Below 1024px, and whenever motion is unwelcome, it is simply a list.
+
+   The query is live, not read once: a tablet rotated to landscape, a window
+   dragged wider or reduced motion switched off mid-visit all cross it, and the
+   journey has to set itself up (or tear itself down) right then. The pinned
+   frame is ~670px tall, hence the 720px floor, so it is never silently clipped. */
+const PINNED_QUERY = "(min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference)";
+
 function Catalogue() {
   const all = [...plates, ...catalogue];
   const railRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const pinned = useMediaQuery(PINNED_QUERY);
 
   useEffect(() => {
     const rail = railRef.current;
     const track = trackRef.current;
-    if (!rail || !track) return;
-    if (!window.matchMedia("(min-width: 1024px)").matches) return;
-    // the pinned frame is ~670px tall; below that it would be silently clipped
-    if (!window.matchMedia("(min-height: 720px)").matches) return;
-    if (prefersReducedMotion()) return;
+    if (!pinned || !rail || !track) return;
+    // the CSS only pins while this class is on, so it can never pin a track
+    // that nothing is moving
+    rail.classList.add("is-pinned");
 
     let raf = 0;
     let travel = 0;
@@ -1312,16 +1388,17 @@ function Catalogue() {
       window.removeEventListener("resize", onResize);
       track.removeEventListener("focusin", onFocusIn);
       cancelAnimationFrame(raf);
+      rail.classList.remove("is-pinned");
       rail.style.height = "";
       track.style.removeProperty("--travel");
     };
-  }, []);
+  }, [pinned]);
 
   return (
     <section id="catalogue" className="relative scroll-mt-14">
       <div ref={railRef} className="cat-rail">
         <div className="cat-pin">
-          <div className="shell px-5 py-24 sm:px-8 lg:py-0">
+          <div className="shell px-5 py-24 sm:px-8">
             <div className="flex items-end justify-between border-b border-[color:var(--line-strong)] pb-5">
               <h2 className="display text-5xl font-medium tracking-[-0.03em] text-[color:var(--starlight)] sm:text-7xl">
                 The Catalogue

@@ -446,9 +446,23 @@ a:hover > .plate-mark .bit-on {
   transform: translate3d(0, 3.5rem, 0);
 }
 
-/* The catalogue as a horizontal journey. The pin is position: sticky and the
-   travel is one transform, so no library and no layout work per frame. */
-.cat-pin {
+/* The catalogue is a list by default: that is what a phone, a short window,
+   reduced motion and a visitor without JS all get. Catalogue() opts the rail
+   into the horizontal journey with .is-pinned only while it is driving the
+   travel, so the CSS can never pin a track that nothing is moving. */
+.cat-track {
+  display: grid;
+  /* min() lets a card shrink below 19rem when the column itself is narrower */
+  grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+  gap: 1.25rem;
+}
+.cat-card > article {
+  height: 100%;
+}
+
+/* The pin is position: sticky and the travel is one transform, so no library
+   and no layout work per frame. */
+.cat-rail.is-pinned .cat-pin {
   position: sticky;
   top: 0;
   height: 100svh;
@@ -462,41 +476,17 @@ a:hover > .plate-mark .bit-on {
   overflow: hidden;
   overflow: clip;
 }
-.cat-track {
+.cat-rail.is-pinned .cat-pin > .shell {
+  padding-block: 0;
+}
+.cat-rail.is-pinned .cat-track {
   display: flex;
   gap: 1.5rem;
   will-change: transform;
   transform: translate3d(calc(var(--travel, 0) * -1px), 0, 0);
 }
-.cat-card {
+.cat-rail.is-pinned .cat-card {
   flex: 0 0 clamp(19rem, 30vw, 30rem);
-}
-.cat-card > article {
-  height: 100%;
-}
-
-/* Below lg, on short windows, and whenever motion is unwelcome, the journey
-   is simply a list. */
-@media (max-width: 1023px), (max-height: 719px) {
-  .cat-rail {
-    height: auto !important;
-  }
-  .cat-pin {
-    position: static;
-    height: auto;
-    display: block;
-    overflow: visible;
-  }
-  .cat-track {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
-    gap: 1.25rem;
-    transform: none !important;
-    will-change: auto;
-  }
-  .cat-card {
-    flex: none;
-  }
 }
 
 /* ---- entrances ---- */
@@ -577,22 +567,6 @@ a:hover > .plate-mark .bit-on {
   .nav-shell[data-hidden="true"] .cta-persist {
     transition: none;
     transform: none;
-  }
-  .cat-rail {
-    height: auto !important;
-  }
-  .cat-pin {
-    position: static;
-    height: auto;
-    display: block;
-    overflow: visible;
-  }
-  .cat-track {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
-    gap: 1.25rem;
-    transform: none !important;
-    will-change: auto;
   }
 }
 
