@@ -281,6 +281,7 @@ export function ContactForm({ email }: { email: string }) {
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
   const statusRef = useRef<HTMLDivElement>(null);
 
   /* No backend: the form hands a drafted email to the visitor's mail app. It
@@ -298,18 +299,18 @@ export function ContactForm({ email }: { email: string }) {
       await navigator.clipboard.writeText(email);
       setCopied(true);
     } catch {
-      // clipboard refused; the address is printed beside the form
+      setCopyFailed(true); // clipboard refused: point at the printed address instead
     }
   };
 
   return (
     <form onSubmit={submit}>
       <label className="field">
-        <span className="cap-label">Your name</span>
+        <span>Your name</span>
         <input value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" maxLength={120} />
       </label>
       <label className="field">
-        <span className="cap-label">Message</span>
+        <span>Message</span>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -319,12 +320,10 @@ export function ContactForm({ email }: { email: string }) {
           placeholder="A role, a project, or a question about the work"
         />
       </label>
+      <p className="form-note">This opens your email app with the message drafted, ready to send.</p>
       <button type="submit" className="btn btn-solid" style={{ width: "100%", justifyContent: "center" }}>
-        Send message
+        Open email draft
       </button>
-      <p className="cap-label" style={{ marginTop: 12 }}>
-        Opens your email app with the message drafted.
-      </p>
       <div ref={statusRef} tabIndex={-1} aria-live="polite">
         {sent && (
           <div className="sent">
@@ -332,6 +331,7 @@ export function ContactForm({ email }: { email: string }) {
             <button type="button" className="tlink" style={{ paddingInline: 0 }} onClick={copy}>
               {copied ? "Address copied" : `Copy ${email}`}
             </button>
+            {copyFailed && <> Copying was blocked; the address is listed beside the form.</>}
           </div>
         )}
       </div>

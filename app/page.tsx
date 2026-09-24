@@ -142,49 +142,22 @@ const email = "samgabrielofficial@gmail.com";
 const github = "https://github.com/SamGabriel-Here";
 const linkedin = "https://www.linkedin.com/in/samgabrielofficially/";
 
-/* The six NIRCam filters of the Cosmic Cliffs release, short to long. They are
-   the page's legend colours; on a project they are only a legend device. */
-const FILTERS = ["--f090", "--f187", "--f200", "--f335", "--f444", "--f470"];
-const COSMIC_CLIFFS_FILTERS = ["F090W", "F187N", "F200W", "F335M", "F444W", "F470N"];
+/* The six NIRCam filters of the Cosmic Cliffs release, short to long. The
+   colour is the data, so it appears only in the credit legend at the end. */
+const COSMIC_CLIFFS_FILTERS: [string, string][] = [
+  ["F090W", "--f090"],
+  ["F187N", "--f187"],
+  ["F200W", "--f200"],
+  ["F335M", "--f335"],
+  ["F444W", "--f444"],
+  ["F470N", "--f470"],
+];
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /* ------------------------------------------------------------------ *
  *  Pieces                                                             *
  * ------------------------------------------------------------------ */
-
-/* In a filter legend the colour is the data. Anywhere else the mark is plain. */
-function Chips({ items, offset = 0, legend = false }: { items: string[]; offset?: number; legend?: boolean }) {
-  return (
-    <div className={legend ? "chips" : "chips plain"}>
-      {items.map((s, i) => (
-        <span className="chip" key={s} style={{ "--n": i } as React.CSSProperties}>
-          <i style={{ "--c": `var(${FILTERS[(i + offset) % FILTERS.length]})` } as React.CSSProperties} />
-          {s}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function Compass() {
-  return (
-    <svg className="compass" viewBox="0 0 64 64" aria-hidden="true">
-      <g stroke="currentColor" strokeWidth="1.2" fill="none">
-        <path d="M52 52 L52 12" />
-        <path d="M52 52 L12 52" />
-        <path d="M48 18 L52 12 L56 18" />
-        <path d="M18 48 L12 52 L18 56" />
-      </g>
-      <text x="48" y="8" fill="currentColor" fontFamily="var(--font-martian)" fontSize="9">
-        N
-      </text>
-      <text x="1" y="56" fill="currentColor" fontFamily="var(--font-martian)" fontSize="9">
-        E
-      </text>
-    </svg>
-  );
-}
 
 function Links({ r }: { r: Release }) {
   return (
@@ -216,8 +189,8 @@ function ReleasePlate({ r, i }: { r: Release; i: number }) {
       </div>
       <div>
         <h3 id={`r-${i}`}>{r.name}</h3>
-        <p className="cap-label" style={{ marginTop: -6, marginBottom: 16 }}>
-          Release {pad(i + 1)} · {r.type} · {r.date}
+        <p className="meta">
+          {r.type} · {r.date}
         </p>
         <p>{r.blurb}</p>
         {r.figure && (
@@ -229,41 +202,12 @@ function ReleasePlate({ r, i }: { r: Release; i: number }) {
             {r.figure.line}
           </p>
         )}
-        <div className="instruments">
-          <p className="cap-label">Built with</p>
-          <Chips items={r.stack} offset={i} />
-        </div>
+        <p className="stack">{r.stack.join(" · ")}</p>
         <div className="links">
           <Links r={r} />
         </div>
       </div>
     </article>
-  );
-}
-
-function Interstitial({
-  src,
-  source,
-  title,
-  credit,
-}: {
-  src: string;
-  source: string;
-  title: string;
-  credit: string;
-}) {
-  return (
-    <figure className="interstitial" style={{ margin: 0 }}>
-      <div className="plate-media">
-        <Loop src={src} label={title} />
-      </div>
-      <figcaption className="wrap interstitial-cap">
-        <p className="t">{title}</p>
-        <p className="cap-label">
-          {source} · {credit}
-        </p>
-      </figcaption>
-    </figure>
   );
 }
 
@@ -283,7 +227,7 @@ export default function Home() {
       <Develop />
 
       <main id="main" tabIndex={-1}>
-        {/* ---------- opening plate ---------- */}
+        {/* ---------- opening plate: the image, the name, one way in ---------- */}
         <section className="plate" id="top" aria-label="Introduction">
           <div className="plate-media exposing">
             <Loop
@@ -294,43 +238,24 @@ export default function Home() {
             />
           </div>
 
-          <div className="wrap plate-meta">
-            <p className="cap-label enter" style={{ "--d": "0.1s" } as React.CSSProperties}>
-              Machine learning · GPU · Software
-            </p>
-            <p className="cap-label hide-sm enter" style={{ "--d": "0.1s" } as React.CSSProperties}>
-              Indore, India · 22.72°N 75.86°E
-            </p>
-          </div>
-          <Compass />
-
           <div className="wrap plate-foot">
             <h1 className="plate-name enter" style={{ "--d": "0.25s" } as React.CSSProperties}>
               Sam Gabriel
             </h1>
-            <div>
-              <p className="plate-role enter" style={{ "--d": "0.45s" } as React.CSSProperties}>
-                Machine-learning and software engineer. I build the instruments behind hard problems: GPU physics,
-                the night sky, messy data.
-              </p>
-              <div className="plate-actions enter" style={{ "--d": "0.6s" } as React.CSSProperties}>
-                <span className="status">Open to work</span>
-                <a className="btn btn-solid" href="#contact">
-                  Contact
-                </a>
-                <a className="tlink" href="#work">
-                  See the work
-                </a>
-              </div>
-            </div>
-
-            <div className="legend exposing-legend">
-              <p className="cap-label">Webb NIRCam · Cosmic Cliffs, NGC 3324</p>
-              <Chips items={COSMIC_CLIFFS_FILTERS} legend />
-              <p className="cap-label credit">NASA, ESA, CSA, STScI · 3D visualization F.&nbsp;Summers, G.&nbsp;Bacon (STScI)</p>
-              <div id="hero-transport" className="transport" />
+            <p className="plate-role enter" style={{ "--d": "0.45s" } as React.CSSProperties}>
+              Machine-learning and software engineer in Indore, building the instruments behind hard problems.
+            </p>
+            <div className="plate-actions enter" style={{ "--d": "0.6s" } as React.CSSProperties}>
+              <span className="status">Open to work</span>
+              <a className="btn btn-solid" href="#contact">
+                Contact
+              </a>
+              <a className="tlink" href="#work">
+                See the work
+              </a>
             </div>
           </div>
+          <div id="hero-transport" className="transport hero-transport" />
         </section>
 
         {/* ---------- the work ---------- */}
@@ -340,23 +265,17 @@ export default function Home() {
               <h2 className="h2" id="work-h">
                 Releases
               </h2>
-              <p>
-                Eight projects, each with public source; {live} run live right now. The index has every link; the
-                plates below it have the detail.
-              </p>
+              <p>Eight projects, each with public source; {live} run live right now.</p>
             </div>
 
-            <ol className="index" aria-label="Release index">
+            <ol className="index" aria-label="Project index">
               {releases.map((r, i) => (
                 <li key={r.name}>
-                  <span className="no">{pad(i + 1)}</span>
-                  <span className="nm">
-                    <a href={`#release-${pad(i + 1)}`}>{r.name}</a>
-                  </span>
-                  <span className="ty">{r.type}</span>
-                  <span className="ln">
-                    <Links r={r} />
-                  </span>
+                  <a href={`#release-${pad(i + 1)}`}>
+                    <span className="no">{pad(i + 1)}</span>
+                    <span className="nm">{r.name}</span>
+                    <span className="ty">{r.type}</span>
+                  </a>
                 </li>
               ))}
             </ol>
@@ -366,12 +285,14 @@ export default function Home() {
             ))}
           </div>
 
-          <Interstitial
-            src="/cosmos/blackhole-approach"
-            source="NASA visualization · general relativity"
-            title="Approaching a black hole"
-            credit={"NASA/JPL-Caltech · visualization R.\u00a0Hurt (IPAC)"}
-          />
+          <figure className="interstitial" style={{ margin: 0 }}>
+            <div className="plate-media">
+              <Loop src="/cosmos/blackhole-approach" label="A NASA visualization of approaching a black hole" />
+            </div>
+            <figcaption className="wrap interstitial-cap">
+              <p className="t">Approaching a black hole</p>
+            </figcaption>
+          </figure>
 
           <div className="wrap">
             {releases.slice(4).map((r, i) => (
@@ -379,22 +300,6 @@ export default function Home() {
             ))}
           </div>
         </section>
-
-        {/* ---------- the cosmos between chapters ---------- */}
-        <div className="pair">
-          <Interstitial
-            src="/cosmos/sun-171"
-            source="Solar Dynamics Observatory · AIA 171 Å"
-            title="The Sun in extreme ultraviolet"
-            credit={"NASA/SDO · visualization A.\u00a0J.\u00a0Christensen (SVS)"}
-          />
-          <Interstitial
-            src="/cosmos/blackhole-orbit"
-            source="NASA visualization · light bent by gravity"
-            title="Orbiting a black hole"
-            credit={"NASA/JPL-Caltech · visualization R.\u00a0Hurt (IPAC)"}
-          />
-        </div>
 
         {/* ---------- about ---------- */}
         <section className="section" id="about" aria-labelledby="about-h">
@@ -415,13 +320,7 @@ export default function Home() {
                 <dl className="kit">
                   {kit.map((row) => (
                     <div key={row.k}>
-                      <dt className="cap-label">
-                        <i
-                          aria-hidden="true"
-                          style={{ width: 9, height: 9, display: "inline-block", border: "1px solid var(--dim)" }}
-                        />
-                        {row.k}
-                      </dt>
+                      <dt>{row.k}</dt>
                       <dd>{row.v}</dd>
                     </div>
                   ))}
@@ -432,7 +331,7 @@ export default function Home() {
                 <ol className="record">
                   {record.map((r) => (
                     <li key={r.what}>
-                      <p className="cap-label">{r.when}</p>
+                      <p className="when">{r.when}</p>
                       <p className="what">{r.what}</p>
                       <p className="where">{r.where}</p>
                     </li>
@@ -446,7 +345,8 @@ export default function Home() {
         {/* ---------- contact ---------- */}
         <section className="contact" id="contact" aria-labelledby="contact-h">
           <div className="plate-media">
-            <Loop src="/cosmos/apollo13-moon" label="The far side of the Moon as the Apollo 13 crew saw it" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/cosmos/apollo13-moon.webp" alt="" loading="lazy" decoding="async" />
           </div>
           <div className="wrap contact-grid">
             <div>
@@ -474,21 +374,35 @@ export default function Home() {
         </section>
       </main>
 
-      {/* ---------- footer: the credit block ---------- */}
+      {/* ---------- footer: every credit and extra, at the end ---------- */}
       <footer className="foot">
         <div className="wrap foot-grid">
           <div>
             <p style={{ fontWeight: 500 }}>Sam Gabriel</p>
-            <p className="cap-label" style={{ marginTop: 6 }}>
-              Indore · <ClockIST /> · © 2026
+            <p className="foot-note">
+              Indore, India · 22.72°N 75.86°E · <ClockIST /> · © 2026
             </p>
           </div>
-          <p className="credits">
-            Space imagery: Cosmic Cliffs 3D flight, NASA, ESA, CSA, STScI (F. Summers, G. Bacon). Black hole
-            visualizations, NASA/JPL-Caltech (R. Hurt, IPAC). The Sun at 171 Å, NASA/SDO and the AIA science team,
-            visualization NASA SVS. Apollo 13 lunar views, NASA SVS (E. Wright) from Lunar Reconnaissance Orbiter data.
-            NASA media is used under NASA&apos;s media guidelines and implies no endorsement.
-          </p>
+          <div className="credits">
+            <p className="cap-label">Image credits</p>
+            <p>
+              Opening: the Cosmic Cliffs in the Carina Nebula (NGC 3324), a 3D flight through the Webb NIRCam
+              image. NASA, ESA, CSA, STScI; visualization F.&nbsp;Summers, G.&nbsp;Bacon (STScI).
+            </p>
+            <div className="chips" aria-label="NIRCam filters used in the opening image">
+              {COSMIC_CLIFFS_FILTERS.map(([f, c]) => (
+                <span className="chip" key={f}>
+                  <i style={{ "--c": `var(${c})` } as React.CSSProperties} />
+                  {f}
+                </span>
+              ))}
+            </div>
+            <p>
+              Approaching a black hole: NASA/JPL-Caltech, visualization R.&nbsp;Hurt (IPAC). Contact: the Moon&apos;s
+              far side as seen by Apollo 13, NASA SVS (E.&nbsp;Wright) from Lunar Reconnaissance Orbiter data.
+            </p>
+            <p>NASA media is used under NASA&apos;s media guidelines and implies no endorsement.</p>
+          </div>
         </div>
       </footer>
     </>

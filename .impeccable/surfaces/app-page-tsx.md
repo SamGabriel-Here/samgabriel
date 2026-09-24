@@ -23,11 +23,11 @@ Memorable moment: the first viewport reads as a real telescope image release wit
 
 THESIS: The portfolio as a telescope image release: every project published as a plate with caption, instruments and credit. Refuses the centred-planet space template and the dark card grid.
 
-OWN-WORLD: Real NASA/Webb imagery full-bleed on near-black #05070d; paper-white type; Archivo wide-light display, Martian Mono captions; six Webb filter colours only as legend chips; corner registration ticks; compass rose; no cards, no glow.
+OWN-WORLD: Real NASA/Webb imagery full-bleed on near-black #05070d; paper-white type; Archivo wide-light display, sentence-case captions; six Webb filter colours only in the footer credit legend; corner registration ticks; no cards, no glow. Quiet by owner decision (2026-09-24): two loops, credits and extras at the end.
 
 STORY: The visitor sees the cosmos, reads Sam's name as the release title, gets role and open-to-work in one line, scans releases carrying proof, then contacts.
 
-FIRST VIEWPORT: Full-bleed Cosmic Cliffs loop; meta row top; compass top-right; name at ~11vw bottom-left with role, status, See the work and Contact; filter legend and credit bottom-right.
+FIRST VIEWPORT: Full-bleed Cosmic Cliffs loop; name at ~11vw bottom-left with one line of role, status, Contact and See the work; a quiet Pause in the corner; nothing else. Credits live in the footer.
 
 FORM: Webb release plates, first on my grounded list (pick card), seed 53b372f3.
 
