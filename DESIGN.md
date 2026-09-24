@@ -1,388 +1,279 @@
 ---
-name: Observation Log
-description: An astronomer's catalogue rendered as a deep field — void-violet ground, emission colour at the edges, sodium amber for anything a human should act on.
+name: Release Plates
+description: The portfolio as a telescope image release. Real NASA/ESA/Webb imagery full-bleed on near-black, paper-white type, captions and credits in small mono, the six Webb filter colours kept for the one real filter legend.
 colors:
-  ground: "#070512"
-  ground-2: "#0e0b20"
-  ground-deep: "#030208"
-  starlight: "#f2eff9"
-  dim: "#a49ec4"
-  faint: "#948eb8"
-  amber: "#ffb454"
-  amber-deep: "#e0873a"
-  ion: "#67e8f0"
-  rose: "#ff7ab0"
-  violet: "#b18cff"
-  ink: "#0b0716"
-  line: "rgba(242, 239, 249, 0.09)"
-  line-strong: "rgba(242, 239, 249, 0.18)"
-  field-line: "rgba(242, 239, 249, 0.4)"
+  void: "#05070d"
+  void-2: "#0b0e17"
+  paper: "#f4f1ea"
+  soft: "#d8d6d0"
+  dim: "#a9aab3"
+  rule: "rgba(244, 241, 234, 0.18)"
+  rule-strong: "rgba(244, 241, 234, 0.4)"
+  f090: "#4d86ff"
+  f187: "#2fc6b8"
+  f200: "#79d66b"
+  f335: "#f2c14e"
+  f444: "#f08a3c"
+  f470: "#e3563a"
 typography:
   display:
-    fontFamily: "Fraunces, Iowan Old Style, Georgia, serif"
-    fontSize: "clamp(3.4rem, 12vw, 8.5rem)"
-    fontWeight: 500
+    fontFamily: "Archivo, system-ui, sans-serif"
+    fontSize: "clamp(3.5rem, 11vw, 11.5rem)"
+    fontWeight: 300
     lineHeight: 0.86
-    letterSpacing: "-0.035em"
-    fontFeature: "optical sizing auto"
+    letterSpacing: "-0.045em"
+    fontVariation: "'wdth' 112"
   headline:
-    fontFamily: "Fraunces, Iowan Old Style, Georgia, serif"
-    fontSize: "clamp(3rem, 6vw, 4.5rem)"
-    fontWeight: 500
-    lineHeight: 1.05
-    letterSpacing: "-0.03em"
+    fontFamily: "Archivo, system-ui, sans-serif"
+    fontSize: "clamp(3rem, 7vw, 6.5rem)"
+    fontWeight: 300
+    lineHeight: 0.9
+    letterSpacing: "-0.04em"
+    fontVariation: "'wdth' 112"
   title:
-    fontFamily: "Fraunces, Iowan Old Style, Georgia, serif"
-    fontSize: "clamp(1.875rem, 3vw, 2.25rem)"
-    fontWeight: 500
-    lineHeight: 1.15
-  subtitle:
-    fontFamily: "Fraunces, Iowan Old Style, Georgia, serif"
-    fontSize: "20px"
-    fontWeight: 500
-    lineHeight: 1.2
-  wordmark:
-    fontFamily: "Fraunces, Iowan Old Style, Georgia, serif"
-    fontSize: "15px"
-    fontWeight: 500
-    letterSpacing: "-0.01em"
-  lede:
-    fontFamily: "Geist, system-ui, sans-serif"
-    fontSize: "18px"
+    fontFamily: "Archivo, system-ui, sans-serif"
+    fontSize: "clamp(2.5rem, 4.4vw, 4rem)"
     fontWeight: 400
-    lineHeight: 1.625
-    fontFeature: "ss01"
+    lineHeight: 0.95
+    letterSpacing: "-0.035em"
+    fontVariation: "'wdth' 108"
+  index-name:
+    fontFamily: "Archivo, system-ui, sans-serif"
+    fontSize: "clamp(20px, 2vw, 26px)"
+    fontWeight: 500
+    letterSpacing: "-0.02em"
+    fontVariation: "'wdth' 108"
   body:
-    fontFamily: "Geist, system-ui, sans-serif"
+    fontFamily: "Archivo, system-ui, sans-serif"
     fontSize: "16px"
     fontWeight: 400
-    lineHeight: 1.625
-    fontFeature: "ss01"
-  body-sm:
-    fontFamily: "Geist, system-ui, sans-serif"
+    lineHeight: 1.65
+  lede:
+    fontFamily: "Archivo, system-ui, sans-serif"
+    fontSize: "clamp(16px, 1.3vw, 18px)"
+    fontWeight: 400
+    lineHeight: 1.55
+  action:
+    fontFamily: "Archivo, system-ui, sans-serif"
     fontSize: "15px"
-    fontWeight: 400
-    lineHeight: 1.625
-  input:
-    fontFamily: "Geist, system-ui, sans-serif"
-    fontSize: "14px"
-    fontWeight: 400
-  caption:
-    fontFamily: "Geist, system-ui, sans-serif"
-    fontSize: "13px"
-    fontWeight: 400
-  data:
-    fontFamily: "Space Mono, ui-monospace, monospace"
+    fontWeight: 600
+  label:
+    fontFamily: "Martian Mono, ui-monospace, monospace"
     fontSize: "12px"
     fontWeight: 400
-  label:
-    fontFamily: "Space Mono, ui-monospace, monospace"
-    fontSize: "11px"
-    fontWeight: 400
-    letterSpacing: "0.06em"
-  label-sm:
-    fontFamily: "Space Mono, ui-monospace, monospace"
-    fontSize: "10px"
-    fontWeight: 400
-    letterSpacing: "0.06em"
+    lineHeight: 1.5
+    letterSpacing: "0.05em"
 rounded:
   none: "0"
-  hairline: "1px"
-  sm: "2px"
-  full: "9999px"
 spacing:
-  xs: "4px"
-  sm: "8px"
-  md: "16px"
-  lg: "24px"
-  xl: "40px"
-  section: "96px"
-  section-wide: "128px"
+  gutter: "clamp(20px, 4vw, 44px)"
+  section: "clamp(96px, 14vh, 160px)"
+  release: "clamp(56px, 8vh, 88px)"
+  target: "44px"
 components:
-  button-primary:
-    backgroundColor: "{colors.amber}"
-    textColor: "{colors.ink}"
+  button-solid:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.void}"
+    typography: "{typography.action}"
     rounded: "{rounded.none}"
-    padding: "12px 0"
-    typography: "{typography.label}"
-    width: "100%"
-  button-primary-hover:
-    backgroundColor: "{colors.amber-deep}"
-    textColor: "{colors.ink}"
-  button-ghost:
+    padding: "0 22px"
+    height: "48px"
+  button-solid-hover:
     backgroundColor: "transparent"
-    textColor: "{colors.amber}"
-    rounded: "{rounded.sm}"
-    padding: "6px 14px"
+    textColor: "{colors.paper}"
+  button-outline:
+    backgroundColor: "transparent"
+    textColor: "{colors.paper}"
+    typography: "{typography.action}"
+    rounded: "{rounded.none}"
+    padding: "0 22px"
+    height: "48px"
+  button-outline-hover:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.void}"
+  text-link:
+    textColor: "{colors.paper}"
+    padding: "0 12px"
+    height: "44px"
+  nav-link:
+    textColor: "{colors.soft}"
+    padding: "0 12px"
+    height: "44px"
+  nav-link-active:
+    textColor: "{colors.paper}"
+  nav-cta:
+    backgroundColor: "transparent"
+    textColor: "{colors.paper}"
+    rounded: "{rounded.none}"
+    padding: "0 18px"
+    height: "44px"
+  playback:
+    backgroundColor: "rgba(5, 7, 13, 0.85)"
+    textColor: "{colors.paper}"
     typography: "{typography.label}"
-  button-ghost-hover:
-    backgroundColor: "{colors.amber}"
-    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    padding: "0 12px"
+    height: "44px"
   input:
-    backgroundColor: "transparent"
-    textColor: "{colors.starlight}"
+    backgroundColor: "rgba(5, 7, 13, 0.7)"
+    textColor: "{colors.paper}"
     rounded: "{rounded.none}"
-    padding: "10px 14px"
-  card-plate:
-    backgroundColor: "transparent"
-    textColor: "{colors.starlight}"
+    padding: "12px 14px"
+  frame:
+    backgroundColor: "{colors.void-2}"
     rounded: "{rounded.none}"
-    padding: "20px"
 ---
 
-# Observation Log — design system
+# Design System: Release Plates
 
 ## Overview
 
-A single-page portfolio built as an astronomer's observation log. The reader is a
-technical hiring manager, skimming; the visual world is a deep field, and the
-content sits in the dark centre of it.
+**Creative North Star: "The Image Release"**
 
-The world has one organising rule that everything else follows: **colour lives at
-the edges, never under the text.** Emission lobes bloom in the corners and margins;
-a scrim holds the middle dark so type stays legible. Amber is reserved for things a
-human should act on or care about — status, the guide star, actions. Ion cyan, rose
-and violet are atmosphere and appear as text only rarely.
+Every surface reads as a published telescope image release: a plate, a title, a caption line, the instruments used, and a credit. The imagery is real NASA/ESA/Webb material, shown full-bleed or framed, and it keeps its own colour. The interface around it is near-black ground and paper-white type, and it steps back so the image and the work lead. Product truth lives in PRODUCT.md; this file covers only the visual system.
 
-See `PRODUCT.md` for the audience and product truth. This file governs appearance
-only.
+Density is low. Titles are wide and light, and the grid is set on thin rules, never on cards. Captions and credits speak in small uppercase mono, the fine print of a release. Structure comes from registration ticks, hairline rules and a compass rose. There is no glow, no card chrome, no rounding. Colour belongs to the imagery. The one exception is the hero legend, where the six Webb NIRCam filter colours record the real filters of the Cosmic Cliffs release.
+
+Motion works like developing a plate. The hero starts under-exposed and comes up to full exposure while each legend filter adds its light. Release frames come out of the dark as they scroll into view. Every movement stops for reduced motion, and the page stays complete without it.
+
+**Key Characteristics:**
+- Real, credited space imagery; the interface never adds colour to it.
+- Paper-on-void, one accent (paper) for every interactive and emphatic role.
+- Archivo on the width axis: wide and light for titles, normal width for reading.
+- Martian Mono for captions, credits, legends, figures and transport.
+- Square corners everywhere; frames marked by corner registration ticks.
+- Caption lines sit below their titles, never above.
 
 ## Colors
 
-Three grounds, three text weights, one action accent, three emission accents.
+A near-monochrome paper-on-void system. The six filter colours are data inside one legend and nothing else.
 
-| Token | Value | Role | Contrast on ground |
-|---|---|---|---|
-| `--ground` | `#070512` | page ground, void violet | — |
-| `--ground-2` | `#0e0b20` | raised panel, row hover | — |
-| `--ground-deep` | `#030208` | scrollbar track | — |
-| `--starlight` | `#f2eff9` | primary text, headings | 17.8:1 |
-| `--dim` | `#a49ec4` | secondary text, body copy | 8.0:1 |
-| `--faint` | `#948eb8` | tertiary: labels, meta, dates | 6.6:1 |
-| `--amber` | `#ffb454` | **the human accent** — status, actions, guide star | 11.5:1 |
-| `--amber-deep` | `#e0873a` | amber pressed/hover fill | 7.3:1 |
-| `--ion` | `#67e8f0` | data and instrument readouts | 13.8:1 |
-| `--rose` | `#ff7ab0` | emission; atmosphere, sparing as text | 8.3:1 |
-| `--violet` | `#b18cff` | emission; atmosphere, sparing as text | 7.8:1 |
-| `--ink` | `#0b0716` | text on amber or ion fills | 11.3:1 on amber |
+### Primary
+- **Plate Paper** (paper): the accent and main type colour. Headlines, body emphasis, filled buttons, hover fills, selection background, focus ring, the status dot, figures, registration ticks, the compass rose. On void it measures 17.9:1.
 
-`--ground-rgb`, `--amber-rgb`, `--ion-rgb`, `--rose-rgb` and `--violet-rgb` carry
-the raw channels for alpha compositing and for canvas `fillStyle`, which cannot read
-a custom property.
+### Neutral
+- **Deep Void** (void): the page ground, the header's solid state (at 92% alpha), and the scrims under type on imagery.
+- **Frame Void** (void-2): the resting fill inside a frame before its media paints.
+- **Soft Paper** (soft): running text, ledes, secondary index columns, nav links at rest. 12.4:1 on void.
+- **Dim Paper** (dim): caption labels, index numbers, placeholders, credits, hollow legend marks. 7.6:1 on void.
+- **Hairline** (rule): section rules, index and list dividers, figure borders.
+- **Strong Hairline** (rule-strong): edges of interactive things (outline CTA, inputs, playback, sent notice), link underlines at rest, the scrollbar thumb. Holds 3:1 or better.
 
-Three line weights, and the distinction is not cosmetic:
+### Tertiary: Webb NIRCam filters (legend only)
+- **F090W Blue** (f090), **F187N Teal** (f187), **F200W Green** (f200), **F335M Gold** (f335), **F444W Orange** (f444), **F470N Red** (f470): ordered from short to long wavelength. They appear as 9px square chips in the hero's Cosmic Cliffs filter legend, beside the release's real filter names and credit.
 
-- `--line` (0.09 alpha) — decorative dividers. No contrast floor.
-- `--line-strong` (0.18) — structural dividers. No contrast floor.
-- `--field-line` (0.40) — **interactive boundaries only.** Form controls need 3:1
-  under WCAG 1.4.11; this measures 3.4:1. Do not use `--line-strong` on an input.
+### Named Rules
+**The Filters Are Data Rule.** The six filter colours appear only as colour in a filter legend whose filters and credit are the real ones for the imagery shown. Everywhere else (stack chips, toolkit rows) a legend mark is a hollow 9px square with a 1px dim border. This is load-bearing. Do not undo it.
 
-`color-scheme: dark` is set on `:root` so native checkboxes, the caret and
-scrollbars match the panel instead of arriving bright white.
+**The One Accent Rule.** Paper is the only accent. Selection, focus ring, status, figures, hover fills and ticks are all paper. No hue ever marks interaction.
+
+**The Floor Not Tint Rule.** Imagery keeps its own colour. Type on imagery sits on a void gradient floor (hero: void 94% to 60% to clear over the bottom 62%, plus a 55% top floor; contact: a horizontal void 97% to 55% floor). Never recolour or duotone the imagery.
 
 ## Typography
 
-Three faces, three jobs, no overlap.
+**Display Font:** Archivo, variable with the wdth axis (fallback system-ui, sans-serif)
+**Body Font:** Archivo at normal width
+**Label/Mono Font:** Martian Mono (fallback ui-monospace, monospace)
 
-- **Fraunces** — display only. Headings and project names. Optical sizing on.
-  Tracking tightens as size grows, down to `-0.035em` on the hero.
-- **Geist** — body copy, 15–18px, `ss01` enabled. Never used for headings.
-- **Space Mono** — data. Catalogue designations, coordinates, dates, tech stacks,
-  labels, the sidereal readout. This is the one place monospace is legitimate: it
-  marks measurement, not "technical vibes".
+**Character:** A wide, light grotesk for titles, like the lettering on a release, paired with a technical mono for the small print. Width marks rank: 112% for the name, section heads, figures and interlude titles; 108% for release and index names; normal width for reading.
 
-Hero name runs `clamp(3.4rem, 12vw, 8.5rem)` at the full measure. Section headings
-step down to `text-5xl sm:text-7xl`. Body copy is capped at `52ch`; the intro at
-`54ch`.
+### Hierarchy
+- **Display** (300, clamp(3.5rem, 11vw, 11.5rem), 0.86, wdth 112): the name on the opening plate only. It never breaks inside a word (`word-break: keep-all`).
+- **Headline** (300, clamp(3rem, 7vw, 6.5rem), 0.9, wdth 112): section titles (Releases, About, Contact).
+- **Title** (400, clamp(2.5rem, 4.4vw, 4rem), 0.95, wdth 108): each release's name. Interlude titles use weight 300 at wdth 112, clamp(2rem, 4.5vw, 4rem).
+- **Figure** (300, clamp(2.5rem, 4vw, 3.5rem), 1, wdth 112): the single proof number in a release's figure block. The unit sign (×) is set in Martian Mono at 0.72em, and the explanatory line runs in 14px mono.
+- **Index name** (500, clamp(20px, 2vw, 26px), wdth 108): project names in the release index.
+- **Body** (400, 16px, 1.65, max 50ch): release captions in soft. Ledes are clamp(16px, 1.3vw, 18px) at 1.55, max 46ch; section-head copy is 17px at 1.6.
+- **Action** (600, 15px; 14px in nav and text links): button and link labels.
+- **Label** (Martian Mono 400, 12px, 0.05em, uppercase, dim): caption lines, credits, legend headers, field labels, dates, meta rows.
 
-**The ramp is small-stepped by design and every step is in the frontmatter.** The
-data roles run 10–13px because they are catalogue entries, not prose; the prose
-roles run 14–18px. A literal size outside this list is drift — either use a step or
-add one here deliberately.
+### Named Rules
+**The Caption Below Rule.** No kicker or eyebrow sits above a heading. Release lines ("Release 01 · type · date") and interlude source and credit lines sit below their titles, the way a release caption follows its plate title. This is load-bearing.
 
-| px | Role | Typical use |
-|---|---|---|
-| 10 | `label-sm` | designation chips, dates, footer |
-| 11 | `label` | markers, nav, meta, tech stacks |
-| 12 | `data` | sidereal readout, section counts |
-| 13 | `caption` | timeline detail |
-| 14 | `input` | form fields |
-| 15 | `body-sm` / `wordmark` | card blurbs; the header wordmark, in Fraunces |
-| 16 | `body` | section body copy |
-| 18 | `lede` | hero intro |
-| 20 | `subtitle` | hero plate object name |
+**The Literal Action Rule.** Headings may carry the release metaphor ("Releases"). Action labels stay literal: Contact, See the work, Live demo ↗, Source ↗, Send message, Pause/Play.
+
+**The Credit Integrity Rule.** Credited personal names use non-breaking spaces ("F.&nbsp;Summers", "R. Hurt") so an initial never wraps away from its surname.
 
 ## Layout
 
-One shared measure, defined once as `.shell`, so every section keeps the same
-rhythm. Never reintroduce a per-section `max-w-*`.
+A single 90rem column (`wrap`) with a fluid gutter (clamp(20px, 4vw, 44px)). Sections breathe at clamp(96px, 14vh, 160px) of block padding, and individual releases at clamp(56px, 8vh, 88px), each closed by a hairline rule.
 
-| Viewport | Measure |
-|---|---|
-| below 1280px | 72rem |
-| 1280px and up | 82rem |
-| 1600px and up | 92rem |
+- **Opening plate:** 100svh, full-bleed media. The meta row sits 84px from the top, the compass rose sits top-right, and the name, role, actions and legend sit bottom-aligned. The name spans the width. Below it a two-column foot places role and actions left and the right-aligned legend right. At 899px and below this becomes one column with the legend left-aligned in a 3-column chip grid.
+- **Section head:** the title on the left, a 32rem lede on the right, bottom-aligned, closed by a hairline. It stacks at 767px and below.
+- **Release index:** a ruled list of number, name, type and links (3.5rem / 1.2fr / 1fr / 15rem). It collapses to number plus a stacked column at 767px and below. Everything a skimmer needs sits in this one block.
+- **Release plate:** frame and caption at 7fr/5fr. Alternate releases flip the frame to the right. It stacks at 899px and below, and the frame always comes first.
+- **Interludes:** full-bleed cosmos plates between chapters (min(88vh, 60rem), min 460px), with a caption bottom-left. Paired interludes sit side by side with a 2px seam and stack at 767px and below.
+- **About:** two columns (Toolkit as a definition list, Record as an ordered list), both ruled at the top of each row.
+- **Contact:** full-bleed media under a horizontal floor, with copy and channels left and a 30rem form right.
+- **Footer:** a credit block with name, clock and year left and the full media credits right.
 
-Gutters are `px-5` rising to `sm:px-8`. Section rhythm is `py-24 sm:py-32`. The hero
-is `min-h-[100svh]` with the name at full measure and a two-column row beneath it,
-top-aligned — bottom-aligning opens a large dead gap under the name.
-
-The catalogue is a pinned horizontal journey on large viewports: a `position: sticky`
-frame with the track moved by a single transform driven by `--travel`. It falls back
-to a vertical list below 1024px wide, under 720px tall, and under reduced motion.
-The 720px floor exists because the pinned frame is ~668px tall and would otherwise
-be silently clipped.
+Scroll padding is 72px to clear the 64px fixed header.
 
 ## Elevation & Depth
 
-**There are no drop shadows anywhere, and that is deliberate.** Depth comes from
-three other sources:
+Flat. There are no shadows anywhere. Depth comes from the imagery itself and from the void gradient floors that keep type readable over it. The header is clear over the opening plate and turns solid (void at 92% with a hairline bottom border) once the page scrolls past 60% of the viewport, when the plate's type is behind it.
 
-1. **Tonal layering** — `--ground` behind, `--ground-2` for raised rows and panels.
-2. **Parallax** — background layers move at different rates against scroll and
-   pointer, which reads as distance rather than as a lifted surface.
-3. **Light** — the amber `.bloom` glow, used only on things that are genuinely
-   alight: the status dot and the guide star.
-
-Hairline borders do the separation work a shadow would do elsewhere. Do not
-introduce a shadow scale; it would fight the flat, printed-plate feel.
+### Named Rules
+**The No Glow Rule.** No box-shadow, text-shadow, blur halo or glow. Separation comes from rules, ticks and void floors.
 
 ## Shapes
 
-Square. Corners are `0` almost everywhere — plates, inputs, the primary button,
-catalogue cards, the designation chip. The exceptions are deliberate and few:
+Every corner is square (0 radius), including inputs, which reset the platform rounding. The single round form is the 8px status dot. A frame is marked by two 22px L-shaped corner registration ticks in 1px paper, set 9px outside its top-left and bottom-right corners. Legend marks are 9px squares. The compass rose (N and E arms with arrowheads, mono letters) and the favicon's tick pair are drawn from the same 1–2px paper line.
 
-- `rounded-sm` (2px) on the ghost CTA in the header.
-- `rounded-full` on the status dot and the cursor glow, because they are points of
-  light, not panels.
-- `border-radius: 1px` on the focus ring so it does not read as a rounded chip.
-
-The form language is a photographic plate: a hairline rectangle with a caption bar.
-Keep it.
+**The Registration Tick Rule.** Framed media carries corner ticks outside its box, and nothing may clip them. The develop reveal ends at `clip-path: inset(-16px)` so the ticks stay visible. This is load-bearing.
 
 ## Components
 
-**Header.** Fixed, 56px tall, `rgba(var(--ground-rgb), 0.8)` with `backdrop-blur-md`
-and a `--line` bottom border. Laid out as `1fr | auto | 1fr` so the nav stays
-centred on the bar whatever the side groups weigh — `justify-between` only centred
-it by coincidence and drifted the moment the mobile toggle appeared. The wordmark
-is set in the display face, not mono, so the name reads as the identity rather
-than a fourth nav item. Retreats on scroll down and returns on scroll up via
-`.nav-shell[data-hidden]`, throttled to one frame with a 6px jitter threshold.
-Focus-capture forces it back so a keyboard user is never trapped behind it.
+### Buttons
+- **Shape:** square (0), 48px tall, 22px inline padding, 1px paper border.
+- **Solid:** a paper fill with void text. This is the primary action (Contact, Send message). On hover it inverts to transparent with paper text.
+- **Outline:** transparent with paper text. On hover it fills with paper and the text turns void.
+- **Focus:** a 2px paper outline at a 3px offset, used by every focusable element.
+- **Transitions:** background and colour over 0.2s.
 
-The active section carries `aria-current`, an amber colour shift, **and** a 4px
-amber dot — the page's own idiom for "this one is live", shared with the status
-indicator and the guide star. Its space is always reserved so nothing shifts as
-the active section changes, and it means the state never rests on hue alone. The
-same marker appears in the mobile list.
+### Text links
+Links are inline-flex, at least 44px tall with 12px inline padding, 600 weight at 14px. They are underlined at a 5px offset in rule-strong, and the underline turns paper on hover. External links carry a non-breaking "&nbsp;↗" that is hidden from assistive tech, plus a screen-reader "(opens in a new tab)". Where link rows line up with text, the row takes a -12px margin so the label aligns to the column edge.
 
-**Plate (catalogue card).** An `<article>`, not an anchor. Hairline border, media at
-`aspect-[16/10]`, a scrim gradient at the foot of the media, the designation chip in
-amber with `--ink` text at top-left. The title carries a **stretched link**
-(`after:absolute after:inset-0`) so the whole card is one target, and the "Source"
-link sits above it at `z-10` as a genuinely separate destination. This structure is
-load-bearing: an earlier version had "Source" as a span inside a link pointing at
-the live site, which lied about where it went.
+### Chips (legend marks)
+Mono 12px entries, each with a 9px square mark. In the hero filter legend the mark is filled with its filter colour. Everywhere else it is hollow (1px dim border, no fill). Stack chips sit under a "Built with" label.
 
-**Media.** Video is held on its poster until the client confirms motion is welcome —
-so a reduced-motion visitor never gets an unpausable loop, and no video bytes are
-fetched for them at all.
+### Cards / Containers
+There are no cards. The recurring container is the **frame**: 16:10, a void-2 resting fill, object-fit cover, with corner registration ticks. Lists and rows are separated by hairline rules only.
 
-**Form fields.** Transparent fill, `--field-line` border, amber on focus.
-Placeholder is `--faint`, which clears 4.5:1. The channel checkboxes are wrapped in a
-`fieldset` with a `legend`, not a paragraph label.
+### Inputs / Fields
+Fields have a mono uppercase label above, a void 70% fill, a 1px rule-strong border, square corners, 12px 14px padding, 16px text (which keeps iOS from zooming) and dim placeholders. On focus the border turns paper in place of the outline. The textarea is at least 140px tall and resizes vertically. After submit, a notice (a rule-strong box in soft text) receives focus through a polite live region and offers the address to copy.
 
-**Reticle (the pointer).** The system cursor is replaced by a finder scope: a
-starlight ring with four graticule ticks, plus an amber sight dot. The sight
-tracks the pointer exactly; the ring lags at a 0.18 lerp. That split is what makes
-it read as an instrument being aimed rather than a shape being dragged. Over
-anything actionable the ring scales to 1.45, turns amber, and the ticks step
-outward.
+### Navigation
+The header is fixed and 64px tall. The name sits left at 500 weight, wdth 112. Section links are soft 14px and turn paper on hover or when `aria-current`. The Contact CTA is outlined in rule-strong and fills with paper on hover. At 639px and below, only Work and Contact remain.
 
-**This is gated and the gate is not optional.** It activates only behind
-`canHover()` — a fine pointer with `prefers-reduced-motion: no-preference`. Touch,
-coarse pointers and reduced-motion visitors keep their own cursor with nothing
-overridden, because hiding the system cursor takes away an affordance some people
-depend on, including anyone using OS cursor-size settings. Do not widen the gate,
-and do not apply `cursor: none` outside `.reticle-on`.
+### Status
+"Open to work" is set 600 at 15px in paper with an 8px paper dot. There is no colour status light.
 
-**The mark (`PlateMark`).** SG punched into a plate. `S` is `01010011` and `G` is
-`01000111`; those sixteen bits fill a 4x4 grid in reading order, and a filled amber
-hole is a one. Empty positions carry a faint ring so the grid reads as a card rather
-than a scatter. It appears in the header at 20px, in the footer at 16px, and as
-`app/icon.svg`, which replaced the Next.js default favicon.
+### Loop and Playback (signature)
+Every moving image is a Loop. The WebP poster carries the frame, and the MP4 loads only when three conditions hold: the loop is on screen (20% visible, or at page load for the hero), motion is welcome, and the connection is not data-saver, 2G or 3G. Off screen, a loop pauses, and a user's pause is remembered. Every loop that runs beside text has a Pause/Play control: mono 12px, at least 44px tall, a void 85% fill and a rule-strong border that turns paper on hover. It sits bottom-right of its frame. The hero's control is portaled into the legend credit block, where transport controls belong. These gates and the control are load-bearing (WCAG 2.2.2).
 
-The holes punch on a **6.5s loop**: a ~0.3s wave (staggered 45ms apart, so it reads
-as one gesture rather than eight blinks), then a hold for roughly five seconds, then
-the plate clears and is read again. The hold is deliberately most of the cycle — a
-mark that never settles pulls the eye away from the page it is meant to sit quietly
-on. Hover brightens the plate rather than restarting the loop. Under reduced motion
-it freezes fully punched.
+### Figure block
+A single proof number per release, and only where one exists. It sits between two hairlines: a large light number, then one mono line that says what it measures.
 
-**The wordmark.** The name is set in the display face. In the hero, and only in the
-hero, the tittle of the **i** in Gabriel is replaced by a star with real diffraction
-spikes — the kind thrown by the vanes holding a telescope's secondary mirror. The
-letter's own dot becomes the star's burning core, so nothing is removed from the
-glyph and the text stays selectable. This is a display-size device: below roughly
-3rem the spikes stop resolving, which is why the 15px header wordmark is plain and
-the mark carries identity there instead.
-
-**Backgrounds.** Four fixed layers, by explicit owner decision: a video loop
-(desktop and motion-ok only), the nebula field, the canvas star field, and the
-coordinate grid. Optimising how they run is welcome; removing one is the owner's
-call, not a maintainer's.
+### Opening exposure and develop
+The hero media runs `expose` (brightness 0.25 and saturation 0.2 up to 1) over 2.4s. The legend chips come on in sequence, 0.32s apart. Hero type rises 28px with staggered delays. Releases below the fold develop from `inset(8%)` and brightness 0.3 to `inset(-16px)` over 1.1–1.4s on `cubic-bezier(0.16, 1, 0.3, 1)`. They are visible by default, and the develop class is added only when script runs and motion is welcome. Reduced motion removes all of this.
 
 ## Do's and Don'ts
 
-**Two constraints look like timid design and are load-bearing. Do not "fix" them.**
+### Do:
+- **Do** use only real NASA/ESA/Webb imagery and credit it on the page, with credited names bound by non-breaking spaces.
+- **Do** keep the six filter colours inside a filter legend whose filters and credit are real. Use hollow dim squares everywhere else.
+- **Do** use paper as the one accent for selection, focus, status, figures, fills and ticks.
+- **Do** put caption lines below their titles.
+- **Do** give every framed image corner registration ticks, and keep reveals from clipping them (end at `inset(-16px)`).
+- **Do** give every loop beside text a Pause/Play control. Load video only on screen, with motion welcome and on a capable connection, and let the WebP poster carry the frame otherwise.
+- **Do** keep controls at least 44px tall and action labels literal.
+- **Do** keep the name whole: no breaking inside a word.
 
-1. **The nebula scrim.** `.nebula-field` puts its emission lobes at the edges and
-   corners with a heavy scrim through the middle, tuned so the content column stays
-   under **0.0155 luminance** — the measured ceiling for `--faint` to hold 4.5:1.
-   Brightening the lobes or shrinking the scrim pushes small text below AA. A
-   version with lobes at 0.50/0.42/0.30 alpha measured **2.11:1** for `--faint`.
-2. **The guide star's halo is deliberately dim** (radius 26, peak alpha 0.26). At
-   radius 34 / alpha 0.55 it measured **0.082 luminance** and broke contrast for any
-   text passing behind it.
-
-**How to verify after touching either.** Palette math against a flat ground is not
-sufficient and will pass things that actually fail:
-
-```bash
-# render the page with text hidden, so you measure the real background
-printf '\nheader,main,footer{visibility:hidden !important}\n' >> <built-css>
-# screenshot at 1853x1081, then block-average at 16x16 and check the brightest
-# block inside the content band against every text token
-```
-
-The binding token is `--faint`. It must stay at or above 4.5:1 against the
-**brightest** local background in the content column, not the median.
-
-**Do**
-
-- Keep amber scarce. Its power is entirely in how little of it there is.
-- Route every colour through the tokens. Canvas is the sole exception, and it names
-  its constants at the top of the module.
-- Animate `transform` and `opacity` only.
-- Give every animated surface a reduced-motion path that is complete and readable,
-  never degraded.
-- Scale work to the viewport: the star field's density is derived from viewport
-  area, so a phone never draws a desktop's field.
-
-**Don't**
-
-- Don't add a shadow scale, a gradient headline, or a second display face.
-- Don't use monospace for prose. It marks data here.
-- Don't reintroduce per-section `max-w-*`; the measure is `.shell`.
-- Don't put `--line-strong` on an interactive boundary; that is `--field-line`.
-- **Don't "tidy" the mark's bit pattern.** Those eight filled holes are not a
-  decorative arrangement — they are `0101001101000111`, which is S and G in ASCII.
-  Rebalancing them for looks destroys the only thing that makes the mark true.
-- Don't put the tittle star on the header wordmark or anywhere under ~3rem. It
-  becomes a smudge, and the plate mark already does that job at small size.
-- Don't invent celestial coordinates or magnitudes for the catalogue objects. Live
-  astronomical values that are actually computed, such as the sidereal time and moon
-  phase in the hero, are fine. Fabricated data next to real work is not.
-- Don't remove the coordinate grid to satisfy the impeccable detector's
-  `codex-grid-background` advisory. It is an accepted exception.
+### Don't:
+- **Don't** put a kicker or eyebrow above any heading.
+- **Don't** use a filter colour as a UI accent, category colour, hover state or decoration.
+- **Don't** use cards, rounded corners, shadows or glow.
+- **Don't** tint, duotone or recolour the imagery. Put a void floor under the type instead.
+- **Don't** use a centred-planet space hero or a dark card grid.
+- **Don't** give an action a metaphorical label ("Transmit", "Launch", "Observe").

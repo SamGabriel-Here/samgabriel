@@ -1,57 +1,55 @@
-import type { Metadata } from "next";
-import { Fraunces, Geist, Space_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Archivo, Martian_Mono } from "next/font/google";
 import "./globals.css";
 
-// Display — high-contrast optical serif, an engraved star-atlas voice
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+// Display and body. The width axis carries the release voice: wide and light
+// for titles, normal for reading.
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  axes: ["wdth"],
 });
 
-// Body — clean, quiet grotesque that lets the serif and data carry character
-const geist = Geist({
-  variable: "--font-geist",
-  subsets: ["latin"],
-});
-
-// Data — catalogue designations, coordinates, magnitudes
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
-  weight: ["400", "700"],
+// Captions, credits, filter legends: the small print of an image release.
+const martian = Martian_Mono({
+  variable: "--font-martian",
   subsets: ["latin"],
 });
 
 const SITE = "https://samgabriel.vercel.app";
+const TITLE = "Sam Gabriel — Machine-learning & software engineer";
 const BLURB =
-  "The working log of Sam Gabriel — machine learning and software engineer. GPU simulations, a desktop planetarium, and other objects observed and built with data and code.";
+  "Machine-learning and software engineer in Indore, India. A GPU galaxy simulator, an offline planetarium, and six more projects with public source.";
 
 export const metadata: Metadata = {
-  title: "Sam Gabriel — Observation Log",
+  metadataBase: new URL(SITE),
+  title: TITLE,
   description: BLURB,
-  // pasted into Slack or an applicant tracker this should not render as a bare
-  // link; this version's docs require absolute URLs for og images
   openGraph: {
     type: "website",
     url: SITE,
-    siteName: "Observation Log",
-    title: "Sam Gabriel — Observation Log",
+    siteName: "Sam Gabriel",
+    title: TITLE,
     description: BLURB,
     images: [
       {
-        url: `${SITE}/novasky.jpg`,
-        width: 1400,
-        height: 875,
-        alt: "NovaSky — a desktop planetarium showing the real sky over New York",
+        url: `${SITE}/cosmos/cosmic-cliffs.webp`,
+        width: 1280,
+        height: 720,
+        alt: "The Cosmic Cliffs of the Carina Nebula, imaged by the James Webb Space Telescope",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sam Gabriel — Observation Log",
+    title: TITLE,
     description: BLURB,
-    images: [`${SITE}/novasky.jpg`],
+    images: [`${SITE}/cosmos/cosmic-cliffs.webp`],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#05070d",
 };
 
 export default function RootLayout({
@@ -60,11 +58,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${fraunces.variable} ${geist.variable} ${spaceMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full">{children}</body>
+    <html lang="en" className={`${archivo.variable} ${martian.variable}`}>
+      <body>{children}</body>
     </html>
   );
 }

@@ -1,0 +1,129 @@
+{
+  "title": "Choose the visual world",
+  "question": "The roll assigned Mission Control. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Mission Control",
+      "kicker": "THE ROLL",
+      "lineage": "Apollo Mission Operations Control Room, Houston, 1965–72",
+      "thesis": "Your career run as a live mission: the cosmos on the front wall, you at the flight director's console.",
+      "palette": ["#0c100f", "#2e3934", "#e8eee4", "#ffae2b", "#46d27c"],
+      "materials": ["backlit pushbutton legends", "CRT phosphor", "front-wall projection"],
+      "viewport": "The front wall is one giant projection screen playing real NASA footage; beneath it a console strip carries your callsign, role and a lit OPEN TO WORK event light.",
+      "risk": "Slides into the sci-fi HUD cliché if drawn as neon glass instead of 1969 hardware.",
+      "raised": [
+        { "from": "challenger-ebru", "raise": "Motion is real physics, not tweens: orbit traces and the galaxy loop are simulated, the way floated pigment can only move as liquid moves." },
+        { "from": "challenger-coil-tower", "raise": "Console rows stack in courses whose measure matches their content, so the record reads in the order it was built." },
+        { "from": "challenger-cloud-edge", "raise": "Colour lives only in lit legends and the wall feed; every text field stays achromatic." }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Webb Release Plates",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "NASA/ESA/STScI telescope image-release graphics",
+      "thesis": "Every project published like a Webb image release: the plate full-bleed, compass and scale bar, filters as the stack.",
+      "palette": ["#05070d", "#f4f1ea", "#3d7bff", "#29c6b8", "#f2c14e", "#e0532d"],
+      "materials": ["calibrated deep-space imagery", "release caption system", "filter-colour legend"],
+      "viewport": "A full-bleed Webb plate with your name set as the release title, a filter legend where the subtitle would sit, and a compass rose pointing at the work.",
+      "risk": "Also where most space portfolios land: real telescope imagery is this category's strongest cliché when composed timidly."
+    },
+    {
+      "id": "challenger-framerail",
+      "label": "Cutting Bench Rail",
+      "verdict": "competitive",
+      "lineage": "film editor's select rail and trim bin",
+      "thesis": "The work as a strung reel: each project a punched frame on a perforated rail, cosmos footage in the windows.",
+      "palette": ["#0a0a0a", "#ff6a1a", "#f4f1ea", "#3a3a3a"],
+      "materials": ["coarse film grain", "punched frame windows", "tape flags"],
+      "viewport": "A grain-orange field crossed by one perforated rail; the first frame plays the cosmos, your name on the slate.",
+      "case": "Fuses cleanly and holds clarity (eight projects become eight frames); loses on audience identification to a space-engineering world.",
+      "risk": "Reads as a film-studio site if the frames stop carrying space footage.",
+      "hero": "https://impeccable.style/worlds/cards/operate-a-cutting-bench-select-rail-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/operate-a-cutting-bench-select-rail.webp"
+    },
+    {
+      "id": "challenger-star-atlas",
+      "label": "Star Atlas",
+      "verdict": "competitive",
+      "lineage": "printed celestial atlases, red-flashlight observing charts",
+      "thesis": "The portfolio as a chart plate: projects plotted as stars sized by weight, an index pointing into each.",
+      "palette": ["#0b1633", "#f2efe6", "#d9342b", "#c9a45c"],
+      "materials": ["navy chart ground", "chalk-white stars", "night-vision red annotation"],
+      "viewport": "A canvas star chart filling the screen, your work plotted as the brightest stars, name set as the chart title.",
+      "case": "Holds audience identification strongly, but it is the nearest neighbour to the world you just retired.",
+      "risk": "Feels like the old Observation Log in new clothes.",
+      "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-star-atlas-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/notation-diagram-systems-star-atlas.webp"
+    },
+    {
+      "id": "challenger-dense-web",
+      "label": "High-Density Index",
+      "verdict": "competitive",
+      "lineage": "Japanese contemporary high-density portals",
+      "thesis": "Everything a recruiter needs on one packed screen: ruled modules, red tabs, cosmos imagery in every box.",
+      "palette": ["#ffffff", "#111111", "#e60012", "#d7d7d7"],
+      "materials": ["hairline-ruled modules", "compact gothic type", "utility-red tabs"],
+      "viewport": "A dense mosaic of ruled modules; the lead module plays the galaxy simulation, name and status in a red-tabbed header.",
+      "case": "Wins on skim clarity, loses on audience identification and on your cosmos-first answer.",
+      "risk": "Buries the cinematic cosmos moment you asked to lead with.",
+      "hero": "https://impeccable.style/worlds/cards/japanese-high-density-web-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/japanese-high-density-web.webp"
+    },
+    {
+      "id": "challenger-ebru",
+      "label": "Floated Pigment",
+      "verdict": "declined",
+      "lineage": "Turkish ebru marbling",
+      "thesis": "Colour floated and combed into figures, every mark made by moving liquid.",
+      "palette": ["#1d3b6e", "#d8452f", "#f1e6c8"],
+      "materials": ["thickened bath", "floated pigment"],
+      "viewport": "A fluid canvas the visitor combs through.",
+      "case": "Fuses poorly: beautiful, but a recruiter cannot find the facts in liquid.",
+      "kept": "Motion as real physics, not tweened decoration.",
+      "risk": "Obscures content.",
+      "hero": "https://impeccable.style/worlds/cards/medium-native-ebru-floated-pigment-hero.webp"
+    },
+    {
+      "id": "challenger-coil-tower",
+      "label": "Coiled Earth Tower",
+      "verdict": "declined",
+      "lineage": "hand-built coil ceramics",
+      "thesis": "A slow ascending record of courses.",
+      "palette": ["#a4502f", "#5b3a26", "#efe4d2"],
+      "materials": ["terracotta coils", "slip seams"],
+      "viewport": "A rising tower of text courses.",
+      "case": "Fuses poorly: earth and clay say nothing about space or engineering.",
+      "kept": "Rows whose measure matches their content, stacked in build order.",
+      "risk": "Off-subject.",
+      "hero": "https://impeccable.style/worlds/cards/clay-ceramics-fracture-coiled-earth-tower-hero.webp"
+    },
+    {
+      "id": "challenger-cloud-edge",
+      "label": "Iridescent Cloud Edge",
+      "verdict": "declined",
+      "lineage": "cloud iridescence observation",
+      "thesis": "Colour confined to a hairline spectral fringe.",
+      "palette": ["#f7f7f5", "#5c6470", "#b7f0d8", "#f3b6c8", "#b9a3f0"],
+      "materials": ["cloud white ground", "spectral fringe"],
+      "viewport": "A white field with one iridescent edge.",
+      "case": "Fuses poorly: a white daylight world against a cosmos brief.",
+      "kept": "Colour only where it carries meaning; text fields stay achromatic.",
+      "risk": "Wrong light for the subject.",
+      "hero": "https://impeccable.style/worlds/cards/clouds-storms-auroras-iridescent-cloud-edge-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code", "toggle": false },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "The dark cinematic space portfolio, executed impeccably.",
+    "palette": ["#05060a", "#f5f5f7", "#7c8cff"],
+    "materials": ["full-bleed hero video", "large display name", "project grid"],
+    "viewport": "Full-bleed nebula video, your name large over it, a project grid one scroll down.",
+    "risk": "Indistinguishable from every other space portfolio by design."
+  },
+  "steer": true
+}

@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# design-tool working files (captures, throwaway prototypes)
+.impeccable/review/
+.impeccable/prototypes/
+.impeccable/questions/

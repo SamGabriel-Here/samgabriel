@@ -19,7 +19,7 @@ product requirements rather than taste preferences:
 - **Scan speed is a feature.** Anything that slows a skimming reader is a product
   cost, not just an aesthetic trade.
 - **The contact path is the conversion.** The site succeeds when a message is sent
-  through the Transmit form or one of the listed channels; everything else is
+  through the contact form or one of the listed channels; everything else is
   supporting evidence.
 
 Secondary audiences (engineers reading the source, collaborators) are served by the
@@ -27,7 +27,7 @@ same material and were not confirmed as drivers of product decisions.
 
 ## Product Purpose
 
-A single-page portfolio and working log for Sam Gabriel, a machine-learning and
+A single-page portfolio for Sam Gabriel, a machine-learning and
 software engineer based in Indore, India. It exists to establish technical depth
 quickly and to open a conversation.
 
@@ -46,10 +46,10 @@ evidenced by shipped artefacts with public source.
 
 - Evaluated in a browser, often on a phone, frequently in a short first pass with a
   longer second visit if the first one lands.
-- The reader typically cannot run the projects. Source links, live instrument links
+- The reader typically cannot run the projects. Source links, live demo links
   and imagery carry the burden of proof.
-- Owner's station is Indore, India (22.72°N, 75.86°E); relevant to timezone and to
-  the live sidereal-time and moon-phase readout the hero displays.
+- Owner is in Indore, India (22.72°N, 75.86°E, IST); the hero shows the location and
+  the footer shows the current time in IST.
 - Status is currently "Open to work" and is presented as a live product fact.
 
 ## Capabilities and Constraints
@@ -59,29 +59,34 @@ evidenced by shipped artefacts with public source.
   depend on server-side execution, API routes, or runtime environment variables.
 - **Deploys to Vercel on push to `main`.** The repository is
   `SamGabriel-Here/samgabriel`; the only live host is `samgabriel.vercel.app`.
-- **Contact is client-only.** The Transmit form composes a `mailto:` link; there is
+- **Contact is client-only.** The contact form composes a `mailto:` link; there is
   no backend, no database, and no form service. It therefore cannot confirm
   delivery, and the email address and social links must remain visible as a fallback
   for anyone without a configured mail client.
-- **Terminology is a deliberate conceit.** Projects are "objects" with catalogue
-  designations (SG-1 to SG-8), the skills list is the "Instrument", history is the
-  "Record", and contact is "Transmit". Keep the metaphor consistent, and keep it
-  from obstructing a reader who does not care about it.
+- **Projects are presented as telescope-style image releases.** Headings may carry
+  that release language; actions never do. Links and buttons use literal labels
+  (Live demo, Source, Contact) so a reader who ignores the metaphor loses nothing.
+  Owner decision, 2026-09-24.
 
 ## Brand Commitments
 
-- Name shown as "Sam Gabriel". Site titled "Observation Log".
+- Name shown as "Sam Gabriel". The page title names the role: "Sam Gabriel —
+  Machine-learning & software engineer".
+- The earlier "Observation Log" identity (its name, the SG-1..SG-8 designations, the
+  bit-plate mark, the Catalogue/Instrument/Transmit vocabulary) was retired by the
+  owner on 2026-09-24 as a clean slate. Do not bring it back.
 - Voice: precise, plain, understated. Specific numbers over adjectives. No hype, no
   exclamation, no growth-marketing register.
-- The observational-astronomy framing is binding; it is the site's identity, not
-  decoration.
+- Real space imagery is the visual identity: NASA, ESA and Webb media, credited
+  on the page. NASA media is public domain; ESA/Webb media is CC BY 4.0 and ships
+  with its credit line. No invented or AI-faked "space" imagery presented as real.
 
 ## Evidence on Hand
 
 Real and verifiable — do not alter these claims without the owner:
 
-- Eight projects with public repositories under `github.com/SamGabriel-Here`, four
-  with live deployments. Screenshots and video captures in `public/`.
+- Eight projects with public repositories under `github.com/SamGabriel-Here`, five
+  with live deployments (Celestial, NestWorth, Nextern, GitRep, ShowRush). Screenshots and video captures in `public/`.
 - One measured benchmark: the Barnes-Hut tree code ran **176× faster than brute
   force at one million particles on a single Tesla T4**. This is the only
   performance figure on the site and it must not be rounded, restated, or joined by
@@ -97,11 +102,11 @@ Real and verifiable — do not alter these claims without the owner:
 - No testimonials, endorsements, clients, employers, or press.
 - No user counts, download numbers, traffic, or revenue.
 - No awards or certifications.
-- The SG-1..SG-8 designations are a presentational conceit. Real celestial
-  coordinates, magnitudes, or catalogue cross-references must **not** be invented
-  for these objects; fabricated data presented next to genuine work is misleading.
-  Live astronomical values shown on the site (sidereal time, moon phase) are
-  computed for real and are fine.
+- Release numbers on projects are presentational ordering only. Real celestial
+  coordinates, magnitudes, filters or catalogue cross-references must **not** be
+  invented for Sam's projects; fabricated data next to genuine work is misleading.
+  Captions on NASA/ESA media (instrument, filters, object, credit) must match the
+  source release.
 - PapVision is described as "a research and learning project, not a diagnostic
   tool". That boundary is a safety claim and must survive any rewrite.
 
@@ -113,8 +118,8 @@ Real and verifiable — do not alter these claims without the owner:
    screenshot outranks an adjective.
 3. **Precision over enthusiasm.** One real benchmark is worth more than a page of
    claims.
-4. **The conceit serves the content.** The astronomy framing may shape structure
-   and language, but a reader who ignores it entirely must still get the facts.
+4. **The metaphor serves the content.** The release framing may shape structure
+   and headings, but a reader who ignores it entirely must still get the facts.
 5. **Contact is never more than one action away.**
 
 ## Accessibility & Inclusion
