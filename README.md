@@ -5,8 +5,7 @@ Indore, India. It is built as an astronomer's log: projects are objects with cat
 designations, the skill list is the instrument, work history is the record, and the
 contact form is a transmission.
 
-**Live at [samgabriel.vercel.app](https://samgabriel.vercel.app)**, and from
-[samgabriel-here.github.io](https://samgabriel-here.github.io).
+**Live at [samgabriel.vercel.app](https://samgabriel.vercel.app)**.
 
 ![The log header, with observer, station, live sidereal time and moon phase, and the latest plate](docs/screenshot-log.jpg)
 
@@ -58,15 +57,8 @@ the email address and social links stay visible as a fallback.
 
 ## Deploying
 
-Two hosts, both from `main`:
-
-- **Vercel** builds and serves `samgabriel.vercel.app` on every push.
-- **GitHub Pages** builds the same commit through
-  [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) and serves
-  `samgabriel-here.github.io`.
-
-The Pages workflow uploads `./out` as the artifact. If the two hosts ever disagree, one of
-them has not rebuilt: check the Actions tab before assuming the source is wrong.
+Vercel builds and serves `samgabriel.vercel.app` on every push to `main`. That is the
+only host.
 
 ## Stack
 

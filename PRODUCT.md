@@ -57,8 +57,8 @@ evidenced by shipped artefacts with public source.
 - **Single page, static.** Next.js 16 App Router with `output: "export"` and
   `images: { unoptimized: true }`. There is no server at runtime, so nothing may
   depend on server-side execution, API routes, or runtime environment variables.
-- **Deploys to Vercel on push to `main`.** The repository remote is
-  `samgabriel-here.github.io`; the live host is `samgabriel.vercel.app`.
+- **Deploys to Vercel on push to `main`.** The repository is
+  `SamGabriel-Here/samgabriel`; the only live host is `samgabriel.vercel.app`.
 - **Contact is client-only.** The Transmit form composes a `mailto:` link; there is
   no backend, no database, and no form service. It therefore cannot confirm
   delivery, and the email address and social links must remain visible as a fallback
