@@ -48,7 +48,7 @@ const plates: Obj[] = [
     instrument: "TypeScript · Desktop · Astronomy",
     date: "Aug 2026",
     source: "https://github.com/SamGabriel-Here/NovaSky",
-    thumb: "/novasky.jpg",
+    thumb: "/novasky.webp",
   },
 ];
 
@@ -64,7 +64,7 @@ const catalogue: Obj[] = [
     date: "Aug 2026",
     live: "https://celestial-tan.vercel.app",
     source: "https://github.com/SamGabriel-Here/celestial",
-    thumb: "/celestial.jpg",
+    thumb: "/celestial.webp",
   },
   {
     sg: "SG-4",
@@ -76,7 +76,7 @@ const catalogue: Obj[] = [
     date: "Jul 2026",
     live: "https://nestworthindia.vercel.app",
     source: "https://github.com/SamGabriel-Here/nestworth",
-    thumb: "/nestworth.jpg",
+    thumb: "/nestworth.webp",
   },
   {
     sg: "SG-5",
@@ -87,7 +87,7 @@ const catalogue: Obj[] = [
     instrument: "PyTorch · MobileNetV3 · Flask",
     date: "Aug 2026",
     source: "https://github.com/SamGabriel-Here/pap-vision",
-    thumb: "/papvision.jpg",
+    thumb: "/papvision.webp",
   },
   {
     sg: "SG-6",
@@ -99,7 +99,7 @@ const catalogue: Obj[] = [
     date: "Jul 2026",
     live: "https://getnextern.onrender.com",
     source: "https://github.com/SamGabriel-Here/Internship-Allocator",
-    thumb: "/nextern.jpg",
+    thumb: "/nextern.webp",
   },
   {
     sg: "SG-7",
@@ -110,7 +110,7 @@ const catalogue: Obj[] = [
     date: "Jul 2026",
     live: "https://git-rep.onrender.com",
     source: "https://github.com/SamGabriel-Here/GitRep",
-    thumb: "/gitrep.jpg",
+    thumb: "/gitrep.webp",
   },
   {
     sg: "SG-8",
@@ -121,7 +121,7 @@ const catalogue: Obj[] = [
     date: "Jul 2026",
     live: "https://samgabriel-here.github.io/movie-booking-app/",
     source: "https://github.com/SamGabriel-Here/movie-booking-app",
-    thumb: "/showrush.jpg",
+    thumb: "/showrush.webp",
   },
 ];
 
@@ -746,7 +746,8 @@ function BackgroundLoop() {
   // Match that here so the megabyte is never fetched for those visitors.
   const wide = useMediaQuery("(min-width: 641px)");
   const motionOk = useMotionOk();
-  const enabled = wide && motionOk;
+  const light = useLightConnection();
+  const enabled = wide && motionOk && !light;
 
   useEffect(() => {
     const v = vref.current;
@@ -779,7 +780,7 @@ function BackgroundLoop() {
       <video
         ref={vref}
         src={enabled ? "/cosmic-loop.mp4" : undefined}
-        poster="/cosmic-loop.jpg"
+        poster="/cosmic-loop.webp"
         className="h-full w-full object-cover opacity-30"
         loop
         muted
@@ -1010,7 +1011,6 @@ function Header() {
  * ------------------------------------------------------------------ */
 
 function Hero() {
-  const motionOk = useMotionOk();
   const playback = usePlayback();
   const secRef = useRef<HTMLElement>(null);
   const on = useRef(false);
@@ -1104,7 +1104,7 @@ function Hero() {
               transition: "transform 0.5s cubic-bezier(0.22,1,0.36,1)",
             }}
           >
-            {motionOk && <PlaybackToggle name={plates[0].name} playback={playback} />}
+            <PlaybackToggle name={plates[0].name} playback={playback} />
             <a
               href="#catalogue"
               className="group relative block overflow-hidden border border-[color:var(--line-strong)] transition-colors hover:border-[color:var(--amber)]/45"
@@ -1151,22 +1151,54 @@ function Hero() {
 /* A loop that runs beside the text needs a way to stop it (WCAG 2.2.2): the
    reduced-motion setting covers the visitors who have found it, this covers
    everyone else. State follows the video's own play/pause events, so a blocked
-   autoplay reads "Play" rather than claiming to be running. */
+   autoplay reads "Play" rather than claiming to be running. `near` is set once
+   the plate is close to the viewport, so the SG-1 plate far down the page does
+   not fetch its loop alongside the hero's on first load. */
 type Playback = {
   ref: React.RefObject<HTMLVideoElement | null>;
   playing: boolean;
   setPlaying: (p: boolean) => void;
+  near: boolean;
+  setNear: (n: boolean) => void;
 };
 
 function usePlayback(): Playback {
   const ref = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
-  return { ref, playing, setPlaying };
+  const [near, setNear] = useState(false);
+  return { ref, playing, setPlaying, near, setNear };
 }
 
-/* Only ever rendered for a video that is actually loaded, i.e. motion welcome.
-   Sits outside any link, so it is its own target and never opens the plate. */
+/* Data saver on, or a 2G/3G estimate: the loops are atmosphere, the posters
+   already carry the frame, so those visitors keep their bandwidth. Live like
+   the media queries; the server assumes light so it never ships a src. */
+type NetInfo = EventTarget & { saveData?: boolean; effectiveType?: string };
+const netInfo = () => (navigator as Navigator & { connection?: NetInfo }).connection;
+
+function subscribeConnection(onChange: () => void) {
+  const c = netInfo();
+  c?.addEventListener("change", onChange);
+  return () => c?.removeEventListener("change", onChange);
+}
+
+function useLightConnection() {
+  return useSyncExternalStore(
+    subscribeConnection,
+    () => {
+      const c = netInfo();
+      return Boolean(c?.saveData) || /(^|-)[23]g$/.test(c?.effectiveType ?? "");
+    },
+    () => true,
+  );
+}
+
+/* Only rendered once the video is actually loading, so it never offers to play
+   a poster. Sits outside any link, so it is its own target and never opens the
+   plate. */
 function PlaybackToggle({ name, playback }: { name: string; playback: Playback }) {
+  const motionOk = useMotionOk();
+  const light = useLightConnection();
+  if (!motionOk || light || !playback.near) return null;
   const toggle = () => {
     const v = playback.ref.current;
     if (!v) return;
@@ -1188,31 +1220,56 @@ function PlaybackToggle({ name, playback }: { name: string; playback: Playback }
 }
 
 /* One media slot for both plate sizes. The poster carries the frame until we
-   know motion is welcome, so a reduced-motion visitor never gets an
-   un-pausable loop (WCAG 2.2.2) and never pays for the video bytes. */
-function PlateMedia({ o, className, playback }: { o: Obj; className: string; playback?: Playback }) {
+   know motion is welcome and the plate is near the viewport, so a
+   reduced-motion visitor never gets an un-pausable loop (WCAG 2.2.2), and
+   nobody pays for video bytes they have not scrolled to. */
+function PlateMedia({ o, className, playback }: { o: Obj; className: string; playback: Playback }) {
   const motionOk = useMotionOk();
-  if (o.media) {
+  const light = useLightConnection();
+  const { ref, setNear } = playback;
+  const media = o.media;
+
+  useEffect(() => {
+    const v = ref.current;
+    if (!media || !v) return;
+    const io = new IntersectionObserver(
+      (es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      // a quarter of the plate on screen, not a lead margin: in the pinned
+      // layout SG-1 sits just under the fold, and a margin would fetch it on
+      // first load right alongside the hero's copy of the same loop
+      { threshold: 0.25 },
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, [media, ref, setNear]);
+
+  if (media) {
+    const load = motionOk && !light && playback.near;
     return (
       <video
-        key={motionOk ? "motion" : "still"}
-        ref={playback?.ref}
-        onPlay={() => playback?.setPlaying(true)}
-        onPause={() => playback?.setPlaying(false)}
-        src={motionOk ? o.media : undefined}
-        poster={o.media.replace(/\.mp4$/, ".jpg")}
+        key={load ? "motion" : "still"}
+        ref={ref}
+        onPlay={() => playback.setPlaying(true)}
+        onPause={() => playback.setPlaying(false)}
+        src={load ? media : undefined}
+        poster={media.replace(/\.mp4$/, ".webp")}
         className={className}
-        autoPlay={motionOk}
+        autoPlay={load}
         loop
         muted
         playsInline
-        preload={motionOk ? "metadata" : "none"}
+        preload={load ? "metadata" : "none"}
       />
     );
   }
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={o.thumb} alt={`${o.name} — ${o.type}`} className={className} loading="lazy" />
+    <img src={o.thumb} alt={`${o.name} — ${o.type}`} className={className} loading="lazy" decoding="async" />
   );
 }
 
@@ -1243,7 +1300,6 @@ function Plate({ o }: { o: Obj }) {
     el.style.transform = "";
   };
   const primary = o.live || o.source;
-  const motionOk = useMotionOk();
   const playback = usePlayback();
   return (
     <article
@@ -1264,7 +1320,7 @@ function Plate({ o }: { o: Obj }) {
           className="absolute inset-0"
           style={{ background: "linear-gradient(180deg, transparent 45%, rgba(var(--ground-rgb),0.92) 100%)" }}
         />
-        {o.media && motionOk && <PlaybackToggle name={o.name} playback={playback} />}
+        {o.media && <PlaybackToggle name={o.name} playback={playback} />}
         <div className="mono absolute left-3 top-3 flex items-center gap-2 text-[10px]">
           <span className="bg-[color:var(--amber)] px-1.5 py-0.5 text-[color:var(--ink)]">{o.sg}</span>
           <span className="text-[color:var(--dim)]">{o.type}</span>
