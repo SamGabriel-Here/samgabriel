@@ -240,16 +240,12 @@ a:hover > .plate-mark {
 }
 .bar-glide {
   position: absolute;
-  top: 3px;
-  bottom: 3px;
-  left: 0;
-  width: 0;
-  border-radius: 999px;
-  border: 1px solid var(--rule);
-  background: rgba(244, 237, 227, 0.08);
+  inset: 3px;
+  background: rgba(244, 237, 227, 0.11);
+  clip-path: inset(0 100% 0 0 round 999px);
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.45s var(--ease-out), width 0.45s var(--ease-out), opacity 0.3s;
+  transition: clip-path 0.45s var(--ease-out), opacity 0.3s;
 }
 .bar-glide[data-on="true"] {
   opacity: 1;

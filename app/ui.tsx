@@ -297,8 +297,11 @@ export function Header() {
       g.dataset.on = "false";
       return;
     }
-    g.style.width = `${el.offsetWidth}px`;
-    g.style.transform = `translateX(${el.offsetLeft}px)`;
+    // the glide spans the capsule; a rounded clip opens over the one item,
+    // so moving it repaints and never re-lays-out
+    const left = el.offsetLeft - g.offsetLeft;
+    const right = g.offsetWidth - left - el.offsetWidth;
+    g.style.clipPath = `inset(0 ${right}px 0 ${left}px round 999px)`;
     g.dataset.on = "true";
   }, []);
   const rest = useCallback(() => {
