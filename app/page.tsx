@@ -93,13 +93,14 @@ const releases: Release[] = [
   {
     name: "GitRep",
     type: "Repository analyzer",
-    date: "Jul 2026",
-    blurb: "Scores any public repository's README and hands back honest, actionable feedback.",
+    date: "Sep 2026",
+    blurb:
+      "Grades any public repository or profile out of 100, shows the README line behind each point, and hands back the fix for every point it took.",
     stack: ["React", "Vite", "FastAPI"],
-    live: "https://git-rep.onrender.com",
+    live: "https://getgitrep.vercel.app",
     source: "https://github.com/SamGabriel-Here/GitRep",
     media: "/gitrep",
-    alt: "GitRep README scoring page",
+    alt: "GitRep report: a repository graded 77 out of 100, with its eleven checks in a timing tower",
   },
   {
     name: "ShowRush",
