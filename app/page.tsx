@@ -46,15 +46,15 @@ const releases: Release[] = [
   },
   {
     name: "Celestial",
-    type: "Weather dashboard",
-    date: "Aug 2026",
+    type: "Weather app",
+    date: "Oct 2026",
     blurb:
-      "Current conditions, an hourly and five-day outlook, daylight and air quality, served through a secure serverless proxy.",
-    stack: ["JavaScript", "Vercel"],
-    live: "https://celestial-tan.vercel.app",
+      "The real sky over any place, on a star wheel you turn through the next 24 hours. Sun, moon and stars are computed in the browser, with the live forecast printed on the rim, sixteen days ahead, rain radar and air quality, and it installs and works offline.",
+    stack: ["TypeScript", "React", "PWA"],
+    live: "https://celestialsky.vercel.app",
     source: "https://github.com/SamGabriel-Here/celestial",
     media: "/celestial",
-    alt: "Celestial weather dashboard",
+    alt: "Celestial: the night sky over Los Angeles inside a star wheel, the next 24 hours of temperatures printed on its rim",
   },
   {
     name: "NestWorth",
