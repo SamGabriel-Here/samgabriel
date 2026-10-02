@@ -49,8 +49,130 @@ function useLightConnection() {
 }
 
 /* ------------------------------------------------------------------ *
+ *  Pointer: the chart's target mark, following the mouse              *
+ * ------------------------------------------------------------------ */
+
+/* A dust dot on the exact pointer and the target mark's four tick arms
+   trailing it. Over something that acts it locks on: the arms turn dust and
+   a ring closes. Over a picture it turns to a framing mark. Text fields get
+   the native caret back. Only for a real mouse with motion welcome; touch,
+   pens and reduced motion keep the system cursor. */
+export function Pointer() {
+  const fine = useMediaQuery("(hover: hover) and (pointer: fine)");
+  const motionOk = useMotionOk();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    const dot = el?.querySelector<HTMLElement>(".pt-dot");
+    const mark = el?.querySelector<HTMLElement>(".pt-mark");
+    if (!fine || !motionOk || !el || !dot || !mark) return;
+    const root = document.documentElement;
+    let x = 0;
+    let y = 0;
+    let mx = 0;
+    let my = 0;
+    let raf = 0;
+    let shown = false;
+    const tick = () => {
+      // the mark trails the dot; stop the loop once it has caught up
+      mx += (x - mx) * 0.24;
+      my += (y - my) * 0.24;
+      dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      mark.style.transform = `translate3d(${mx.toFixed(1)}px, ${my.toFixed(1)}px, 0)`;
+      raf = Math.abs(x - mx) + Math.abs(y - my) > 0.2 ? requestAnimationFrame(tick) : 0;
+    };
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      x = e.clientX;
+      y = e.clientY;
+      if (!shown) {
+        // first sighting: no glide in from the corner
+        mx = x;
+        my = y;
+        shown = true;
+        root.classList.add("has-pointer");
+        el.dataset.on = "true";
+      }
+      const t = e.target as Element | null;
+      el.dataset.state = t?.closest("input, textarea, select, [contenteditable]")
+        ? "text"
+        : t?.closest("a, button, label, summary, [role='button']")
+          ? "act"
+          : t?.closest(".frame, video, img")
+            ? "view"
+            : "";
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const onDown = () => (el.dataset.press = "true");
+    const onUp = () => (el.dataset.press = "false");
+    const onLeave = () => {
+      el.dataset.on = "false";
+      shown = false;
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointerup", onUp);
+    document.documentElement.addEventListener("mouseleave", onLeave);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointerup", onUp);
+      document.documentElement.removeEventListener("mouseleave", onLeave);
+      cancelAnimationFrame(raf);
+      root.classList.remove("has-pointer");
+    };
+  }, [fine, motionOk]);
+
+  if (!fine || !motionOk) return null;
+  return (
+    <div ref={ref} className="pointer" data-on="false" aria-hidden="true">
+      <span className="pt-mark">
+        <span className="pt-reticle">
+          <b />
+          <b />
+          <b />
+          <b />
+        </span>
+      </span>
+      <span className="pt-dot" />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
  *  Loop: a poster that becomes a video only when it is worth it       *
  * ------------------------------------------------------------------ */
+
+/* Sharper encodes of the same loop, best first. One is used only where the
+   screen can show the extra pixels and the device reports it can decode it
+   smoothly AND power-efficiently (so no laptop software-decodes 4K).
+   Otherwise the plain .mp4 plays. Slow links never get here: data saver and
+   2G/3G already keep the poster. (Not gated on navigator.connection.downlink:
+   it is a rough early estimate, 1.6 Mbps in a fresh tab, and the 4K file is
+   only ~1 MB more than the 1440p one.) */
+type Sharp = { src: string; type: string; width: number; height: number; bitrate: number };
+
+async function pickSharp(list: Sharp[]): Promise<string | null> {
+  const mc = navigator.mediaCapabilities;
+  if (!mc?.decodingInfo) return null;
+  // device pixels across the backdrop at its least zoomed (inset 4%, scale 1.1)
+  const px = window.innerWidth * (window.devicePixelRatio || 1) * 1.19;
+  if (px < 1400) return null;
+  for (const s of list) {
+    if (s.height > 1440 && px < 2600) continue;
+    try {
+      const r = await mc.decodingInfo({
+        type: "file",
+        video: { contentType: s.type, width: s.width, height: s.height, bitrate: s.bitrate, framerate: 30 },
+      });
+      if (r.supported && r.smooth && r.powerEfficient) return s.src;
+    } catch {
+      // an unknown codec string throws in some engines: treat it as unsupported
+    }
+  }
+  return null;
+}
 
 /* The poster is the frame until motion is welcome, the connection can carry
    it, and the loop is actually on screen (the hero is on screen at load).
@@ -61,10 +183,12 @@ export function Loop({
   eager = false,
   controlSlot,
   small,
+  sharp,
   decorative = false,
 }: {
   src: string; // path without extension; .mp4 and .webp sit side by side
   small?: string; // a narrower .mp4 for phones, same poster
+  sharp?: Sharp[]; // sharper encodes for large screens, best first
   decorative?: boolean; // atmosphere only: no description is read out
   label: string;
   eager?: boolean;
@@ -95,6 +219,18 @@ export function Loop({
   }, [eager]);
 
   const load = motionOk && !light && near;
+
+  // undefined while the device is being asked; null when the plain file wins
+  const [sharpSrc, setSharpSrc] = useState<string | null | undefined>(sharp ? undefined : null);
+  useEffect(() => {
+    if (!load || !sharp || narrow) return;
+    let live = true;
+    pickSharp(sharp).then((s) => live && setSharpSrc(s));
+    return () => {
+      live = false;
+    };
+  }, [load, sharp, narrow]);
+  const file = narrow && small ? `${small}.mp4` : sharpSrc === undefined && !narrow ? undefined : (sharpSrc ?? `${src}.mp4`);
 
   // off screen, a loop has no reason to keep decoding. Keyed on `load` too:
   // the video element remounts when it switches on, and this must watch the new one.
@@ -128,7 +264,7 @@ export function Loop({
       <video
         key={load ? "on" : "off"}
         ref={ref}
-        src={load ? `${narrow && small ? small : src}.mp4` : undefined}
+        src={load ? file : undefined}
         poster={`${src}.webp`}
         autoPlay={load}
         loop
@@ -190,6 +326,16 @@ function backdropBase() {
   return { ty: -p * 0.06 * 1.08 * H, s: 1.1 + hp * 0.28 + p * 0.22, hp };
 }
 
+/* The same 12 s loop cut from NASA's 3840x2160 master, best first. Codec
+   strings match the encodes (AV1 main 10-bit level 5.0; HEVC main level 5.0);
+   bitrates are the measured averages. */
+const CLIFFS_SHARP = [
+  { src: "/cosmos/cosmic-cliffs-2160-av1.mp4", type: 'video/mp4; codecs="av01.0.12M.10"', width: 3840, height: 2160, bitrate: 1541311 },
+  { src: "/cosmos/cosmic-cliffs-2160-hevc.mp4", type: 'video/mp4; codecs="hvc1.1.6.L150.B0"', width: 3840, height: 2160, bitrate: 2075041 },
+  { src: "/cosmos/cosmic-cliffs-1440-av1.mp4", type: 'video/mp4; codecs="av01.0.12M.10"', width: 2560, height: 1440, bitrate: 1084875 },
+  { src: "/cosmos/cosmic-cliffs-1440-hevc.mp4", type: 'video/mp4; codecs="hvc1.1.6.L150.B0"', width: 2560, height: 1440, bitrate: 1330240 },
+];
+
 export function Backdrop() {
   const motionOk = useMotionOk();
   const imgRef = useRef<HTMLDivElement>(null);
@@ -237,6 +383,7 @@ export function Backdrop() {
         <Loop
           src="/cosmos/cosmic-cliffs"
           small="/cosmos/cosmic-cliffs-sm"
+          sharp={CLIFFS_SHARP}
           decorative
           label="The Cosmic Cliffs of the Carina Nebula, a 3D flight through the James Webb Space Telescope image"
           eager

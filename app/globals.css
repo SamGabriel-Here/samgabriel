@@ -184,6 +184,134 @@ body {
   font-weight: 500;
 }
 
+/* ---------- the pointer: the chart's target mark, on the mouse ----------
+   Shown only once a real mouse has moved (the class arrives with it), so
+   touch, pens, reduced motion and no-script keep the system cursor. */
+.has-pointer,
+.has-pointer * {
+  cursor: none !important;
+}
+.has-pointer :is(input, textarea, select, [contenteditable]) {
+  cursor: text !important;
+}
+.pointer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  /* a void edge so the mark reads over the brightest cloud */
+  filter: drop-shadow(0 0 1.5px rgba(var(--void-rgb), 0.9));
+}
+.pointer[data-on="true"] {
+  opacity: 1;
+}
+.pointer[data-state="text"] {
+  opacity: 0;
+}
+.pt-dot,
+.pt-mark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.pt-dot::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dust);
+  transition: transform 0.25s var(--ease-out);
+}
+.pt-reticle {
+  --s: 1;
+  --r: 0deg;
+  position: absolute;
+  left: -18px;
+  top: -18px;
+  width: 36px;
+  height: 36px;
+  transform: rotate(var(--r)) scale(var(--s));
+  transition: transform 0.4s var(--ease-out);
+}
+/* the ring that closes when the mark locks on */
+.pt-reticle::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--dust);
+  opacity: 0;
+  transform: scale(1.4);
+  transition: opacity 0.3s, transform 0.4s var(--ease-out);
+}
+.pt-reticle b {
+  position: absolute;
+  background: var(--paper);
+  opacity: 0.75;
+  transition: background-color 0.25s, opacity 0.25s;
+}
+.pt-reticle b:nth-child(1),
+.pt-reticle b:nth-child(2) {
+  left: 17.25px;
+  width: 1.5px;
+  height: 6px;
+}
+.pt-reticle b:nth-child(1) {
+  top: 0;
+}
+.pt-reticle b:nth-child(2) {
+  bottom: 0;
+}
+.pt-reticle b:nth-child(3),
+.pt-reticle b:nth-child(4) {
+  top: 17.25px;
+  width: 6px;
+  height: 1.5px;
+}
+.pt-reticle b:nth-child(3) {
+  left: 0;
+}
+.pt-reticle b:nth-child(4) {
+  right: 0;
+}
+/* over something that acts: lock on */
+.pointer[data-state="act"] .pt-reticle {
+  --s: 1.8;
+}
+.pointer[data-state="act"] .pt-reticle::before {
+  opacity: 0.7;
+  transform: none;
+}
+.pointer[data-state="act"] .pt-reticle b {
+  background: var(--dust);
+  opacity: 1;
+}
+/* the side arms would sit on the label; only the vertical ticks stay */
+.pointer[data-state="act"] .pt-reticle b:nth-child(3),
+.pointer[data-state="act"] .pt-reticle b:nth-child(4) {
+  opacity: 0;
+}
+.pointer[data-state="act"] .pt-dot::before {
+  transform: scale(0.67);
+}
+/* over a picture: turn to a framing mark */
+.pointer[data-state="view"] .pt-reticle {
+  --s: 1.5;
+  --r: 45deg;
+}
+/* pressing tightens it */
+.pointer[data-press="true"] .pt-reticle {
+  transform: rotate(var(--r)) scale(calc(var(--s) * 0.78));
+  transition-duration: 0.12s;
+}
+
 /* ---------- the mark: SG punched into a plate ---------- */
 .plate-mark {
   display: block;

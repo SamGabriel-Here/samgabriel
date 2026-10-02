@@ -1,4 +1,4 @@
-import { Backdrop, ClockIST, ContactForm, Depth, Develop, Header, IndexPreview, Loop, PlateMark } from "./ui";
+import { Backdrop, ClockIST, ContactForm, Depth, Develop, Header, IndexPreview, Loop, PlateMark, Pointer } from "./ui";
 
 /* ------------------------------------------------------------------ *
  *  Content                                                            *
@@ -260,6 +260,7 @@ export default function Home() {
       </noscript>
       <Header />
       <Develop />
+      <Pointer />
 
       <main id="main" tabIndex={-1}>
         {/* ---------- opening plate: the image, the name, one way in ---------- */}

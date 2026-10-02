@@ -332,6 +332,9 @@ SG punched into a plate. S is 01010011 and G is 01000111 in ASCII; the sixteen b
 ### Navigation
 The header is fixed, 64px tall: the mark and the serif wordmark left, the nav right. The nav is one glass capsule (void 42%, 12px backdrop blur, 1px rule, 3px padding). Work and About carry mono numerals ("01", "02") that turn dust on hover and on the section in view. A soft paper pill glides to whichever item is under the pointer or focused, and otherwise rests on the section in view; it moves by `clip-path` over the capsule's full width, so it only repaints. Contact is the one lit pill: dust with void ink (9:1), a void signal dot whose ring goes out once every 3.6s, and an arrow that nudges 3px on hover; it turns paper on hover or when Contact is in view. At 639px and below About hides. Scrolling down past one viewport tucks the header away; any scroll up, or focus inside it, brings it back.
 
+### Pointer
+A real mouse gets the chart's target mark as its cursor: a 6px dust dot on the exact pointer and the mark's four paper tick arms (1.5px by 6px, on a 36px box) trailing it at a 0.24 lerp, with a 1.5px void drop-shadow so it reads over the brightest cloud. Over anything that acts (links, buttons, labels) it locks on: the mark scales to 1.8, its vertical ticks turn dust, a dust ring closes at 70%, the side arms tuck away so they never sit on a label, and the dot shrinks. Over a picture or video it turns 45° and scales 1.5, a framing mark. Pressing tightens it to 0.78 of its scale. Text fields hide it and show the native caret. The system cursor is hidden only once a mouse has actually moved (`has-pointer` on the root); touch, pens, reduced motion and no-script keep the system cursor. The loop runs only while the mark is catching up.
+
 ### The console (signature, desktop)
 - **Chart:** an SVG over the whole viewport. Each release is a target on the nebula (fixed fractions of the backdrop frame), drawn as a dot with four tick arms and its number, carried by the camera. A dashed paper route joins all eight; a dust trail draws the part already observed, up to the camera. The target in view is paper with dust arms; passed targets are dust.
 - **Halo and pulse:** when the target changes, three dust rings go out from it once (1.8s, 0.25s apart), and one dust pulse runs down the beam, a dashed line from the target to the panel (0.7s). Both are composited HTML layers, not SVG repaints. Then it is quiet.
@@ -353,7 +356,7 @@ Record runs oldest first: Senior Secondary, B.Tech, the InternPe internship, and
 - **Fields:** sentence-case soft label above, void 70% fill, rule-strong border, square, 16px text, dim placeholder; the border turns dust on focus. The textarea is at least 140px. After submit, a notice receives focus through a polite live region and offers to copy the address.
 
 ### Loop and Playback
-Every moving image is a Loop. The WebP poster carries the frame; the MP4 loads only when the loop is on screen, motion is welcome, and the connection is not data-saver, 2G or 3G. Below 768px a loop with a `small` source plays that instead (the backdrop's is 720px, 390 KB against 799 KB). Every loop beside text has a Pause/Play control, 12px mono, at least 44px tall; the backdrop's is quiet and sits in the hero corner. A user's pause is remembered. These gates and the control are load-bearing (WCAG 2.2.2). Without script, a `<noscript>` rule holds the veil closed at 0.84.
+Every moving image is a Loop. The WebP poster carries the frame; the MP4 loads only when the loop is on screen, motion is welcome, and the connection is not data-saver, 2G or 3G. Below 768px a loop with a `small` source plays that instead (the backdrop's is 720px, 390 KB). The backdrop also offers **sharp** encodes cut from NASA's 3840×2160 master: 4K and 1440p, each in AV1 and HEVC, best first. One is used only where the screen has the pixels for it (device pixels across the backdrop at least 1400 for 1440p, 2600 for 4K) and the device reports it can decode it smoothly and power-efficiently (`navigator.mediaCapabilities`); otherwise the 720p H.264 file plays. Slow links never reach this choice: data saver and 2G/3G keep the poster. Never upscale imagery with a model: a sharper version comes from the source. Every loop beside text has a Pause/Play control, 12px mono, at least 44px tall; the backdrop's is quiet and sits in the hero corner. A user's pause is remembered. These gates and the control are load-bearing (WCAG 2.2.2). Without script, a `<noscript>` rule holds the veil closed at 0.84.
 
 ### Credit legend (footer)
 Under the uppercase "Image credits" heading, each media credit is a 14px dim paragraph. The Cosmic Cliffs credit is followed by its six NIRCam filter chips, then a line saying the same image carries the page. This is the only use of the filter colours.
@@ -368,7 +371,8 @@ The standard easing is `cubic-bezier(0.16, 1, 0.3, 1)`; nothing overshoots.
 - **Scan reveal (fallback plates):** a plate below the fold reads out left to right from `inset(0 100% 0 0)` at brightness 0.5 to `inset(-16px)` over 1.2s, its ticks lock in from 22px out, and its caption follows in 70ms steps.
 - **The mark, the ping, the ratio, the timeline:** see Components.
 - **Header tuck and nav glide:** see Navigation.
-- **Reduced motion:** no exposure, focus pull, rising, fly-in, drift, camera, scan, lock, header tuck or ping. The console does not run; the plates stack as a list. The mark, the ratio and the timeline rest in their final state.
+- **Pointer:** see Components; transforms only, 0.4s on the mark's state changes, 0.12s on press.
+- **Reduced motion:** no exposure, focus pull, rising, fly-in, drift, camera, scan, lock, header tuck, ping or custom pointer. The console does not run; the plates stack as a list. The mark, the ratio and the timeline rest in their final state.
 
 ## Do's and Don'ts
 
@@ -380,6 +384,7 @@ The standard easing is `cubic-bezier(0.16, 1, 0.3, 1)`; nothing overshoots.
 - **Do** keep the mark's bits exactly SG in ASCII.
 - **Do** keep controls at least 44px tall, action labels literal, and the name whole.
 - **Do** give every loop beside text a Pause/Play control, and pause any loop the page is hiding.
+- **Do** keep the system cursor for touch, pens, reduced motion and text fields; the custom pointer is for a mouse only.
 
 ### Don't:
 - **Don't** put a kicker above a heading, or a second italic word in a display line.

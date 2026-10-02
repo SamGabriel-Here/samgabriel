@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: `${SITE}/cosmos/cosmic-cliffs.webp`,
-        width: 1280,
-        height: 720,
+        width: 1920,
+        height: 1080,
         alt: "The Cosmic Cliffs of the Carina Nebula, imaged by the James Webb Space Telescope",
       },
     ],
