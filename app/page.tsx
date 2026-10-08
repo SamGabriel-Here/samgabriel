@@ -24,10 +24,12 @@ const releases: Release[] = [
   {
     name: "nbodyssey",
     type: "N-body simulation",
-    date: "Jul 2026",
-    blurb: "A GPU galaxy-collision simulator built on a Barnes-Hut tree code.",
+    date: "Oct 2026",
+    blurb:
+      "Two galaxies colliding on a GPU. Live in your browser through WebGPU, stepped by your own graphics card, and at a million bodies through a CUDA engine built on a Barnes-Hut tree.",
     figure: { value: "176×", line: "faster than brute force at one million particles on a single Tesla T4" },
-    stack: ["CUDA C++", "C++17", "CMake"],
+    stack: ["CUDA C++", "WebGPU", "WGSL"],
+    live: "https://nbodyssey.vercel.app",
     source: "https://github.com/SamGabriel-Here/nbodyssey",
     media: "/nbodyssey",
     video: true,
