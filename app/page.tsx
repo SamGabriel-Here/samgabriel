@@ -87,7 +87,7 @@ const releases: Release[] = [
     date: "Oct 2026",
     blurb: "Puts every internship on one board and shows, for each company, the skills you have, the ones that count partially, and what to learn next; an optional AI copilot reads your resume.",
     stack: ["Python", "Flask", "React"],
-    live: "https://getnextern.onrender.com",
+    live: "https://getnextern.vercel.app",
     source: "https://github.com/SamGabriel-Here/Internship-Allocator",
     media: "/nextern",
     alt: "Nextern board: your skills beside every company, each with have, related and to-learn rows",
