@@ -84,13 +84,13 @@ const releases: Release[] = [
   {
     name: "Nextern",
     type: "Recommender",
-    date: "Jul 2026",
-    blurb: "Matches students to internships by skill, coaches the gaps it finds, and reads a resume with an AI copilot.",
-    stack: ["Python", "scikit-learn", "Gemini"],
+    date: "Oct 2026",
+    blurb: "Puts every internship on one board and shows, for each company, the skills you have, the ones that count partially, and what to learn next; an optional AI copilot reads your resume.",
+    stack: ["Python", "Flask", "React"],
     live: "https://getnextern.onrender.com",
     source: "https://github.com/SamGabriel-Here/Internship-Allocator",
     media: "/nextern",
-    alt: "Nextern internship matching dashboard",
+    alt: "Nextern board: your skills beside every company, each with have, related and to-learn rows",
   },
   {
     name: "GitRep",
